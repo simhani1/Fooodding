@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "foodtruck")
+@Table(name = "menu")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Menu {
 

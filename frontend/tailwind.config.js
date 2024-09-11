@@ -12,6 +12,7 @@ export default {
 			green: "#56E87B",
 			blue: "#67C7FF",
 			white: "#FFFFFF",
+			black: "#000000",
 			gray: {
 				DEFAULT: "#848484",
 			},
@@ -20,6 +21,10 @@ export default {
 			boxShadow: {
 				sm: "0 4px 15px rgba(0, 0, 0, 0.1)",
 				lg: "0 10px 25px rgba(0, 0, 0, 0.1)",
+			},
+			spacing: {
+				244: "61rem",
+				300: "75rem",
 			},
 		},
 	},

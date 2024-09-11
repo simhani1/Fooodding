@@ -15,7 +15,7 @@ const TheSideBar = () => {
 	return (
 		<div
 			id="header"
-			className="bg-gradient-to-b from-main to-boss h-screen w-48 pb-12 inline-block"
+			className="fixed bg-gradient-to-b from-main to-boss h-screen w-48 pb-12 inline-block"
 		>
 			<div className="h-full flex flex-col items-center justify-between">
 				<div className="logo w-24 h-24 my-12 rounded-full overflow-hidden bg-white flex items-center justify-center">

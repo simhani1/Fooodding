@@ -1,7 +1,8 @@
 {
 	"files": [],
 	"compilerOptions": {
-		"typeRoots": ["./node_modules/@types", "./global.d.ts"],
+		"typeRoots": ["./node_modules/@types", "./src/types"],
+		// "types": ["node", "kakao.maps.d.ts"],
 		"baseUrl": "./src",
 		"target": "ESNext",
 		"module": "ESNext",
@@ -23,7 +24,7 @@
 			"@utils/*": ["utils/*"]
 		}
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/types"],
 	"exclude": ["dist", "node_modules"],
 	"references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }

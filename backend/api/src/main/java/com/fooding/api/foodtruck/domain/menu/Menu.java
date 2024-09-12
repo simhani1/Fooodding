@@ -1,6 +1,9 @@
 package com.fooding.api.foodtruck.domain.menu;
 
 import com.fooding.api.foodtruck.domain.FoodTruck;
+import com.fooding.api.foodtruck.exception.IllegalMenuNameException;
+import com.fooding.api.foodtruck.exception.IllegalMenuPriceException;
+import com.fooding.api.foodtruck.exception.MenuNameOverFlowException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,6 +57,30 @@ public class Menu {
 		this.img = img;
 		this.onSale = onSale;
 		setFoodTruck(foodTruck);
+	}
+
+	public void update(String name, int price, String img) {
+		checkNameValid(name);
+		checkPriceValid(price);
+		this.name = name;
+		this.price = price;
+		this.img = img;
+	}
+
+	private void checkNameValid(String name) {
+		if (name == null) {
+			throw new IllegalMenuNameException("Name cannot be null");
+		}
+
+		if (name.trim().isEmpty() || name.length() > 15) {
+			throw new MenuNameOverFlowException("Invalid name value");
+		}
+	}
+
+	private void checkPriceValid(int price) {
+		if(price < 0 || price > 9999999){
+			throw new IllegalMenuPriceException("Invalid price value");
+		};
 	}
 
 	private void setFoodTruck(FoodTruck foodTruck) {

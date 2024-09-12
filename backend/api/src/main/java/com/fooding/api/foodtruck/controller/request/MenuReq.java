@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record MenuReq(
 	String name,
-	int price
+	int price,
+	boolean onSale
 ) {
 }

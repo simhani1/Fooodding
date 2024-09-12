@@ -59,6 +59,11 @@ public class Menu {
 		setFoodTruck(foodTruck);
 	}
 
+	private void setFoodTruck(FoodTruck foodTruck) {
+		this.foodTruck = foodTruck;
+		foodTruck.getMenuList().add(this);
+	}
+
 	public void update(String name, int price, String img) {
 		checkNameValid(name);
 		checkPriceValid(price);
@@ -78,14 +83,9 @@ public class Menu {
 	}
 
 	private void checkPriceValid(int price) {
-		if(price < 0 || price > 9999999){
+		if (price < 0 || price > 9999999) {
 			throw new IllegalMenuPriceException("Invalid price value");
-		};
-	}
-
-	private void setFoodTruck(FoodTruck foodTruck) {
-		this.foodTruck = foodTruck;
-		foodTruck.getMenuList().add(this);
+		}
 	}
 
 }

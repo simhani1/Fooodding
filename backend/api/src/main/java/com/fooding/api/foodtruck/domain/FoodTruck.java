@@ -46,15 +46,7 @@ public class FoodTruck {
 	@AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
 	@AttributeOverride(name = "introduction", column = @Column(name = "introduction"))
 	@AttributeOverride(name = "category", column = @Column(name = "category", nullable = false))
-	@AttributeOverride(name = "phoneNumber", column = @Column(name = "phone_number", nullable = false))
-	@AttributeOverride(name = "snsLink", column = @Column(name = "sns_link"))
 	private FoodTruckInfo info;
-
-	@Embedded
-	@AttributeOverride(name = "bank", column = @Column(name = "bank", nullable = false))
-	@AttributeOverride(name = "accountName", column = @Column(name = "account_name", nullable = false))
-	@AttributeOverride(name = "accountNumber", column = @Column(name = "account_number", nullable = false))
-	private BankInfo bankInfo;
 
 	@OneToMany(mappedBy = "foodTruck")
 	private List<Menu> menuList = new ArrayList<>();
@@ -64,10 +56,13 @@ public class FoodTruck {
 	private LocalDateTime createdAt;
 
 	@Builder
-	public FoodTruck(Owner owner, FoodTruckInfo info, BankInfo bankInfo) {
+	public FoodTruck(Owner owner, FoodTruckInfo info) {
 		this.owner = owner;
 		this.info = info;
-		this.bankInfo = bankInfo;
+	}
+
+	public void updateInfo(FoodTruckInfo info) {
+		this.info = info;
 	}
 
 }

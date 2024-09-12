@@ -24,7 +24,7 @@ import com.fooding.api.owner.repository.OwnerRepository;
 class RegisterFoodTruckServiceImplTest {
 
 	@InjectMocks
-	private RegisterFoodTruckServiceImpl registerFoodTruckServiceImpl;
+	private FoodTruckQueryServiceImpl foodTruckQueryServiceImpl;
 
 	@Mock
 	private FoodTruckRepository foodTruckRepository;
@@ -47,13 +47,9 @@ class RegisterFoodTruckServiceImplTest {
 
 		FoodTruckDto dto = FoodTruckDto.builder()
 			.name("name")
-			.snsLink("snsLink")
-			.licenseNumber("licenseNumber")
+			.licenseNumber("111111111")
 			.introduction("introduction")
 			.category("KOREAN")
-			.bank("bank")
-			.accountName("accountName")
-			.accountNumber("accountNumber")
 			.build();
 
 		// when
@@ -61,7 +57,7 @@ class RegisterFoodTruckServiceImplTest {
 		when(foodTruckRepository.save(any(FoodTruck.class))).thenReturn(any(FoodTruck.class));
 
 		// then
-		assertDoesNotThrow(() -> registerFoodTruckServiceImpl.registerFoodTruck(ownerId, dto));
+		assertDoesNotThrow(() -> foodTruckQueryServiceImpl.registerFoodTruck(ownerId, dto));
 		verify(foodTruckRepository, times(1)).save(any(FoodTruck.class));
 	}
 

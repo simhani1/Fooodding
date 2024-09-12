@@ -7,11 +7,6 @@ public record FoodTruckReq(
 	String licenseNumber,
 	String name,
 	String introduction,
-	String category,
-	String phoneNumber,
-	String snsLink,
-	String bank,
-	String accountName,
-	String accountNumber
+	String category
 ) {
 }

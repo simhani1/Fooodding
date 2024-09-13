@@ -1,4 +1,4 @@
-import FoodTruckForm from "@components/boss/FoodTruckForm";
+import FoodTruckForm from "@components/owner/FoodTruckForm";
 
 import { IFoodTruckForm } from "@interface/foodTruck";
 

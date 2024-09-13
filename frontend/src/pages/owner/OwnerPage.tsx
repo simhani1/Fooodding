@@ -4,7 +4,7 @@ import Title from "@components/common/Title";
 import Background from "@components/owner/Background";
 
 const buttonClassName = "rounded-2xl shadow-md w-full h-28 mb-10 pl-10 text-4xl font-semibold box-border";
-const basePath = "/boss";
+const basePath = "/owner";
 
 const OwnerPage = () => {
 	const nav = useNavigate();

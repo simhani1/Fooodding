@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import FormItem from "@components/boss/FormItem";
-import FormInput from "@components/boss/FormInput";
-import Category from "@components/boss/Category";
+import FormItem from "@components/owner/FormItem";
+import FormInput from "@components/owner/FormInput";
+import Category from "@components/owner/Category";
 
 import useFoodTruckStore from "@store/foodTruckStore";
 import { categoryList } from "@utils/foodTruckData";

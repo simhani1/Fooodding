@@ -1,6 +1,6 @@
-import FormInput from "@components/boss/FormInput";
-import FormItem from "@components/boss/FormItem";
-import Category from "@components/boss/Category";
+import FormInput from "@components/owner/FormInput";
+import FormItem from "@components/owner/FormItem";
+import Category from "@components/owner/Category";
 
 import useFoodTruckStore from "@store/foodTruckStore";
 

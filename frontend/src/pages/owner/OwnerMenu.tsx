@@ -1,8 +1,8 @@
 import Title from "@components/common/Title";
-import Background from "@components/boss/Background";
-import Menu from "@components/boss/Menu";
+import Background from "@components/owner/Background";
+import Menu from "@components/owner/Menu";
 
-const BossMenu = () => {
+const OwnerMenu = () => {
 	return (
 		<Background>
 			<>
@@ -23,7 +23,7 @@ const BossMenu = () => {
 	);
 };
 
-export default BossMenu;
+export default OwnerMenu;
 
 const MenuList = [
 	{

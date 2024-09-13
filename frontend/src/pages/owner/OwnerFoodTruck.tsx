@@ -1,13 +1,13 @@
 import { useState } from "react";
 
 import Title from "@components/common/Title";
-import Background from "@components/boss/Background";
-import FoodTruck from "@components/boss/FoodTruck";
-import FoodTruckEdit from "@components/boss/FoodTruckEdit";
+import Background from "@components/owner/Background";
+import FoodTruck from "@components/owner/FoodTruck";
+import FoodTruckEdit from "@components/owner/FoodTruckEdit";
 import useFoodTruckStore from "@store/foodTruckStore";
-import FoodTruckCreate from "@components/boss/FoodTruckCreate";
+import FoodTruckCreate from "@components/owner/FoodTruckCreate";
 
-const BossFoodTruck = () => {
+const OwnerFoodTruck = () => {
 	const [isEditing, setIsEditing] = useState<boolean>(false);
 	const { name, licenseNumber, introduction, category } = useFoodTruckStore();
 	const isExist = name && licenseNumber && introduction && category;
@@ -46,4 +46,4 @@ const BossFoodTruck = () => {
 	);
 };
 
-export default BossFoodTruck;
+export default OwnerFoodTruck;

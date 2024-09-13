@@ -15,6 +15,7 @@ export default {
 			black: "#000000",
 			gray: {
 				DEFAULT: "#848484",
+				light: "#DFDFDF",
 			},
 		},
 		extend: {
@@ -28,5 +29,5 @@ export default {
 			},
 		},
 	},
-	plugins: [],
+	plugins: [require("tailwind-scrollbar-hide")],
 };

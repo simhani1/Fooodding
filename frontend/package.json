@@ -8,8 +8,7 @@
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"gen-pwa": "pwa-assets-generator --preset minimal public/logo.svg",
-		"swagger-api": "swagger-typescript-api -p http://70.12.114.73:8080/v3/api-docs/all -o ./swagger --modular --axios --silent"
+		"gen-pwa": "pwa-assets-generator --preset minimal public/logo.svg"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.13.3",
@@ -22,6 +21,7 @@
 		"react-kakao-maps-sdk": "^1.1.27",
 		"react-router-dom": "^6.26.2",
 		"swagger-typescript-api": "^13.0.22",
+		"tailwind-scrollbar-hide": "^1.1.7",
 		"vite-tsconfig-paths": "^5.0.1",
 		"zustand": "^4.5.5"
 	},

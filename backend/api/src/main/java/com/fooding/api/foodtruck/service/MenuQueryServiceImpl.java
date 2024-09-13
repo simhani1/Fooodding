@@ -14,13 +14,13 @@ import com.fooding.api.foodtruck.service.dto.MenuDto;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class MenuQueryServiceImpl implements MenuQueryService {
 
 	private final FoodTruckRepository foodTruckRepository;
 	private final MenuRepository menuRepository;
 
-	@Transactional
 	@Override
 	public void registerMenu(Long foodTruckId, MenuDto dto) {
 		FoodTruck foodtruck = foodTruckRepository.findById(foodTruckId)
@@ -34,7 +34,6 @@ public class MenuQueryServiceImpl implements MenuQueryService {
 		menuRepository.save(menu);
 	}
 
-	@Transactional
 	@Override
 	public void updateMenu(Long menuId, MenuDto dto){
 		Menu menu = menuRepository.findById(menuId)
@@ -44,5 +43,12 @@ public class MenuQueryServiceImpl implements MenuQueryService {
 		String imageUrl = dto.img() != null ? dto.img() : menu.getImg();
 
 		menu.update(dto.name(), dto.price(), imageUrl);
+	}
+
+	@Override
+	public void deleteMenu(Long menuId) {
+		Menu menu = menuRepository.findById(menuId)
+			.orElseThrow(() -> new NoMenuException("Menu not found with ID: " + menuId));
+		menuRepository.deleteById(menuId);
 	}
 }

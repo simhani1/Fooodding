@@ -8,4 +8,5 @@ public interface MenuQueryService {
 
 	void updateMenu(Long menuId, MenuDto dto);
 
+	void deleteMenu(Long menuId);
 }

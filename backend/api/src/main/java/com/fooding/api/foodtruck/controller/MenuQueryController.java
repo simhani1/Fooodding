@@ -2,7 +2,9 @@ package com.fooding.api.foodtruck.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +52,12 @@ public class MenuQueryController extends FoodTruckController {
 			.price(req.price())
 			.img(imageUrl)
 			.build());
+		return ResponseEntity.ok(BaseResponse.ofSuccess());
+	}
+
+	@DeleteMapping("/menu/{menu-id}")
+	public ResponseEntity<BaseResponse<?>> deleteMenu(@PathVariable("menu-id") Long menuId) {
+		menuQueryService.deleteMenu(menuId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 

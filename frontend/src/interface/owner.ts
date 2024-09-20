@@ -20,5 +20,4 @@ export interface IMenuForm {
 
 export interface IMenuMessage {
 	name: string;
-	price: string;
 }

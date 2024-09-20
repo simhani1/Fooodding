@@ -88,47 +88,49 @@ const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 	};
 
 	return (
-		<form>
-			<input
-				type="text"
-				onChange={(e) => console.log(e.target)}
-			/>
-			<InputField
-				label="상호명"
-				type="text"
-				value={form.name}
-				placeholder="상호명을 입력하세요(10자 이하, 필수)"
-				onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeName(event.target.value)}
-				message={validateMessage.name}
-			/>
-			<InputField
-				label="사업자 등록번호"
-				type="text"
-				value={form.licenseNumber}
-				placeholder="사업자 등록번호를 입력하세요(10자, 필수)"
-				onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeLicenseNumber(event.target.value)}
-				message={validateMessage.licenseNumber}
-			/>
-			<InputField
-				label="소개글"
-				type="text"
-				value={form.introduction}
-				placeholder="소개글을 입력하세요(20자 이하, 선택)"
-				onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeIntroduction(event.target.value)}
-				message={validateMessage.introduction}
-			/>
-			<div className={"h-72 flex flex-col justify-between"}>
-				<div className="flex flex-col">
-					<label className="mb-3 text-3xl">카테고리</label>
-					<div className="flex flex-wrap justify-start gap-5">
-						{categoryList.map(({ name }) => (
-							<Category
-								className={name === form.category ? "bg-boss text-white" : "bg-white text-black"}
-								buttonText={name}
-								key={name}
-								onClick={() => setForm({ ...form, category: name })}
-							/>
-						))}
+		<form className="flex flex-col">
+			<div className="flex flex-col gap-10">
+				<InputField
+					label="상호명"
+					type="text"
+					value={form.name}
+					placeholder="상호명을 입력하세요(10자 이하, 필수)"
+					onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeName(event.target.value)}
+					message={validateMessage.name}
+				/>
+				<InputField
+					label="사업자 등록번호"
+					type="text"
+					value={form.licenseNumber}
+					placeholder="사업자 등록번호를 입력하세요(10자, 필수)"
+					onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+						handleChangeLicenseNumber(event.target.value)
+					}
+					message={validateMessage.licenseNumber}
+				/>
+				<InputField
+					label="소개글"
+					type="text"
+					value={form.introduction}
+					placeholder="소개글을 입력하세요(20자 이하, 선택)"
+					onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+						handleChangeIntroduction(event.target.value)
+					}
+					message={validateMessage.introduction}
+				/>
+				<div className={"h-40 flex flex-col justify-between"}>
+					<div className="flex flex-col">
+						<label className="mb-3 text-3xl font-bold">카테고리</label>
+						<div className="flex flex-wrap justify-start gap-5">
+							{categoryList.map(({ name }) => (
+								<Category
+									className={name === form.category ? "bg-boss text-white" : "bg-white text-black"}
+									buttonText={name}
+									key={name}
+									onClick={() => setForm({ ...form, category: name })}
+								/>
+							))}
+						</div>
 					</div>
 				</div>
 			</div>

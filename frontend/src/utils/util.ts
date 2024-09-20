@@ -1,5 +1,5 @@
-export const allPropertiesHaveValues = (obj: object) => {
-	for (let val of Object.values(obj)) {
+export const allElementsHaveValues = (...elements: Array<string | number>) => {
+	for (let val of elements) {
 		if (!val) {
 			return false;
 		}

@@ -24,6 +24,9 @@ export default {
 				lg: "0 10px 25px rgba(0, 0, 0, 0.1)",
 			},
 			spacing: {
+				112: "28rem",
+				120: "30rem",
+				160: "40rem",
 				244: "61rem",
 				300: "75rem",
 			},

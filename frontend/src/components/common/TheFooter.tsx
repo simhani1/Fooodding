@@ -26,7 +26,7 @@ const TheFooter = () => {
 
 	return (
 		<div
-			className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 transition-transform duration-300 z-10 ${
+			className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 transition-transform duration-300 z-20 ${
 				showNavbar ? "translate-y-0" : "translate-y-full"
 			}`}
 		>

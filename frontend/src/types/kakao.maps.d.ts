@@ -6,7 +6,8 @@ declare namespace kakao.maps {
 	class Map {
 		constructor(container: HTMLElement, options: MapOptions);
 		setCenter(latlng: LatLng): void;
-		// 추가 메서드 및 속성 정의
+		getCenter(): LatLng;
+		panTo(latlng: LatLng): void;
 	}
 
 	interface MapOptions {
@@ -14,6 +15,4 @@ declare namespace kakao.maps {
 		level: number;
 		// 필요한 다른 옵션 속성들을 여기에 정의합니다.
 	}
-
-	// 추가적으로 필요한 Kakao Maps API 클래스와 인터페이스 정의
 }

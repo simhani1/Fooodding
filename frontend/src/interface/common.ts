@@ -35,3 +35,9 @@ export interface IModal {
 	children: JSX.Element;
 	close: () => void;
 }
+
+export interface ILoginCard {
+	title: string;
+	children: JSX.Element;
+	onClick: () => void;
+}

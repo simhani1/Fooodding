@@ -1,5 +1,6 @@
-//트럭 정보
+//트럭 리스트 정보
 export interface ITruckInfo {
+	id: number;
 	name: string;
 	content: string;
 	menu: string[];
@@ -16,4 +17,23 @@ export interface UserTruckListProps {
 
 export interface UserTruckProps {
 	truck: ITruckInfo | null;
+}
+
+//트럭 상세 정보
+export interface ITruckInfoDetail {
+	id: number;
+	name: string;
+	content: string;
+	img?: string;
+	menuList: IMenuInfo[];
+}
+
+export interface IMenuInfo {
+	menuName: string;
+	price: number;
+	menuImg: string;
+}
+
+export interface IMenuProps {
+	menuList: IMenuInfo[];
 }

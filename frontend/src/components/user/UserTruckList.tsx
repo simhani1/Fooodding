@@ -28,29 +28,27 @@ const UserTruckList: React.FC<UserTruckListProps> = ({ onExpandChange, trucks, s
 				expanded ? "h-5/6" : "h-80"
 			} bg-white z-10 rounded-lg`}
 		>
-			<div className="flex flex-col items-center justify-between p-2">
+			<div className="flex flex-col items-center justify-between pt-2">
 				<button
 					className="w-16 h-2 m-4 rounded-full bg-gray"
 					onClick={handleExpand}
 				></button>
 
-				<div className="flex-1 overflow-hidden">
-					{trucks.length === 0 ? (
-						// 트럭이 없을 때만 메시지를 표시
-						renderEmptyState()
-					) : expanded ? (
-						// 트럭 목록이 확장되었을 때 트럭 목록 표시
-						trucks.map((truck, index) => (
-							<UserTruck
-								key={index}
-								truck={truck}
-							/>
-						))
-					) : (
-						// 트럭 목록이 확장되지 않았을 때 선택된 트럭 또는 첫 번째 트럭 표시
-						<UserTruck truck={defaultTruck} />
-					)}
-				</div>
+				{trucks.length === 0 ? (
+					// 트럭이 없을 때만 메시지를 표시
+					renderEmptyState()
+				) : expanded ? (
+					// 트럭 목록이 확장되었을 때 트럭 목록 표시
+					trucks.map((truck, index) => (
+						<UserTruck
+							key={index}
+							truck={truck}
+						/>
+					))
+				) : (
+					// 트럭 목록이 확장되지 않았을 때 선택된 트럭 또는 첫 번째 트럭 표시
+					<UserTruck truck={defaultTruck} />
+				)}
 			</div>
 		</div>
 	);

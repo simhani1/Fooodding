@@ -13,6 +13,7 @@ import UserMap from "@pages/user/UserMap";
 import UserFoodTruck from "@pages/user/UserFoodTruck";
 
 import "./App.css";
+import UserWaiting from "@pages/user/UserWaiting";
 
 function App() {
 	const nav = useNavigate();
@@ -103,6 +104,10 @@ function App() {
 					<Route
 						path="foodtruck"
 						element={<UserFoodTruck />}
+					/>
+					<Route
+						path="waiting"
+						element={<UserWaiting />}
 					/>
 				</Route>
 			</Routes>

@@ -1,4 +1,4 @@
-package com.fooding.api.owner.domain;
+package com.fooding.api.member.domain;
 
 public enum MemberStatus {
 

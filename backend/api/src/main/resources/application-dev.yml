@@ -39,6 +39,12 @@ jwt:
   refresh-token:
     expiretime: ${DEV_JWT_REFRESH_TOKEN_EXPIRETIME}
 
+naver:
+  secret:
+    key: ${NAVER_SECRET_KEY}
+  loginurl: ${NAVER_LOGIN_URL}
+  logouturl: ${NAVER_LOGOUT_URL}
+
 cloud:
   aws:
     credentials:

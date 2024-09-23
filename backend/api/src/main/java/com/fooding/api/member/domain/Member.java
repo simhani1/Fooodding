@@ -1,8 +1,11 @@
-package com.fooding.api.owner.domain;
+package com.fooding.api.member.domain;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
+
+import com.fooding.api.member.exception.AlreadyInactiveException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,14 +22,18 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "owner")
+@Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Owner {
+@SQLRestriction("status = 'ACTIVE'")
+public class Member {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "owner_id")
+	@Column(name = "member_id")
 	private Long id;
+
+	@Column(name = "email", nullable = false)
+	private String email;
 
 	@Column(name = "nickname", nullable = false)
 	private String nickname;
@@ -44,21 +51,39 @@ public class Owner {
 	@Column(name = "status", nullable = false)
 	private MemberStatus status;
 
+	@Enumerated(value = EnumType.STRING)
+	@Column(name = "role", nullable = false)
+	private MemberRole role;
+
 	@CreationTimestamp
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
 	@Builder
-	public Owner(String nickname, String gender, String ages, Provider provider) {
-		this(nickname, gender, ages, provider, MemberStatus.ACTIVE);
+	public Member(String nickname, String email, String gender, String ages, Provider provider, MemberRole role) {
+		this(nickname, email, gender, ages, provider, MemberStatus.ACTIVE, role);
 	}
 
-	private Owner(String nickname, String gender, String ages, Provider provider, MemberStatus status) {
+	private Member(String nickname, String email, String gender, String ages, Provider provider, MemberStatus status,
+		MemberRole role) {
 		this.nickname = nickname;
+		this.email = email;
 		this.gender = gender;
 		this.ages = ages;
 		this.provider = provider;
 		this.status = status;
+		this.role = role;
+	}
+
+	public void inactive() {
+		if (alreadyInactive()) {
+			throw new AlreadyInactiveException();
+		}
+		this.status = MemberStatus.INACTIVE;
+	}
+
+	private boolean alreadyInactive() {
+		return this.status.equals(MemberStatus.INACTIVE);
 	}
 
 }

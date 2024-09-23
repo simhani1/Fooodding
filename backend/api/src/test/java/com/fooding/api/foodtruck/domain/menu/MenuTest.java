@@ -1,4 +1,4 @@
-package com.fooding.api.foodtruck.domain.menu;
+package com.fooding.api.foodtruck.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,19 +11,20 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.fooding.api.foodtruck.domain.FoodCategory;
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.domain.FoodTruckInfo;
+import com.fooding.api.foodtruck.domain.FoodCategory;
+import com.fooding.api.foodtruck.domain.menu.Menu;
 import com.fooding.api.foodtruck.exception.IllegalMenuNameException;
 import com.fooding.api.foodtruck.exception.IllegalMenuPriceException;
 import com.fooding.api.foodtruck.exception.MenuNameOverFlowException;
-import com.fooding.api.owner.domain.Owner;
+import com.fooding.api.member.domain.Member;
 
 @ExtendWith(MockitoExtension.class)
 class MenuTest {
 
 	@Mock
-	private Owner owner;
+	private Member member;
 
 	private FoodTruck foodTruck;
 	private FoodTruckInfo foodTruckInfo;
@@ -39,7 +40,7 @@ class MenuTest {
 
 		// FoodTruck의 새로운 생성자에 맞게 설정
 		foodTruck = FoodTruck.builder()
-			.owner(owner)
+			.member(member)
 			.info(foodTruckInfo)
 			.build();
 	}

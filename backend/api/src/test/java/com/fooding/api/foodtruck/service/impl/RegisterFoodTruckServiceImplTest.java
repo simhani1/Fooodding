@@ -1,4 +1,4 @@
-package com.fooding.api.foodtruck.service;
+package com.fooding.api.foodtruck.service.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -16,10 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
-import com.fooding.api.foodtruck.service.impl.FoodTruckQueryServiceImpl;
-import com.fooding.api.owner.domain.Owner;
-import com.fooding.api.owner.domain.Provider;
-import com.fooding.api.owner.repository.OwnerRepository;
+import com.fooding.api.member.domain.Member;
+import com.fooding.api.member.domain.Provider;
+import com.fooding.api.member.repository.MemberRepository;
 
 @ExtendWith(MockitoExtension.class)
 class RegisterFoodTruckServiceImplTest {
@@ -31,15 +30,15 @@ class RegisterFoodTruckServiceImplTest {
 	private FoodTruckRepository foodTruckRepository;
 
 	@Mock
-	private OwnerRepository ownerRepository;
+	private MemberRepository memberRepository;
 
 	@DisplayName("푸드트럭 등록에 성공한다.")
 	@Test
 	void registerFoodTruckSuccess() {
 		// given
-		Long ownerId = 1L;
+		Long memberId = 1L;
 
-		Owner owner = Owner.builder()
+		Member member = Member.builder()
 			.ages("20-30")
 			.gender("MALE")
 			.nickname("nickname")
@@ -54,11 +53,11 @@ class RegisterFoodTruckServiceImplTest {
 			.build();
 
 		// when
-		when(ownerRepository.findById(anyLong())).thenReturn(Optional.of(owner));
+		when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
 		when(foodTruckRepository.save(any(FoodTruck.class))).thenReturn(any(FoodTruck.class));
 
 		// then
-		assertDoesNotThrow(() -> foodTruckQueryServiceImpl.registerFoodTruck(ownerId, dto));
+		assertDoesNotThrow(() -> foodTruckQueryServiceImpl.registerFoodTruck(memberId, dto));
 		verify(foodTruckRepository, times(1)).save(any(FoodTruck.class));
 	}
 

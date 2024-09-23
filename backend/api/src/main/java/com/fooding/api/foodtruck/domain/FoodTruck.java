@@ -7,7 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fooding.api.foodtruck.domain.menu.Menu;
-import com.fooding.api.owner.domain.Owner;
+import com.fooding.api.member.domain.Member;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -38,8 +38,8 @@ public class FoodTruck {
 	private Long id;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "owner_id")
-	private Owner owner;
+	@JoinColumn(name = "member_id")
+	private Member member;
 
 	@Embedded
 	@AttributeOverride(name = "licenseNumber", column = @Column(name = "license_number", nullable = false))
@@ -56,8 +56,8 @@ public class FoodTruck {
 	private LocalDateTime createdAt;
 
 	@Builder
-	public FoodTruck(Owner owner, FoodTruckInfo info) {
-		this.owner = owner;
+	public FoodTruck(Member member, FoodTruckInfo info) {
+		this.member = member;
 		this.info = info;
 	}
 

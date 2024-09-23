@@ -10,9 +10,9 @@ import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.repository.custom.FoodTruckRepositoryCustom;
 import com.fooding.api.foodtruck.service.FoodTruckQueryService;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
-import com.fooding.api.owner.domain.Owner;
-import com.fooding.api.owner.exception.NoOwnerException;
-import com.fooding.api.owner.repository.OwnerRepository;
+import com.fooding.api.member.domain.Member;
+import com.fooding.api.member.exception.NoMemberException;
+import com.fooding.api.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,16 +23,16 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 class FoodTruckQueryServiceImpl implements FoodTruckQueryService {
 
-	private final OwnerRepository ownerRepository;
+	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
 	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
 
 	@Override
 	public void registerFoodTruck(Long ownerId, FoodTruckDto dto) {
-		Owner owner = ownerRepository.findById(ownerId)
-			.orElseThrow(() -> new NoOwnerException("Owner not found with ID: " + ownerId));
+		Member member = memberRepository.findById(ownerId)
+			.orElseThrow(() -> new NoMemberException("Owner not found with ID: " + ownerId));
 		FoodTruck foodTruck = FoodTruck.builder()
-			.owner(owner)
+			.member(member)
 			.info(FoodTruckInfo.builder()
 				.name(dto.name())
 				.category(FoodCategory.valueOf(dto.category()))
@@ -45,9 +45,9 @@ class FoodTruckQueryServiceImpl implements FoodTruckQueryService {
 
 	@Override
 	public void updateFoodTruck(Long ownerId, FoodTruckDto dto) {
-		Owner owner = ownerRepository.findById(ownerId)
-			.orElseThrow(() -> new NoOwnerException("Owner not found with ID: " + ownerId));
-		FoodTruck foodTruck = foodTruckRepositoryCustom.findByOwner(owner);
+		Member member = memberRepository.findById(ownerId)
+			.orElseThrow(() -> new NoMemberException("Owner not found with ID: " + ownerId));
+		FoodTruck foodTruck = foodTruckRepositoryCustom.findByOwner(member);
 		foodTruck.updateInfo(FoodTruckInfo.builder()
 			.name(dto.name())
 			.licenseNumber(dto.licenseNumber())

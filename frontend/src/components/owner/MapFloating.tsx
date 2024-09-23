@@ -12,7 +12,7 @@ const MapFloating = () => {
 	return (
 		<div
 			id="section-floating"
-			className="w-80 p-4 absolute right-8 top-8 rounded-lg shadow-sm"
+			className="p-4 rounded-lg shadow-sm w-80"
 		>
 			<div className="flex justify-center">
 				<div
@@ -37,12 +37,12 @@ const MapFloating = () => {
 
 			{/* active === congestion일 때 토글 */}
 			{active === "congestion" && (
-				<div className="flex flex-wrap pt-4 gap-x-20 gap-y-2 text-xl font-semibold">
+				<div className="flex flex-wrap pt-4 text-xl font-semibold gap-x-20 gap-y-2">
 					<div className="flex items-center">
 						<Circle
 							size={24}
 							weight="fill"
-							className="text-red mr-2"
+							className="mr-2 text-red"
 						/>
 						<span>붐빔</span>
 					</div>
@@ -50,7 +50,7 @@ const MapFloating = () => {
 						<Circle
 							size={24}
 							weight="fill"
-							className="text-yellow mr-2"
+							className="mr-2 text-yellow"
 						/>
 						<span>약간 붐빔</span>
 					</div>
@@ -58,7 +58,7 @@ const MapFloating = () => {
 						<Circle
 							size={24}
 							weight="fill"
-							className="text-green mr-2"
+							className="mr-2 text-green"
 						/>
 						<span>보통</span>
 					</div>
@@ -66,7 +66,7 @@ const MapFloating = () => {
 						<Circle
 							size={24}
 							weight="fill"
-							className="text-blue mr-2"
+							className="mr-2 text-blue"
 						/>
 						<span>여유</span>
 					</div>

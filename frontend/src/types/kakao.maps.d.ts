@@ -3,16 +3,28 @@ declare namespace kakao.maps {
 		constructor(lat: number, lng: number);
 	}
 
+	class LatLngBounds {
+		extend(point: LatLng): void;
+		contains(point: LatLng): boolean;
+		containsBounds(bounds: LatLngBounds): boolean;
+		getCenter(): LatLng;
+	}
+
 	class Map {
 		constructor(container: HTMLElement, options: MapOptions);
 		setCenter(latlng: LatLng): void;
 		getCenter(): LatLng;
+		setBounds(bounds: LatLngBounds);
+		getBounds(): LatLngBounds;
+		setZoomable(zoomable: boolean): void;
+		setDraggable(draggable: boolean): void;
 		panTo(latlng: LatLng): void;
 	}
 
 	interface MapOptions {
 		center: LatLng;
 		level: number;
-		// 필요한 다른 옵션 속성들을 여기에 정의합니다.
+		draggable?: boolean;
+		zoomable?: boolean;
 	}
 }

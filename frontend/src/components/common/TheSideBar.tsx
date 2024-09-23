@@ -15,10 +15,10 @@ const TheSideBar = () => {
 	return (
 		<div
 			id="header"
-			className="fixed bg-gradient-to-b from-main to-boss h-screen w-48 pb-12 inline-block"
+			className="fixed z-10 inline-block h-screen pb-12 bg-gradient-to-b from-main to-boss w-44"
 		>
-			<div className="h-full flex flex-col items-center justify-between">
-				<div className="logo w-24 h-24 my-12 rounded-full overflow-hidden bg-white flex items-center justify-center">
+			<div className="flex flex-col items-center justify-between h-full">
+				<div className="flex items-center justify-center w-24 h-24 my-12 overflow-hidden bg-white rounded-full logo">
 					<img
 						src={logo}
 						alt="fooodding"

@@ -6,4 +6,8 @@ declare global {
 	}
 }
 
+declare module "*.json" {
+	const value: any;
+}
+
 export {}; // 모듈로 인식되도록 함

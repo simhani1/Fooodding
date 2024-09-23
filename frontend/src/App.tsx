@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 
 import OwnerMain from "@pages/owner/OwnerMain";
 import OwnerPage from "@pages/owner/OwnerPage";
+import OwnerMap from "@pages/owner/OwnerMap";
 import OwnerMenu from "@pages/owner/OwnerMenu";
 import FoodTruckCreate from "@pages/owner/FoodTruckCreate";
 import OwnerFoodTruck from "@pages/owner/OwnerFoodTruck";
@@ -26,6 +27,14 @@ function App() {
 				<Route
 					path="mypage"
 					element={<OwnerPage />}
+				/>
+				<Route
+					path="map"
+					element={<OwnerMap />}
+				/>
+				<Route
+					path="foodtruck"
+					element={<OwnerFoodTruck />}
 				/>
 				<Route path="foodtruck">
 					<Route

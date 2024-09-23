@@ -2,9 +2,9 @@ const WhiteButton = () => {
 	return (
 		<div
 			id="white-button"
-			className="w-56 p-4 absolute bottom-8 left-8 rounded-lg bg-white border border-solid border-gray shadow-sm"
+			className="absolute w-56 p-4 bg-white border border-solid rounded-lg shadow-sm bottom-8 left-8 border-gray"
 		>
-			<p className="text-3xl text-gray font-bold text-center">서울 전체 보기</p>
+			<p className="text-3xl font-bold text-center text-gray">서울 전체 보기</p>
 		</div>
 	);
 };

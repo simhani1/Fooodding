@@ -30,24 +30,26 @@ const UserMap = () => {
 		setMyLocation();
 
 		// 더미데이터 대신 axios 연결
-		// const exampleTrucks: ITruckInfo[] = [
-		// 	{
-		// 		name: "유니네 오꼬노미야끼",
-		// 		content: "싸피인들 오꼬노미야끼 한입 고?",
-		// 		menu: ["오꼬노미야끼", "야끼소바"],
-		// 		lat: 20.567,
-		// 		lng: 126.979,
-		// 	},
-		// 	{
-		// 		name: "예훈이네 붕어빵",
-		// 		content: "따끈따끈 붕어빵 어서오세요!",
-		// 		menu: ["팥붕어빵", "슈크림붕어빵"],
-		// 		lat: 27.565,
-		// 		lng: 126.978,
-		// 	},
-		// ];
+		const exampleTrucks: ITruckInfo[] = [
+			{
+				name: "유니네 오꼬노미야끼",
+				content: "싸피인들 오꼬노미야끼 한입 고?",
+				menu: ["오꼬노미야끼", "야끼소바"],
+				img: "https://recipe1.ezmember.co.kr/cache/recipe/2015/09/30/9f010965c00c8edd4439e0d1e359c7fe.jpg",
+				lat: 36.567,
+				lng: 126.979,
+			},
+			{
+				name: "예훈이네 붕어빵",
+				content: "따끈따끈 붕어빵 어서오세요!",
+				menu: ["팥붕어빵", "슈크림붕어빵"],
+				img: "https://img.bizthenaum.co.kr/img2022/custard_bread_02.jpg",
+				lat: 36.565,
+				lng: 127.978,
+			},
+		];
 
-		// setTrucks(exampleTrucks);
+		setTrucks(exampleTrucks);
 	}, []);
 
 	// 사용자 현재 위치 가져오기
@@ -103,14 +105,28 @@ const UserMap = () => {
 							key={index}
 							position={{ lat: truck.lat, lng: truck.lng }}
 							onClick={() => handleMarkerClick(truck)}
+							image={{
+								src: "../../assets/foodtruckmarker.png", // 마커 이미지 경로
+								size: {
+									width: 24,
+									height: 24,
+								}, // 마커 이미지 크기
+							}}
 						>
 							<div>{truck.name}</div>
 						</MapMarker>
 					))}
 
-					<MapMarker position={currentPosition}>
-						<div>현재 위치</div>
-					</MapMarker>
+					<MapMarker
+						position={currentPosition}
+						image={{
+							src: "@assets/MapMarker.png",
+							size: {
+								width: 32,
+								height: 32,
+							},
+						}}
+					></MapMarker>
 				</Map>
 
 				<div className="absolute z-10 w-full top-24">

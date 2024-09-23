@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import UserTruck from "./UserTuck";
+import UserTruck from "./UserTruck";
 import { UserTruckListProps } from "@interface/foodTruck";
 
 const UserTruckList: React.FC<UserTruckListProps> = ({ onExpandChange, trucks, selectedTruck }) => {

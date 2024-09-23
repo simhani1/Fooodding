@@ -10,6 +10,7 @@ import FoodTruckCreate from "@pages/owner/FoodTruckCreate";
 import OwnerFoodTruck from "@pages/owner/OwnerFoodTruck";
 import FoodTruckEdit from "@pages/owner/FoodTruckEdit";
 import UserMap from "@pages/user/UserMap";
+import UserFoodTruck from "@pages/user/UserFoodTruck";
 
 import "./App.css";
 
@@ -94,10 +95,16 @@ function App() {
 						/>
 					</Route>
 				</Route>
-				<Route
-					path="/user"
-					element={<UserMap />}
-				/>
+				<Route path="/user">
+					<Route
+						path=""
+						element={<UserMap />}
+					/>
+					<Route
+						path="foodtruck"
+						element={<UserFoodTruck />}
+					/>
+				</Route>
 			</Routes>
 		</>
 	);

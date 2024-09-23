@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
+import com.fooding.api.foodtruck.service.impl.FoodTruckQueryServiceImpl;
 import com.fooding.api.owner.domain.Owner;
 import com.fooding.api.owner.domain.Provider;
 import com.fooding.api.owner.repository.OwnerRepository;

@@ -11,9 +11,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fooding.api.foodtruck.domain.FoodCategory;
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.domain.FoodTruckInfo;
-import com.fooding.api.foodtruck.domain.FoodCategory;
 import com.fooding.api.foodtruck.exception.IllegalMenuNameException;
 import com.fooding.api.foodtruck.exception.IllegalMenuPriceException;
 import com.fooding.api.foodtruck.exception.MenuNameOverFlowException;
@@ -53,7 +53,10 @@ class MenuTest {
 	@DisplayName("메뉴 업데이트 성공")
 	@Test
 	void updateMenuSuccess() {
+		// given
 		Menu menu = new Menu("종한이의 닭꼬치", 5000, "chicken_skewer.jpg", foodTruck);
+
+		// when & then
 		assertDoesNotThrow(() -> menu.update("새로운 닭꼬치", 6000, "new_chicken_skewer.jpg"));
 		assertEquals("새로운 닭꼬치", menu.getName());
 		assertEquals(6000, menu.getPrice());
@@ -63,7 +66,10 @@ class MenuTest {
 	@DisplayName("메뉴 업데이트 시 이름이 null일 때 IllegalMenuNameException 발생")
 	@Test
 	void updateMenuWithNullName() {
+		//given
 		Menu menu = new Menu("종한이의 닭꼬치", 5000, "chicken_skewer.jpg", foodTruck);
+
+		// when & then
 		assertThrows(IllegalMenuNameException.class, () -> menu.update(null, 6000, "new_chicken_skewer.jpg"));
 	}
 
@@ -71,7 +77,10 @@ class MenuTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"", "   ", "ThisNameIsWayTooLongForAMenu"})
 	void updateMenuWithInvalidName(String invalidName) {
+		// given
 		Menu menu = new Menu("종한이의 닭꼬치", 5000, "chicken_skewer.jpg", foodTruck);
+
+		// when & then
 		assertThrows(MenuNameOverFlowException.class, () -> menu.update(invalidName, 6000, "new_chicken_skewer.jpg"));
 	}
 
@@ -79,7 +88,12 @@ class MenuTest {
 	@ParameterizedTest
 	@ValueSource(ints = {-1, 10000000})
 	void updateMenuWithInvalidPrice(int invalidPrice) {
+		// given
 		Menu menu = new Menu("종한이의 닭꼬치", 5000, "chicken_skewer.jpg", foodTruck);
-		assertThrows(IllegalMenuPriceException.class, () -> menu.update("새로운 닭꼬치", invalidPrice, "new_chicken_skewer.jpg"));
+
+		// when & then
+		assertThrows(
+			IllegalMenuPriceException.class, () -> menu.update("새로운 닭꼬치", invalidPrice, "new_chicken_skewer.jpg"));
 	}
+
 }

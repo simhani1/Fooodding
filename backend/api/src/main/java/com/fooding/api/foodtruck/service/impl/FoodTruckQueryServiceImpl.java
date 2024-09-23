@@ -1,4 +1,4 @@
-package com.fooding.api.foodtruck.service;
+package com.fooding.api.foodtruck.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +8,7 @@ import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.domain.FoodTruckInfo;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.repository.custom.FoodTruckRepositoryCustom;
+import com.fooding.api.foodtruck.service.FoodTruckQueryService;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
 import com.fooding.api.owner.domain.Owner;
 import com.fooding.api.owner.exception.NoOwnerException;

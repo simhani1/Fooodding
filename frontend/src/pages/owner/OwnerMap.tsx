@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Map, MapMarker, Polygon } from "react-kakao-maps-sdk";
+import { Map, Polygon } from "react-kakao-maps-sdk";
 
 import TheSideBar from "@components/common/TheSideBar";
 import seoulPath from "@utils/seoul-si-path.json";
@@ -7,7 +7,7 @@ import gooPath from "@utils/seoul-goo-path.json";
 
 const OwnerMap = () => {
 	const [map, setMap] = useState<any>();
-	const [level, setLevel] = useState(8);
+	const [level] = useState(8);
 	const [outer, setOuter] = useState<any>([]);
 	// const [goo, setGoo] = useState<any>();
 	// const [dong, setDong] = useState<any>();

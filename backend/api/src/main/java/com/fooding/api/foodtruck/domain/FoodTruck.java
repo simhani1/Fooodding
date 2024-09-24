@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fooding.api.foodtruck.domain.commerce.CommerceInfo;
+import com.fooding.api.foodtruck.domain.commerce.OpenStatus;
 import com.fooding.api.foodtruck.domain.menu.Menu;
 import com.fooding.api.member.domain.Member;
 
@@ -82,4 +83,9 @@ public class FoodTruck {
 	public void updateInfo(FoodTruckInfo info) {
 		this.info = info;
 	}
+
+	public boolean isClosed() {
+		return this.commerceInfo.getOpenStatus().equals(OpenStatus.CLOSED);
+	}
+	
 }

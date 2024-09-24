@@ -12,11 +12,8 @@ import com.fooding.api.infra.oauth.dto.NaverMemberInfo;
 @Component
 public class NaverAuthClient {
 
-	@Value("${naver.loginurl}")
-	private String loginUrl;
-
-	@Value("${naver.secret.key}")
-	private String NAVER_SECRET;
+	@Value("${naver.login-url}")
+	private String LOGIN_URL;
 
 	/**
 	 * 네이버 유저 정보 가져오기
@@ -26,7 +23,7 @@ public class NaverAuthClient {
 		WebClient webClient = WebClient.builder().build();
 
 		String response = webClient.get()
-			.uri(loginUrl)
+			.uri(LOGIN_URL)
 			.header("Authorization", "Bearer " + accessToken)
 			.retrieve()
 			.bodyToMono(String.class)

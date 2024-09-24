@@ -47,8 +47,7 @@ jwt:
 naver:
   secret:
     key: ${NAVER_SECRET_KEY}
-  loginurl: ${NAVER_LOGIN_URL}
-  logouturl: ${NAVER_LOGOUT_URL}
+  login-url: ${NAVER_LOGIN_URL}
 
 cloud:
   aws:

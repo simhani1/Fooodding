@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fooding.api.foodtruck.domain.commerce.CommerceInfo;
 import com.fooding.api.foodtruck.domain.menu.Menu;
 import com.fooding.api.member.domain.Member;
 
@@ -51,18 +52,34 @@ public class FoodTruck {
 	@OneToMany(mappedBy = "foodTruck")
 	private List<Menu> menuList = new ArrayList<>();
 
+	@Embedded
+	@AttributeOverride(name = "openStatus", column = @Column(name = "open_status", nullable = false))
+	@AttributeOverride(name = "openedAt", column = @Column(name = "opened_at"))
+	@AttributeOverride(name = "closedAt", column = @Column(name = "closed_at"))
+	@AttributeOverride(name = "latitude", column = @Column(name = "latitude"))
+	@AttributeOverride(name = "longitude", column = @Column(name = "longitude"))
+	private CommerceInfo commerceInfo;
+
 	@CreationTimestamp
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
 	@Builder
-	public FoodTruck(Member member, FoodTruckInfo info) {
+	public FoodTruck(Member member, FoodTruckInfo info, CommerceInfo commerceInfo) {
 		this.member = member;
 		this.info = info;
+		this.commerceInfo = commerceInfo;
+	}
+
+	public void open(Double latitude, Double longitude) {
+		this.commerceInfo = CommerceInfo.getOpened(latitude, longitude);
+	}
+
+	public void close(CommerceInfo commerceInfo) {
+		this.commerceInfo = CommerceInfo.getClosed(commerceInfo);
 	}
 
 	public void updateInfo(FoodTruckInfo info) {
 		this.info = info;
 	}
-
 }

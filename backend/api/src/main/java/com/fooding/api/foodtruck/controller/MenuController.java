@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/menu")
 @RestController
-public class MenuController extends FoodTruckController {
+public class MenuController {
 
 	private final MenuFacade menuFacade;
 	private final MenuQueryService menuQueryService;

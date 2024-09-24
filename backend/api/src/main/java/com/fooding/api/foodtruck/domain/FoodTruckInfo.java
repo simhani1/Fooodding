@@ -7,6 +7,8 @@ import com.fooding.api.foodtruck.exception.IllegalLicenseNumberException;
 import com.fooding.api.foodtruck.exception.LicenseNumberOverflowException;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +25,7 @@ public class FoodTruckInfo {
 
 	private String introduction;
 
+	@Enumerated(EnumType.STRING)
 	private FoodCategory category;
 
 	@Builder

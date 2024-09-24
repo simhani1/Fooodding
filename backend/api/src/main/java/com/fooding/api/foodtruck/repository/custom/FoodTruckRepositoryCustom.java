@@ -2,6 +2,8 @@ package com.fooding.api.foodtruck.repository.custom;
 
 import static com.fooding.api.foodtruck.domain.QFoodTruck.*;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
 import com.fooding.api.foodtruck.domain.FoodTruck;
@@ -16,11 +18,11 @@ public class FoodTruckRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
-	public FoodTruck findByOwner(Member owner) {
-		return queryFactory
+	public Optional<FoodTruck> findByOwner(Member owner) {
+		return Optional.ofNullable(queryFactory
 			.selectFrom(foodTruck)
 			.where(foodTruck.member.eq(owner))
-			.fetchOne();
+			.fetchOne());
 	}
 
 }

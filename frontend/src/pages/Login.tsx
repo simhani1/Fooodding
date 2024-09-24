@@ -18,6 +18,7 @@ const Login = () => {
 					<User
 						size={120}
 						color="#F27387"
+						className="sm:w-16"
 					/>
 				</LoginCard>
 				<LoginCard
@@ -27,6 +28,7 @@ const Login = () => {
 					<Users
 						size={120}
 						color="#CF69A3"
+						className="sm:w-16"
 					/>
 				</LoginCard>
 			</div>

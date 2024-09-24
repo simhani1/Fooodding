@@ -31,6 +31,12 @@ export default {
 				244: "61rem",
 				300: "75rem",
 			},
+			screens: {
+				sm: { max: "479px" },
+				md: { min: "480px", max: "1023px" },
+				lg: { min: "1024px", max: "1399px" },
+				xl: { min: "1400px" },
+			},
 		},
 	},
 	plugins: [require("tailwind-scrollbar-hide")],

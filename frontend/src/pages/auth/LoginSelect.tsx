@@ -13,7 +13,7 @@ const LoginSelect = () => {
 			role === "owner"
 				? import.meta.env.VITE_NAVER_OWNER_CALLBACK_URL
 				: import.meta.env.VITE_NAVER_USER_CALLBACK_URL,
-		isPopup: false,
+		isPopup: true,
 		loginButton: {
 			color: "green",
 			type: 3,
@@ -29,7 +29,7 @@ const LoginSelect = () => {
 			<div className="mx-auto h-1/3">
 				<div
 					id="naverIdLogin"
-					className="w-96"
+					className="w-120 sm:w-64"
 				/>
 			</div>
 		</LoginContainer>

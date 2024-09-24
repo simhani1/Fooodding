@@ -48,6 +48,7 @@ public class Member {
 	@Column(name = "provider", nullable = false)
 	private Provider provider;
 
+	@Enumerated(value = EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private MemberStatus status;
 

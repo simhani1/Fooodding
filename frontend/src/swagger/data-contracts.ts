@@ -10,22 +10,22 @@
  */
 
 export interface FoodTruckReq {
-  licenseNumber: string;
-  name: string;
-  introduction?: string;
-  category: string;
+	licenseNumber: string;
+	name: string;
+	introduction?: string;
+	category: string;
 }
 
 export interface BaseResponseObject {
-  code?: string;
-  message?: string;
-  data?: object;
-  isSuccess?: boolean;
+	code?: string;
+	message?: string;
+	data?: object;
+	isSuccess?: boolean;
 }
 
 export interface MenuReq {
-  name?: string;
-  /** @format int32 */
-  price?: number;
-  onSale?: boolean;
+	name?: string;
+	/** @format int32 */
+	price?: number;
+	onSale?: boolean;
 }

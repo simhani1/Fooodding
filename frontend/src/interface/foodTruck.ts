@@ -24,8 +24,13 @@ export interface ITruckInfoDetail {
 	id: number;
 	name: string;
 	content: string;
+	isReserved: boolean;
 	img?: string;
-	menuList: IMenuInfo[];
+	menuList?: IMenuInfo[];
+}
+
+export interface ITruckInfoProps {
+	truck: ITruckInfoDetail;
 }
 
 export interface IMenuInfo {
@@ -35,5 +40,5 @@ export interface IMenuInfo {
 }
 
 export interface IMenuProps {
-	menuList: IMenuInfo[];
+	menuList?: IMenuInfo[];
 }

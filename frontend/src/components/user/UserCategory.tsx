@@ -14,7 +14,7 @@ const UserCategory = () => {
 	};
 
 	const labelClassName = (value: string) =>
-		`flex items-center justify-center px-4 py-2 transition duration-200 bg-white rounded-full cursor-pointer 
+		`flex items-center justify-center px-4 py-2 transition duration-200 bg-white rounded-md cursor-pointer 
 		${selectedCategories.includes(value) ? "border-solid border border-main text-main" : "border-solid border border-gray text-gray"}`;
 
 	const textClassName = "text-sm font-semibold";

@@ -20,7 +20,7 @@ function App() {
 
 	return (
 		<>
-			{/* <div className="flex gap-5 m-10">
+			<div className="flex gap-5 m-10">
 				<button
 					className="text-xl border-b border-black border-solid"
 					onClick={() => nav("/")}
@@ -45,7 +45,7 @@ function App() {
 				>
 					유저 메인 페이지
 				</button>
-			</div> */}
+			</div>
 
 			<Routes>
 				<Route

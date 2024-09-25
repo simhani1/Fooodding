@@ -11,6 +11,7 @@ import com.fooding.api.foodtruck.domain.commerce.OpenStatus;
 import com.fooding.api.foodtruck.domain.menu.Menu;
 import com.fooding.api.member.domain.Member;
 
+import io.jsonwebtoken.lang.Assert;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -55,8 +56,8 @@ public class FoodTruck {
 
 	@Embedded
 	@AttributeOverride(name = "openStatus", column = @Column(name = "open_status", nullable = false))
-	@AttributeOverride(name = "openedAt", column = @Column(name = "opened_at"))
-	@AttributeOverride(name = "closedAt", column = @Column(name = "closed_at"))
+	@AttributeOverride(name = "openedAt", column = @Column(name = "opened_at", nullable = false))
+	@AttributeOverride(name = "closedAt", column = @Column(name = "closed_at", nullable = false))
 	@AttributeOverride(name = "latitude", column = @Column(name = "latitude"))
 	@AttributeOverride(name = "longitude", column = @Column(name = "longitude"))
 	private CommerceInfo commerceInfo;
@@ -67,6 +68,10 @@ public class FoodTruck {
 
 	@Builder
 	public FoodTruck(Member member, FoodTruckInfo info, CommerceInfo commerceInfo) {
+		Assert.notNull(member, "member must not be null");
+		Assert.notNull(info, "info must not be null");
+		Assert.notNull(commerceInfo, "commerceInfo must not be null");
+
 		this.member = member;
 		this.info = info;
 		this.commerceInfo = commerceInfo;
@@ -87,5 +92,5 @@ public class FoodTruck {
 	public boolean isClosed() {
 		return this.commerceInfo.getOpenStatus().equals(OpenStatus.CLOSED);
 	}
-	
+
 }

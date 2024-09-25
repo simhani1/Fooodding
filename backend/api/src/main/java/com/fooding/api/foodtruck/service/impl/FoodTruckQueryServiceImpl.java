@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fooding.api.foodtruck.domain.FoodCategory;
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.domain.FoodTruckInfo;
+import com.fooding.api.foodtruck.domain.commerce.CommerceInfo;
 import com.fooding.api.foodtruck.exception.NoFoodTruckException;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.service.FoodTruckQueryService;
@@ -38,6 +39,7 @@ class FoodTruckQueryServiceImpl implements FoodTruckQueryService {
 				.introduction(dto.introduction())
 				.licenseNumber(dto.licenseNumber())
 				.build())
+			.commerceInfo(CommerceInfo.ofNew())
 			.build();
 		foodTruckRepository.save(foodTruck);
 	}

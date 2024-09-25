@@ -23,12 +23,11 @@ class MenuQueryServiceImpl implements MenuQueryService {
 	private final MenuRepository menuRepository;
 
 	@Override
-	public void registerMenu(MenuDto dto) {
-		// TODO: owenr id로 푸드트럭을 조회해야 한다.
-		FoodTruck foodtruck = foodTruckRepository.findById(null)
-			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found with ID: " + null));
+	public void registerMenu(Long foodTruckId, MenuDto dto) {
+		FoodTruck foodTruck = foodTruckRepository.findById(foodTruckId)
+			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found for Member with ID: " + foodTruckId));
 		Menu menu = Menu.builder()
-			.foodTruck(foodtruck)
+			.foodTruck(foodTruck)
 			.name(dto.name())
 			.price(dto.price())
 			.img(dto.img())
@@ -37,7 +36,9 @@ class MenuQueryServiceImpl implements MenuQueryService {
 	}
 
 	@Override
-	public void updateMenu(Long menuId, MenuDto dto) {
+	public void updateMenu(Long foodTruckId, Long menuId, MenuDto dto) {
+		FoodTruck foodTruck = foodTruckRepository.findById(foodTruckId)
+			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found for Member with ID: " + foodTruckId));
 		Menu menu = menuRepository.findById(menuId)
 			.orElseThrow(() -> new NoMenuException("Menu not found with ID: " + menuId));
 		menu.update(dto.name(), dto.price(), dto.img());

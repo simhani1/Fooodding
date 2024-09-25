@@ -34,20 +34,22 @@ public class MenuController {
 	private final MenuQueryService menuQueryService;
 	private final MenuCommandService menuCommandService;
 
-	@PostMapping(value = "/menu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "/{ft-id}/menu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<BaseResponse<?>> registerMenu(
+		@PathVariable("ft-id") long foodTruckId,
 		@RequestPart("req") MenuReq req,
 		@RequestPart(value = "menuImg", required = false) MultipartFile menuImg) {
-		menuFacade.registerMenu(req, menuImg);
+		menuFacade.registerMenu(foodTruckId, req, menuImg);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
-	@PatchMapping(value = "/menu/{menu-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PatchMapping(value = "/{ft-id}/menu/{menu-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<BaseResponse<?>> updateMenu(
+		@PathVariable("ft-id") long foodTruckId,
 		@PathVariable("menu-id") Long menuId,
 		@RequestPart("req") MenuReq req,
 		@RequestPart(value = "menuImg", required = false) MultipartFile menuImg) {
-		menuFacade.updateMenu(menuId, req, menuImg);
+		menuFacade.updateMenu(foodTruckId, menuId, req, menuImg);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 

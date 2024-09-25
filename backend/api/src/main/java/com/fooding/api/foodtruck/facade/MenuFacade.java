@@ -21,18 +21,18 @@ public class MenuFacade {
 	private final MenuQueryService menuQueryService;
 	private final StringHttpMessageConverter stringHttpMessageConverter;
 
-	public void registerMenu(MenuReq req, MultipartFile menuImg) {
+	public void registerMenu(Long foodTruckId, MenuReq req, MultipartFile menuImg) {
 		String imgUrl = getImgUrl(menuImg);
-		menuQueryService.registerMenu(MenuDto.builder()
+		menuQueryService.registerMenu(foodTruckId, MenuDto.builder()
 			.name(req.name())
 			.price(req.price())
 			.img(imgUrl)
 			.build());
 	}
 
-	public void updateMenu(Long menuId, MenuReq req, MultipartFile menuImg) {
+	public void updateMenu(Long foodTruckId, Long menuId, MenuReq req, MultipartFile menuImg) {
 		String imgUrl = getImgUrl(menuImg);
-		menuQueryService.updateMenu(menuId, MenuDto.builder()
+		menuQueryService.updateMenu(foodTruckId, menuId, MenuDto.builder()
 			.name(req.name())
 			.price(req.price())
 			.img(imgUrl)

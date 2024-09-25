@@ -4,9 +4,9 @@ import com.fooding.api.foodtruck.service.dto.MenuDto;
 
 public interface MenuQueryService {
 
-	void registerMenu(MenuDto dto);
+	void registerMenu(Long memberId, MenuDto dto);
 
-	void updateMenu(Long menuId, MenuDto dto);
+	void updateMenu(Long foodTruckId, Long menuId, MenuDto dto);
 
 	void deleteMenu(Long menuId);
 }

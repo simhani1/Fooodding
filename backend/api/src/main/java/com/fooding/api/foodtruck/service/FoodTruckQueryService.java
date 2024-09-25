@@ -6,6 +6,6 @@ public interface FoodTruckQueryService {
 
 	void registerFoodTruck(Long memberId, FoodTruckDto dto);
 
-	void updateFoodTruck(Long memberId, FoodTruckDto dto);
+	void updateFoodTruck(Long foodTruckId, FoodTruckDto dto);
 
 }

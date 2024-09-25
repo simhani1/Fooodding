@@ -20,8 +20,7 @@
 			"@interface/*": ["interface/*"],
 			"@pages/*": ["pages/*"],
 			"@store/*": ["store/*"],
-			"@utils/*": ["utils/*"],
-			"@swagger/*": ["swagger/*"]
+			"@utils/*": ["utils/*"]
 		}
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json", "src/types"],

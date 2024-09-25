@@ -8,3 +8,7 @@ export interface IWaitingInfo {
 export interface IWaitingProps {
 	waitingInfo: IWaitingInfo;
 }
+
+export interface IOrderingProps {
+	callTime: string;
+}

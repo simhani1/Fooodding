@@ -27,18 +27,21 @@ function App() {
 				>
 					로그인
 				</button>
+
 				<button
 					className="text-xl border-b border-black border-solid"
 					onClick={() => nav("/owner/mypage")}
 				>
 					사장님 마이페이지
 				</button>
+
 				<button
 					className="text-xl border-b border-black border-solid"
 					onClick={() => nav("/owner/map")}
 				>
 					사장님 지도페이지
 				</button>
+
 				<button
 					className="text-xl border-b border-black border-solid"
 					onClick={() => nav("/user")}

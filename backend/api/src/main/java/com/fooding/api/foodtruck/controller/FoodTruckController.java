@@ -51,7 +51,7 @@ public class FoodTruckController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<BaseResponse<FoodTruckDto>> getAllFoodTrucks(@RequestParam("ft-id") Long foodTruckId) {
+	public ResponseEntity<BaseResponse<FoodTruckDto>> getFoodTruckDetail(@RequestParam("ft-id") Long foodTruckId) {
 		return ResponseEntity.ok(BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetail(foodTruckId)));
 	}
 

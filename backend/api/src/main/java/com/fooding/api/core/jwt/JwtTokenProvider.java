@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import com.fooding.api.core.jwt.dto.JwtToken;
 import com.fooding.api.core.jwt.exception.UnAuthorizedException;
 import com.fooding.api.core.jwt.exception.UnSupportedJwtException;
-import com.fooding.api.member.domain.Member;
 import com.fooding.api.member.domain.MemberRole;
 
 import io.jsonwebtoken.Claims;
@@ -34,10 +33,10 @@ public class JwtTokenProvider {
 	private String SECRET_KEY;
 
 	@Value("${jwt.access-token.expiretime}")
-	private int ACCESS_TOKEN_EXPRIATION_TIME;
+	private Integer ACCESS_TOKEN_EXPRIATION_TIME;
 
 	@Value("${jwt.refresh-token.expiretime}")
-	private int REFRESH_TOKEN_EXPIRATION_TIME;
+	private Integer REFRESH_TOKEN_EXPIRATION_TIME;
 
 	public JwtToken createToken(Long memberId, MemberRole role) {
 		String accessToken = createAccessToken(memberId, role);
@@ -48,6 +47,7 @@ public class JwtTokenProvider {
 			REFRESH_TOKEN_EXPIRATION_TIME,
 			TimeUnit.MILLISECONDS
 		);
+
 		return JwtToken.builder().accessToken(accessToken).refreshToken(refreshToken).build();
 	}
 

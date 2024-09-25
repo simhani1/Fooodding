@@ -1,6 +1,5 @@
 package com.fooding.api.member.service.impl;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fooding.api.core.jwt.JwtTokenProvider;
@@ -18,9 +17,6 @@ import lombok.RequiredArgsConstructor;
 class ReissueTokenServiceImpl implements ReissueTokenService {
 
 	private final JwtTokenProvider jwtTokenProvider;
-
-	@Value("${jwt.refresh-token.expiretime}")
-	private int REFRESH_TOKEN_EXPIRATION_TIME;
 
 	@Override
 	public ReissueDto reissueToken(String refreshToken, String role) {

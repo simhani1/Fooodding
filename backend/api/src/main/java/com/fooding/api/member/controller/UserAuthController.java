@@ -1,5 +1,6 @@
 package com.fooding.api.member.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,8 @@ import com.fooding.api.member.service.ReissueTokenService;
 import com.fooding.api.member.service.dto.LoginDto;
 import com.fooding.api.member.service.dto.ReissueDto;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/users")
@@ -25,22 +28,40 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class UserAuthController extends MemberAuthController {
 
+	private static final String REFRESH_TOKEN = "refreshToken";
 	private final AuthService authService;
 	private final ReissueTokenService reissueTokenService;
+	@Value("${jwt.refresh-token.expiretime}")
+	private Integer REFRESH_TOKEN_EXPIRATION_TIME;
 
 	/* 로그인 진행 */
 	@PostMapping("/login/naver")
-	public ResponseEntity<BaseResponse<LoginDto>> naverLogin(@RequestBody NaverLoginReq req) {
+	public ResponseEntity<BaseResponse<LoginDto>> naverLogin(@RequestBody NaverLoginReq req, HttpServletResponse response) {
 		LoginDto res = authService.naverLogin(req.accessToken(), req.role());
+
+		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, res.refreshToken());
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(true);
+		refreshTokenCookie.setPath("/");
+		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
+
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 
 	/* 로그아웃 진행 */
 	@RequireJwtToken
 	@PostMapping("/logout")
-	public ResponseEntity<BaseResponse<?>> logout(@RequestBody LogoutReq req) {
+	public ResponseEntity<BaseResponse<?>> logout(@RequestBody LogoutReq req, HttpServletResponse response) {
 		Long userId = MemberContext.getMemberId();
 		authService.logout(userId, req.refreshToken());
+
+		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, null);
+		refreshTokenCookie.setMaxAge(0);
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(true);
+		refreshTokenCookie.setPath("/");
+		response.addCookie(refreshTokenCookie);
+
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
@@ -54,8 +75,16 @@ public class UserAuthController extends MemberAuthController {
 	}
 
 	@PostMapping("/reissue")
-	public ResponseEntity<BaseResponse<ReissueDto>> reissueToken(@RequestBody ReissueReq req) {
+	public ResponseEntity<BaseResponse<ReissueDto>> reissueToken(@RequestBody ReissueReq req, HttpServletResponse response) {
 		ReissueDto newToken = reissueTokenService.reissueToken(req.refreshToken(), req.role());
+
+		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, newToken.refreshToken());
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(true);
+		refreshTokenCookie.setPath("/");
+		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
+		response.addCookie(refreshTokenCookie);
+
 		return ResponseEntity.ok(BaseResponse.ofSuccess(newToken));
 	}
 

@@ -3,10 +3,10 @@ package com.fooding.api.member.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fooding.api.infra.oauth.dto.NaverMemberInfo;
-import com.fooding.api.infra.oauth.client.NaverAuthClient;
 import com.fooding.api.core.jwt.JwtTokenProvider;
 import com.fooding.api.core.jwt.dto.JwtToken;
+import com.fooding.api.infra.oauth.client.NaverAuthClient;
+import com.fooding.api.infra.oauth.dto.NaverMemberInfo;
 import com.fooding.api.member.domain.Member;
 import com.fooding.api.member.domain.MemberRole;
 import com.fooding.api.member.domain.Provider;
@@ -45,6 +45,7 @@ class AuthServiceImpl implements AuthService {
 			);
 		/* 로그인 */
 		JwtToken jwtToken = jwtTokenProvider.createToken(member.getId(), MemberRole.valueOf(role));
+
 		return LoginDto.builder()
 			.nickname(member.getNickname())
 			.accessToken(jwtToken.accessToken())

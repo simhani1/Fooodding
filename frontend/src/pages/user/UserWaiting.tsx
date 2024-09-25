@@ -15,6 +15,8 @@ const UserWaiting = () => {
 	});
 
 	const [waitingInfo, setWaitingInfo] = useState<IWaitingInfo>({
+		id: 0,
+		name: "",
 		waitingNumber: 0,
 		peopleNumber: 0,
 		isWaiting: false,
@@ -31,6 +33,8 @@ const UserWaiting = () => {
 		});
 
 		setWaitingInfo({
+			id: 123,
+			name: "",
 			waitingNumber: 286,
 			peopleNumber: 7,
 			isWaiting: true,

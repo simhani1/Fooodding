@@ -1,4 +1,6 @@
 export interface IWaitingInfo {
+	id: number;
+	name: string;
 	waitingNumber: number;
 	peopleNumber: number;
 	isWaiting: boolean;

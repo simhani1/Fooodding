@@ -20,18 +20,20 @@ public class NaverAuthClient {
 	 */
 	public NaverMemberInfo getUserInfo(String accessToken) {
 		NaverMemberInfo userInfo = new NaverMemberInfo();
-		WebClient webClient = WebClient.builder().build();
+		WebClient webClient = WebClient.create(LOGIN_URL);
 
 		String response = webClient.get()
 			.uri(LOGIN_URL)
 			.header("Authorization", "Bearer " + accessToken)
+			.header("Content-type", "application/xml;charset=utf-8")
 			.retrieve()
 			.bodyToMono(String.class)
 			.block();
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			userInfo = objectMapper.readValue(response, new TypeReference<NaverMemberInfo>() {});
+			userInfo = objectMapper.readValue(response, new TypeReference<NaverMemberInfo>() {
+			});
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

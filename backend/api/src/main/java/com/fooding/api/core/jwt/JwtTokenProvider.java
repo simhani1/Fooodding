@@ -33,7 +33,7 @@ public class JwtTokenProvider {
 	private String SECRET_KEY;
 
 	@Value("${jwt.access-token.expiretime}")
-	private Integer ACCESS_TOKEN_EXPRIATION_TIME;
+	private Integer ACCESS_TOKEN_EXPIRATION_TIME;
 
 	@Value("${jwt.refresh-token.expiretime}")
 	private Integer REFRESH_TOKEN_EXPIRATION_TIME;
@@ -60,7 +60,7 @@ public class JwtTokenProvider {
 				.claim("memberId", memberId)
 				.claim("authorities", role.toString())
 				.setExpiration(
-					new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPRIATION_TIME))
+					new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME))
 				.signWith(
 					Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
 				.compact());

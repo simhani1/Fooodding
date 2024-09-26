@@ -23,10 +23,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-@RequestMapping("/owners")
+@RequestMapping("/api/v1/members/auth/owners")
 @RequiredArgsConstructor
 @RestController
-public class OwnerAuthController extends MemberAuthController {
+public class OwnerAuthController {
 
 	private static final String REFRESH_TOKEN = "refreshToken";
 	private final AuthService authService;
@@ -36,7 +36,8 @@ public class OwnerAuthController extends MemberAuthController {
 
 	/* 로그인 진행 */
 	@PostMapping("/login/naver")
-	public ResponseEntity<BaseResponse<LoginDto>> naverLogin(@RequestBody NaverLoginReq req, HttpServletResponse response) {
+	public ResponseEntity<BaseResponse<LoginDto>> naverLogin(@RequestBody NaverLoginReq req,
+		HttpServletResponse response) {
 		LoginDto res = authService.naverLogin(req.accessToken(), req.role());
 
 		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, res.refreshToken());
@@ -76,7 +77,8 @@ public class OwnerAuthController extends MemberAuthController {
 	}
 
 	@PostMapping("/reissue")
-	public ResponseEntity<BaseResponse<ReissueDto>> reissueToken(@RequestBody ReissueReq req, HttpServletResponse response) {
+	public ResponseEntity<BaseResponse<ReissueDto>> reissueToken(@RequestBody ReissueReq req,
+		HttpServletResponse response) {
 		ReissueDto newToken = reissueTokenService.reissueToken(req.refreshToken(), req.role());
 
 		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, newToken.refreshToken());

@@ -25,8 +25,8 @@ public class WaitingController {
 	@RequireJwtToken
 	@PostMapping("/foodtrucks/{ft-id}")
 	public ResponseEntity<BaseResponse<?>> reserve(@PathVariable("ft-id") Long foodTruckId) {
-		Long memberId = MemberContext.getMemberId();
-		waitingQueryService.reserve(foodTruckId, memberId);
+		Long userId = MemberContext.getMemberId();
+		waitingQueryService.reserve(userId, foodTruckId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 

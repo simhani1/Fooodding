@@ -64,6 +64,14 @@ public class Menu {
 		foodTruck.getMenuList().add(this);
 	}
 
+	public void enableSale() {
+		this.onSale = true;
+	}
+
+	public void disableSale() {
+		this.onSale = false;
+	}
+
 	public void update(String name, int price, String img) {
 		checkNameValid(name);
 		checkPriceValid(price);

@@ -77,7 +77,11 @@ public class FoodTruck {
 		this.commerceInfo = commerceInfo;
 	}
 
-	public void open(Double latitude, Double longitude) {
+	public void open(Double latitude, Double longitude, List<Long> unsoldMenuId) {
+		this.menuList.stream()
+			.filter(menu -> unsoldMenuId.contains(menu.getId()))
+			.forEach(Menu::disableSale);
+
 		this.commerceInfo = CommerceInfo.getOpened(latitude, longitude);
 	}
 
@@ -87,6 +91,10 @@ public class FoodTruck {
 
 	public void updateInfo(FoodTruckInfo info) {
 		this.info = info;
+	}
+
+	public boolean isOpened() {
+		return this.commerceInfo.getOpenStatus().equals(OpenStatus.OPENED);
 	}
 
 	public boolean isClosed() {

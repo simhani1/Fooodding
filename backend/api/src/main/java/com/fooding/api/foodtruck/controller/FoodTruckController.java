@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fooding.api.core.template.response.BaseResponse;
+import com.fooding.api.foodtruck.controller.request.CommerceReq;
 import com.fooding.api.foodtruck.controller.request.FoodTruckReq;
+import com.fooding.api.foodtruck.service.CommerceQueryService;
 import com.fooding.api.foodtruck.service.FoodTruckCommandService;
 import com.fooding.api.foodtruck.service.FoodTruckQueryService;
+import com.fooding.api.foodtruck.service.dto.CommerceDto;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ public class FoodTruckController {
 
 	private final FoodTruckQueryService foodTruckQueryService;
 	private final FoodTruckCommandService foodTruckCommandService;
+	private final CommerceQueryService commerceQueryService;
 
 	@PostMapping("")
 	public ResponseEntity<BaseResponse<?>> registerFoodTruck(@RequestBody FoodTruckReq req) {
@@ -53,6 +57,18 @@ public class FoodTruckController {
 	@GetMapping("")
 	public ResponseEntity<BaseResponse<FoodTruckDto>> getFoodTruckDetail(@RequestParam("ft-id") Long foodTruckId) {
 		return ResponseEntity.ok(BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetail(foodTruckId)));
+	}
+
+	@PatchMapping("/{ft-id}/open")
+	public ResponseEntity<BaseResponse<?>> openFoodTruck(
+		@PathVariable("ft-id") Long foodTruckId,
+		@RequestBody CommerceReq req) {
+		commerceQueryService.openFoodTruck(foodTruckId, CommerceDto.builder()
+				.latitude(req.latitude())
+				.longitude(req.longitude())
+				.build(),
+			req.menuList());
+		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
 }

@@ -71,4 +71,11 @@ public class FoodTruckController {
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
+	@PatchMapping("/{ft-id}/close")
+	public ResponseEntity<BaseResponse<?>> closeFoodTruck(
+		@PathVariable("ft-id") Long foodTruckId) {
+		commerceQueryService.closeFoodTruck(foodTruckId);
+		return ResponseEntity.ok(BaseResponse.ofSuccess());
+	}
+
 }

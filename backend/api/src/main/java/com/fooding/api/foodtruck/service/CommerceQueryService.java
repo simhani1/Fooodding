@@ -8,4 +8,6 @@ public interface CommerceQueryService {
 
 	void openFoodTruck(Long foodTruckId, CommerceDto commerceDto, List<Long> unsoldMenuId);
 
+	void closeFoodTruck(Long foodTruckId);
+
 }

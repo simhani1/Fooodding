@@ -85,8 +85,10 @@ public class FoodTruck {
 		this.commerceInfo = CommerceInfo.getOpened(latitude, longitude);
 	}
 
-	public void close(CommerceInfo commerceInfo) {
-		this.commerceInfo = CommerceInfo.getClosed(commerceInfo);
+	public void close() {
+		this.menuList.forEach(Menu::enableSale);
+
+		this.commerceInfo = CommerceInfo.getClosed(this.commerceInfo);
 	}
 
 	public void updateInfo(FoodTruckInfo info) {

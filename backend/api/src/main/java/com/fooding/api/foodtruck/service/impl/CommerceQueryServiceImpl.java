@@ -31,4 +31,11 @@ class CommerceQueryServiceImpl implements CommerceQueryService {
 		foodTruck.open(dto.latitude(), dto.longitude(), unsoldMenuId);
 	}
 
+	@Override
+	public void closeFoodTruck(Long foodTruckId) {
+		FoodTruck foodTruck = foodTruckRepository.findById(foodTruckId)
+			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found with ID: " + foodTruckId));
+		foodTruck.close();
+	}
+
 }

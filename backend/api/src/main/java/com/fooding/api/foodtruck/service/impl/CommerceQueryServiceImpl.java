@@ -2,6 +2,7 @@ package com.fooding.api.foodtruck.service.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fooding.api.foodtruck.domain.FoodTruck;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
+@Service
 class CommerceQueryServiceImpl implements CommerceQueryService {
 
 	private final FoodTruckRepository foodTruckRepository;

@@ -32,7 +32,7 @@ class AuthServiceImpl implements AuthService {
 		String email = naverMemberInfo.getNaverAccount().getEmail();
 		Member member = memberRepository.findByEmailAndProviderAndRole(email, Provider.NAVER,
 				MemberRole.valueOf(role))
-			.orElse(
+			.orElseGet(() ->
 				// 회원정보가 존재하지 않으면 신규 가입
 				memberRepository.save(Member.builder()
 					.email(email)

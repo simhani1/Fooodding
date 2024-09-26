@@ -32,7 +32,6 @@ const NaverLoginHandler = () => {
 			});
 
 			try {
-				console.log(params);
 				const { data } = await loginNaver(params);
 				if (data.isSuccess) {
 					const { nickname, accessToken } = data.data;

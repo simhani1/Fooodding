@@ -5,6 +5,8 @@ import useAuthStore from "@store/authStore";
 
 const { role } = useAuthStore.getState();
 
+const basePath = `/members/auth`;
+
 const path: ObjectType<string> = {
 	OWNER: "/owners",
 	USER: "/users",
@@ -19,9 +21,7 @@ export const logout = () => {
 };
 
 export const loginNaver = (dto: INaverLoginDTO): ApiResponse<INaverLoginResponseDTO> => {
-	return axiosInstance.post(`${path[dto.role]}/login/naver`, {
-		dto,
-	});
+	return axiosInstance.post(`${basePath}${path[dto.role]}/login/naver`, dto);
 };
 
 export const withdraw = () => {

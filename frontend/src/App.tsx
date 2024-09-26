@@ -11,10 +11,11 @@ import OwnerFoodTruck from "@pages/owner/OwnerFoodTruck";
 import FoodTruckEdit from "@pages/owner/FoodTruckEdit";
 import UserMap from "@pages/user/UserMap";
 import UserFoodTruck from "@pages/user/UserFoodTruck";
-
-import "./App.css";
 import UserWaiting from "@pages/user/UserWaiting";
 import UserWaitingList from "@pages/user/UserWaitingList";
+import NaverLoginHandler from "@pages/auth/NaverLoginHandler";
+
+import "./App.css";
 
 function App() {
 	const nav = useNavigate();
@@ -61,6 +62,10 @@ function App() {
 						<Route
 							path=""
 							element={<LoginSelect />}
+						/>
+						<Route
+							path="naver"
+							element={<NaverLoginHandler />}
 						/>
 					</Route>
 				</Route>

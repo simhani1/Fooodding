@@ -4,6 +4,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.fooding.api.foodtruck.domain.FoodTruck;
+import com.fooding.api.foodtruck.exception.FoodTruckAlreadyClosedException;
 import com.fooding.api.foodtruck.exception.NoFoodTruckException;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.member.domain.Member;
@@ -30,6 +31,9 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + userId));
 		FoodTruck foodTruck = foodTruckRepository.findById(foodTruckId)
 			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found with ID: " + foodTruckId));
+		if (foodTruck.isClosed()) {
+			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
+		}
 		String waitingLineKey = RedisKeyGenerator.waitingLine(foodTruckId, userId);
 		long reservedAt = System.currentTimeMillis();
 		String waitingLineNumber = getWaitingNumber(foodTruckId);

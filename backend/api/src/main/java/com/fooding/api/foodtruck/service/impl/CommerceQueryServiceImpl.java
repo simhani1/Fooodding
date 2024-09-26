@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fooding.api.foodtruck.domain.FoodTruck;
+import com.fooding.api.foodtruck.exception.FoodTruckAlreadyClosedException;
 import com.fooding.api.foodtruck.exception.FoodTruckAlreadyOpenedException;
 import com.fooding.api.foodtruck.exception.NoFoodTruckException;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
@@ -35,6 +36,9 @@ class CommerceQueryServiceImpl implements CommerceQueryService {
 	public void closeFoodTruck(Long foodTruckId) {
 		FoodTruck foodTruck = foodTruckRepository.findById(foodTruckId)
 			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found with ID: " + foodTruckId));
+		if (foodTruck.isClosed()) {
+			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
+		}
 		foodTruck.close();
 	}
 

@@ -14,6 +14,7 @@ import UserFoodTruck from "@pages/user/UserFoodTruck";
 import UserWaiting from "@pages/user/UserWaiting";
 import UserWaitingList from "@pages/user/UserWaitingList";
 import NaverLoginHandler from "@pages/auth/NaverLoginHandler";
+import OwnerOpening from "@pages/owner/OwnerOpening";
 
 import "./App.css";
 
@@ -104,6 +105,10 @@ function App() {
 							element={<OwnerMenu />}
 						/>
 					</Route>
+					<Route
+						path="open"
+						element={<OwnerOpening />}
+					/>
 				</Route>
 				<Route path="/user">
 					<Route

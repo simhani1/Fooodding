@@ -24,3 +24,16 @@ export interface IFormContainer {
 	buttonText: string;
 	onSubmit: () => void;
 }
+
+export interface ITodayMenu {
+	id: number;
+	image?: string | null;
+	name: string;
+	price: number;
+	isSelected: boolean;
+}
+
+export interface ITodayMenuProps {
+	todayMenu: ITodayMenu;
+	onSelect: () => void;
+}

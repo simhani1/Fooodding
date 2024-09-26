@@ -1,0 +1,16 @@
+/* 스크롤바를 숨기기 */
+body {
+	/* 기본적으로 overflow-auto로 설정하여 스크롤 가능하게 유지 */
+	overflow: auto;
+}
+
+/* 스크롤바 숨기기 */
+*::-webkit-scrollbar {
+	display: none; /* 웹킷 브라우저에서 스크롤바 숨김 */
+}
+
+/* Firefox에서 스크롤바 숨기기 */
+* {
+	scrollbar-width: none; /* Firefox에서 스크롤바 숨김 */
+	-ms-overflow-style: none; /* Internet Explorer 및 Edge에서 스크롤바 숨김 */
+}

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { IAuthAction, IAuthState } from "@interface/store";
 import { Role } from "@interface/api";
 
-const initialState: IAuthState = {
+export const initialState: IAuthState = {
 	isLoggined: false,
 	role: Role.GUEST,
 	nickname: "",

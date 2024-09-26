@@ -1,24 +1,29 @@
-import { ApiResponse, INaverLoginDTO, INaverLoginResponseDTO, IReissueResponseDTO, Role } from "@interface/api";
+import { ApiResponse, INaverLoginDTO, INaverLoginResponseDTO, IReissueResponseDTO } from "@interface/api";
+import { ObjectType } from "@interface/common";
 import axiosInstance from "@api/axiosInstance";
 import useAuthStore from "@store/authStore";
 
-const { role } = useAuthStore();
-const path = role === Role.USER ? "/users" : "/owners";
+const { role } = useAuthStore.getState();
+
+const path: ObjectType<string> = {
+	OWNER: "/owners",
+	USER: "/users",
+};
 
 export const reissue = (): ApiResponse<IReissueResponseDTO> => {
-	return axiosInstance.post(`${path}/reissue`, { role });
+	return axiosInstance.post(`${path[role]}/reissue`, { role });
 };
 
-export const logout = (path: string) => {
-	return axiosInstance.post(`${path}/logout`);
+export const logout = () => {
+	return axiosInstance.post(`${path[role]}/logout`);
 };
 
-export const loginNaver = (path: string, dto: INaverLoginDTO): ApiResponse<INaverLoginResponseDTO> => {
-	return axiosInstance.post(`${path}/login/naver`, {
+export const loginNaver = (dto: INaverLoginDTO): ApiResponse<INaverLoginResponseDTO> => {
+	return axiosInstance.post(`${path[dto.role]}/login/naver`, {
 		dto,
 	});
 };
 
-export const withdraw = (path: string) => {
+export const withdraw = () => {
 	return axiosInstance.patch(`${path}/withdraw`);
 };

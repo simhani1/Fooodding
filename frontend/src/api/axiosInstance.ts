@@ -1,5 +1,5 @@
 import axios from "axios";
-import useAuthStore from "@store/authStore";
+import useAuthStore, { initialState } from "@store/authStore";
 import { reissue } from "@api/auth-api";
 import { ContentType } from "@interface/api";
 
@@ -8,11 +8,12 @@ const axiosInstance = axios.create({
 	headers: {
 		"Content-Type": ContentType.Json,
 	},
+	withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
 	(config) => {
-		const { accessToken } = useAuthStore();
+		const { accessToken } = useAuthStore.getState();
 		config.headers.Authorization = `Bearer ${accessToken}`;
 		return config;
 	},
@@ -24,22 +25,21 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
 	async (response) => {
 		const { config, data } = response;
-		const { updateAccessToken, reset } = useAuthStore();
 
 		if (!data.isSuccess) {
 			const { data } = await reissue();
 			if (data.isSuccess && data.data.accessToken) {
 				const accessToken = data.data.accessToken;
-				updateAccessToken(accessToken);
+				useAuthStore.setState({ accessToken });
 				return axiosInstance(config);
 			}
-			reset();
+			useAuthStore.setState({ ...initialState });
 		}
 		return response;
 	},
 	async (error) => {
 		console.log(error);
-		return new Promise(() => {});
+		return Promise.reject(error);
 	},
 );
 

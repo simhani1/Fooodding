@@ -1,8 +1,16 @@
-import { IMenuDTO, IMenuResponseDTO, ApiResponse } from "@interface/api";
+import { IMenuDTO, IMenuResponseDTO, ApiResponse, IFoodTruckDTO } from "@interface/api";
 import axiosInstance from "@api/axiosInstance";
 import { ContentType } from "@interface/api";
 
 const path = "/foodtrucks";
+
+export const foodTruckRegister = (req: IFoodTruckDTO) => {
+	return axiosInstance.post(`${path}`, req);
+};
+
+export const foodTruckUpdate = (foodTruckId: number, req: IFoodTruckDTO) => {
+	return axiosInstance.post(`${path}/${foodTruckId}`, req);
+};
 
 export const menuList = (foodTruckId: number): ApiResponse<IMenuResponseDTO> => {
 	return axiosInstance.get(`${path}/${foodTruckId}/menu`);

@@ -1,3 +1,8 @@
+export interface IForm {
+	buttonText: string;
+	onSubmit: () => void;
+}
+
 export interface IContainer {
 	children: JSX.Element;
 }

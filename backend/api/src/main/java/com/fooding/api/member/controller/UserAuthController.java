@@ -1,5 +1,7 @@
 package com.fooding.api.member.controller;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,15 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fooding.api.core.aop.annotation.RequireJwtToken;
 import com.fooding.api.core.aop.member.MemberContext;
 import com.fooding.api.core.template.response.BaseResponse;
-import com.fooding.api.member.controller.request.LogoutReq;
 import com.fooding.api.member.controller.request.NaverLoginReq;
 import com.fooding.api.member.controller.request.ReissueReq;
+import com.fooding.api.member.exception.NoRefreshTokenException;
 import com.fooding.api.member.service.AuthService;
 import com.fooding.api.member.service.ReissueTokenService;
 import com.fooding.api.member.service.dto.LoginDto;
 import com.fooding.api.member.service.dto.ReissueDto;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -52,9 +55,16 @@ public class UserAuthController {
 	/* 로그아웃 진행 */
 	@RequireJwtToken
 	@PostMapping("/logout")
-	public ResponseEntity<BaseResponse<?>> logout(@RequestBody LogoutReq req, HttpServletResponse response) {
+	public ResponseEntity<BaseResponse<?>> logout(HttpServletRequest request, HttpServletResponse response) {
 		Long userId = MemberContext.getMemberId();
-		authService.logout(userId, req.refreshToken());
+
+		String refreshToken = Arrays.stream(request.getCookies())
+			.filter(cookie -> REFRESH_TOKEN.equals(cookie.getName()))
+			.map(Cookie::getValue)
+			.findFirst()
+			.orElseThrow(() -> new NoRefreshTokenException("Refresh token is null"));
+
+		authService.logout(userId, refreshToken);
 
 		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, null);
 		refreshTokenCookie.setMaxAge(0);

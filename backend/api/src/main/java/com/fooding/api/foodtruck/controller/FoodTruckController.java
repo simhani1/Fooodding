@@ -60,9 +60,12 @@ public class FoodTruckController {
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
+	@RequireJwtToken
 	@GetMapping("")
 	public ResponseEntity<BaseResponse<FoodTruckDto>> getFoodTruckDetail(@RequestParam("ft-id") Long foodTruckId) {
-		return ResponseEntity.ok(BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetail(foodTruckId)));
+		Long memberId = MemberContext.getMemberId();
+		return ResponseEntity.ok(
+			BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetail(memberId, foodTruckId)));
 	}
 
 	@PatchMapping("/{ft-id}/open")

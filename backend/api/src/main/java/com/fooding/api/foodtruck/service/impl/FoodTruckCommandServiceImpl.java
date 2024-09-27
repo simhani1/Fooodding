@@ -13,6 +13,10 @@ import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.service.FoodTruckCommandService;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
 import com.fooding.api.foodtruck.service.dto.MenuDto;
+import com.fooding.api.member.domain.Member;
+import com.fooding.api.member.domain.MemberRole;
+import com.fooding.api.member.exception.NoMemberException;
+import com.fooding.api.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +27,16 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 
+	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
 
 	@Override
-	public FoodTruckDto getFoodTruckDetail(Long foodTruckId) {
+	public FoodTruckDto getFoodTruckDetail(Long memberId, Long foodTruckId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + memberId));
 		FoodTruck foodTruck = foodTruckRepository.findById(foodTruckId)
 			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found by ownerID: " + foodTruckId));
-		if (foodTruck.isClosed()) {
+		if (member.getRole().equals(MemberRole.USER) && foodTruck.isClosed()) {
 			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
 		}
 		return FoodTruckDto.builder()

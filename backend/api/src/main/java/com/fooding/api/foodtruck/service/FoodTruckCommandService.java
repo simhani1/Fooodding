@@ -4,6 +4,6 @@ import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
 
 public interface FoodTruckCommandService {
 
-	FoodTruckDto getFoodTruckDetail(Long foodTruckId);
+	FoodTruckDto getFoodTruckDetail(Long memberId, Long foodTruckId);
 
 }

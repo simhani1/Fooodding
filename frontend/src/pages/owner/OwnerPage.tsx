@@ -30,13 +30,13 @@ const OwnerPage = () => {
 						/>
 						<NavButton
 							buttonText="소셜 계정"
-							onClick={() => {}}
+							onClick={() => nav(`/auth/social`)}
 						/>
 					</div>
-					<div className="flex justify-center items-center mt-10">
-						<button className="text-gray text-xl">로그아웃</button>
+					<div className="flex items-center justify-center mt-10">
+						<button className="text-xl text-gray">로그아웃</button>
 						<span className="mx-4 text-xl">|</span>
-						<button className="border-b-2 border-gray text-gray text-xl">회원탈퇴</button>
+						<button className="text-xl border-b-2 border-gray text-gray">회원탈퇴</button>
 					</div>
 				</>
 			</Main>

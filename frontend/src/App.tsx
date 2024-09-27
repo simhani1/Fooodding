@@ -2,6 +2,8 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 
 import Login from "@pages/Login";
 import LoginSelect from "@pages/auth/LoginSelect";
+import SocialLogin from "@pages/auth/SocialLogin";
+import NaverLoginHandler from "@pages/auth/NaverLoginHandler";
 import OwnerMain from "@pages/owner/OwnerMain";
 import OwnerPage from "@pages/owner/OwnerPage";
 import OwnerMap from "@pages/owner/OwnerMap";
@@ -9,12 +11,11 @@ import OwnerMenu from "@pages/owner/OwnerMenu";
 import FoodTruckCreate from "@pages/owner/FoodTruckCreate";
 import OwnerFoodTruck from "@pages/owner/OwnerFoodTruck";
 import FoodTruckEdit from "@pages/owner/FoodTruckEdit";
+import OwnerOpening from "@pages/owner/OwnerOpening";
 import UserMap from "@pages/user/UserMap";
 import UserFoodTruck from "@pages/user/UserFoodTruck";
 import UserWaiting from "@pages/user/UserWaiting";
 import UserWaitingList from "@pages/user/UserWaitingList";
-import NaverLoginHandler from "@pages/auth/NaverLoginHandler";
-import OwnerOpening from "@pages/owner/OwnerOpening";
 
 import "./App.css";
 
@@ -69,6 +70,10 @@ function App() {
 							element={<NaverLoginHandler />}
 						/>
 					</Route>
+					<Route
+						path="social"
+						element={<SocialLogin />}
+					/>
 				</Route>
 				<Route path="/owner">
 					<Route

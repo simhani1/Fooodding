@@ -1,6 +1,6 @@
-import { IWhiteButton } from "@interface/map";
+import { IButton } from "@interface/map";
 
-const WhiteButton = ({ onClick }: IWhiteButton) => {
+const WhiteButton = ({ onClick }: IButton) => {
 	return (
 		<div
 			id="white-button"

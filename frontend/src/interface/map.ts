@@ -30,7 +30,7 @@ export interface IPolygonPath {
 
 export interface IGeometry {
 	type: string;
-	coordinates: number[][][];
+	coordinates: number[][][][];
 }
 
 export interface IFeatureProperties {

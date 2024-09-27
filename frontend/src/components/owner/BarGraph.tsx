@@ -1,6 +1,6 @@
 import { IBarGraph } from "@interface/map";
 
-import { Chart as ChartJS, BarElement, CategoryScale, Legend, LinearScale, Title, Tooltip, scales } from "chart.js";
+import { Chart as ChartJS, BarElement, CategoryScale, Legend, LinearScale, Title, Tooltip } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);

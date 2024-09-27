@@ -1,5 +1,6 @@
-import { Circle } from "@phosphor-icons/react";
 import { useState } from "react";
+
+import { Circle } from "@phosphor-icons/react";
 
 const MapFloating = () => {
 	const [active, setActive] = useState("recommend");

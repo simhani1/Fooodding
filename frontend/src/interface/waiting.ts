@@ -1,4 +1,6 @@
 export interface IWaitingInfo {
+	id: number;
+	name: string;
 	waitingNumber: number;
 	peopleNumber: number;
 	isWaiting: boolean;
@@ -7,4 +9,8 @@ export interface IWaitingInfo {
 
 export interface IWaitingProps {
 	waitingInfo: IWaitingInfo;
+}
+
+export interface IOrderingProps {
+	callTime: string;
 }

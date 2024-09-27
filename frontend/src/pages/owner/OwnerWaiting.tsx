@@ -10,8 +10,8 @@ const OwnerWaiting = () => {
 	const [waitingOrder, setWaitingOrder] = useState<IWaitingOrder[]>([]); //음식 기다리는 중
 
 	useEffect(() => {
-		// setWaitingLine(exampleLineList);
-		// setWaitingOrder(exampleOrderList);
+		setWaitingLine(exampleLineList);
+		setWaitingOrder(exampleOrderList);
 	}, []);
 
 	//손님호출

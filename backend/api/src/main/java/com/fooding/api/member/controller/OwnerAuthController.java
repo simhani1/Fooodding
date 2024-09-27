@@ -1,9 +1,13 @@
 package com.fooding.api.member.controller;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +29,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequestMapping("/api/v1/members/auth/owners")
 @RequiredArgsConstructor
 @RestController
@@ -43,18 +49,22 @@ public class OwnerAuthController {
 		HttpServletResponse response) {
 		LoginDto res = authService.naverLogin(req.accessToken(), req.role());
 
-		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, res.refreshToken());
-		refreshTokenCookie.setHttpOnly(true);
-		refreshTokenCookie.setPath("/");
-		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
-		response.addCookie(refreshTokenCookie);
+		ResponseCookie responseCookie = ResponseCookie.from(REFRESH_TOKEN, res.refreshToken())
+			.httpOnly(true)
+			.secure(true)
+			.path("/")
+			.maxAge(Duration.ofMillis(REFRESH_TOKEN_EXPIRATION_TIME))
+			.domain("j11a608.p.ssafy.io")
+			.sameSite("None")
+			.build();
+		response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
 
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 
 	/* 로그아웃 진행 */
 	@RequireJwtToken
-	@PostMapping("/logout")
+	@GetMapping("/logout")
 	public ResponseEntity<BaseResponse<?>> logout(HttpServletRequest request, HttpServletResponse response) {
 		Long ownerId = MemberContext.getMemberId();
 

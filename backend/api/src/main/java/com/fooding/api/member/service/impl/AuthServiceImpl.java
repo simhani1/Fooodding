@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fooding.api.core.jwt.JwtTokenProvider;
 import com.fooding.api.core.jwt.dto.JwtToken;
+import com.fooding.api.foodtruck.repository.custom.FoodTruckRepositoryCustom;
 import com.fooding.api.infra.oauth.client.NaverAuthClient;
 import com.fooding.api.infra.oauth.dto.NaverMemberInfo;
 import com.fooding.api.member.domain.Member;
@@ -25,6 +26,7 @@ class AuthServiceImpl implements AuthService {
 	private final NaverAuthClient naverAuthClient;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final MemberRepository memberRepository;
+	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
 
 	@Override
 	public LoginDto naverLogin(String accessToken, String role) {
@@ -46,11 +48,20 @@ class AuthServiceImpl implements AuthService {
 		/* 로그인 */
 		JwtToken jwtToken = jwtTokenProvider.createToken(member.getId(), MemberRole.valueOf(role));
 
-		return LoginDto.builder()
-			.nickname(member.getNickname())
-			.accessToken(jwtToken.accessToken())
-			.refreshToken(jwtToken.refreshToken())
-			.build();
+		LoginDto dto = foodTruckRepositoryCustom.findByOwner(member)
+			.map(foodTruck -> LoginDto.builder()
+				.nickname(member.getNickname())
+				.accessToken(jwtToken.accessToken())
+				.refreshToken(jwtToken.refreshToken())
+				.foodTruckId(foodTruck.getId())
+				.build())
+			.orElseGet(() -> LoginDto.builder()
+				.nickname(member.getNickname())
+				.accessToken(jwtToken.accessToken())
+				.refreshToken(jwtToken.refreshToken())
+				.foodTruckId(null)
+				.build());
+		return dto;
 	}
 
 	@Override

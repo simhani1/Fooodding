@@ -6,6 +6,7 @@ import lombok.Builder;
 public record LoginDto(
 	String nickname,
 	String accessToken,
-	String refreshToken
+	String refreshToken,
+	Long foodTruckId
 ) {
 }

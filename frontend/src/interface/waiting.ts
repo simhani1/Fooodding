@@ -1,3 +1,4 @@
+//user
 export interface IWaitingInfo {
 	id: number;
 	name: string;
@@ -13,4 +14,27 @@ export interface IWaitingProps {
 
 export interface IOrderingProps {
 	callTime: string;
+}
+
+//owner
+export interface IWaitingLine {
+	id: number;
+	nickname: string;
+	waitingNumber: number;
+	time: string;
+}
+
+export interface IWaitingOrder {
+	id: number;
+	nickname: string;
+	waitingNumber: number;
+	time: string;
+}
+
+export interface IWaitingOwnerProps {
+	id: number;
+	nickname: string;
+	waitingNumber: number;
+	time: string;
+	children: JSX.Element;
 }

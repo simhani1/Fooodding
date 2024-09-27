@@ -18,6 +18,7 @@ import UserWaiting from "@pages/user/UserWaiting";
 import UserWaitingList from "@pages/user/UserWaitingList";
 
 import "./App.css";
+import OwnerWaiting from "@pages/owner/OwnerWaiting";
 
 function App() {
 	const nav = useNavigate();
@@ -113,6 +114,10 @@ function App() {
 					<Route
 						path="open"
 						element={<OwnerOpening />}
+					/>
+					<Route
+						path="close"
+						element={<OwnerWaiting />}
 					/>
 				</Route>
 				<Route path="/user">

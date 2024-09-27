@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
 import { Map, MapMarker } from "react-kakao-maps-sdk";
@@ -8,9 +9,12 @@ import Main from "@components/owner/Main";
 import TodayMenu from "@components/owner/TodayMenu";
 import Modal from "@components/common/Modal";
 import { waitingCancelingModalStyle } from "@utils/modalStyle";
+
 import { FireTruck } from "@phosphor-icons/react";
 
 const OwnerOpening = () => {
+	const nav = useNavigate();
+
 	const today = new Date();
 	const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
 
@@ -148,8 +152,6 @@ const OwnerOpening = () => {
 		//axios
 	};
 
-	const startToday = () => {};
-
 	return (
 		<Container>
 			<Main>
@@ -203,10 +205,14 @@ const OwnerOpening = () => {
 							<div className="flex items-center gap-3">
 								<div
 									onClick={handleToggle}
-									className={`w-12 h-6 flex items-center bg-${isToggled ? "boss" : "gray"} rounded-full p-1 cursor-pointer transition-colors duration-300`}
+									className={`w-12 h-6 flex items-center bg-${
+										isToggled ? "boss" : "gray"
+									} rounded-full p-1 cursor-pointer transition-colors duration-300`}
 								>
 									<div
-										className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${isToggled ? "translate-x-6" : "translate-x-0"}`}
+										className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
+											isToggled ? "translate-x-6" : "translate-x-0"
+										}`}
 									></div>
 								</div>
 								<p className="font-bold">모두 선택</p>
@@ -266,7 +272,7 @@ const OwnerOpening = () => {
 								<p className="my-4 text-2xl font-bold text-center">장사를 시작하시겠습니까?</p>
 								<button
 									className="px-6 py-3 my-5 font-bold text-white rounded text-md bg-gradient-to-r from-main to-user"
-									onClick={startToday}
+									onClick={() => nav("/owner/close")}
 								>
 									시작하겠습니다
 								</button>

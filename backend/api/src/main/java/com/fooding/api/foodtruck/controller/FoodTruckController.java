@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fooding.api.core.aop.annotation.RequireJwtToken;
+import com.fooding.api.core.aop.member.MemberContext;
 import com.fooding.api.core.template.response.BaseResponse;
 import com.fooding.api.foodtruck.controller.request.CommerceReq;
 import com.fooding.api.foodtruck.controller.request.FoodTruckReq;
@@ -32,15 +34,17 @@ public class FoodTruckController {
 	private final FoodTruckCommandService foodTruckCommandService;
 	private final CommerceQueryService commerceQueryService;
 
+	@RequireJwtToken
 	@PostMapping("")
-	public ResponseEntity<BaseResponse<?>> registerFoodTruck(@RequestBody FoodTruckReq req) {
-		foodTruckQueryService.registerFoodTruck(1L, FoodTruckDto.builder()
+	public ResponseEntity<BaseResponse<FoodTruckDto>> registerFoodTruck(@RequestBody FoodTruckReq req) {
+		Long ownerId = MemberContext.getMemberId();
+		FoodTruckDto res = foodTruckQueryService.registerFoodTruck(ownerId, FoodTruckDto.builder()
 			.licenseNumber(req.licenseNumber())
 			.name(req.name())
 			.introduction(req.introduction())
 			.category(req.category())
 			.build());
-		return ResponseEntity.ok(BaseResponse.ofSuccess());
+		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 
 	@PatchMapping("/{ft-id}")

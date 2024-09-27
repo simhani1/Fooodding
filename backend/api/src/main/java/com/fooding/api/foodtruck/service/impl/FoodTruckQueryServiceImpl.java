@@ -28,10 +28,10 @@ class FoodTruckQueryServiceImpl implements FoodTruckQueryService {
 	private final FoodTruckRepository foodTruckRepository;
 
 	@Override
-	public void registerFoodTruck(Long ownerId, FoodTruckDto dto) {
+	public FoodTruckDto registerFoodTruck(Long ownerId, FoodTruckDto dto) {
 		Member owner = memberRepository.findById(ownerId)
 			.orElseThrow(() -> new NoMemberException("Owner not found with ID: " + ownerId));
-		FoodTruck foodTruck = FoodTruck.builder()
+		FoodTruck foodTruck = foodTruckRepository.save(FoodTruck.builder()
 			.member(owner)
 			.info(FoodTruckInfo.builder()
 				.name(dto.name())
@@ -40,8 +40,10 @@ class FoodTruckQueryServiceImpl implements FoodTruckQueryService {
 				.licenseNumber(dto.licenseNumber())
 				.build())
 			.commerceInfo(CommerceInfo.ofNew())
+			.build());
+		return FoodTruckDto.builder()
+			.foodTruckId(foodTruck.getId())
 			.build();
-		foodTruckRepository.save(foodTruck);
 	}
 
 	@Override

@@ -45,7 +45,6 @@ public class UserAuthController {
 
 		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, res.refreshToken());
 		refreshTokenCookie.setHttpOnly(true);
-		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
 		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
 
@@ -69,7 +68,6 @@ public class UserAuthController {
 		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, null);
 		refreshTokenCookie.setMaxAge(0);
 		refreshTokenCookie.setHttpOnly(true);
-		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
 		response.addCookie(refreshTokenCookie);
 
@@ -87,12 +85,17 @@ public class UserAuthController {
 
 	@PostMapping("/reissue")
 	public ResponseEntity<BaseResponse<ReissueDto>> reissueToken(@RequestBody ReissueReq req,
-		HttpServletResponse response) {
-		ReissueDto newToken = reissueTokenService.reissueToken(req.refreshToken(), req.role());
+		HttpServletRequest request, HttpServletResponse response) {
+		String refreshToken = Arrays.stream(request.getCookies())
+			.filter(cookie -> REFRESH_TOKEN.equals(cookie.getName()))
+			.map(Cookie::getValue)
+			.findFirst()
+			.orElseThrow(() -> new NoRefreshTokenException("Refresh token is null"));
+
+		ReissueDto newToken = reissueTokenService.reissueToken(refreshToken, req.role());
 
 		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, newToken.refreshToken());
 		refreshTokenCookie.setHttpOnly(true);
-		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
 		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
 		response.addCookie(refreshTokenCookie);

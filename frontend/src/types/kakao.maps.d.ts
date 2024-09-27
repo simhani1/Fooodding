@@ -1,8 +1,6 @@
 declare namespace kakao.maps {
 	class LatLng {
 		constructor(lat: number, lng: number);
-		getLat(): number; // 위도 반환 메서드 추가
-		getLng(): number; // 경도 반환 메서드 추가
 	}
 
 	class LatLngBounds {

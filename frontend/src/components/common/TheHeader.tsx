@@ -1,5 +1,5 @@
 import Logo from "@assets/fooodding_user_logo.png";
-import { CaretLeft } from "@phosphor-icons/react";
+import { CaretLeft, Bell } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 
 const TheHeader = () => {
@@ -16,9 +16,8 @@ const TheHeader = () => {
 					className="w-36"
 					src={Logo}
 					alt="logo"
-					onClick={() => nav("/user")}
 				/>
-				<div style={{ width: 24 }}></div>
+				<Bell size={24} />
 			</div>
 		</>
 	);

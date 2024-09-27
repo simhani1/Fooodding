@@ -1,8 +1,3 @@
-export interface IForm {
-	buttonText: string;
-	onSubmit: () => void;
-}
-
 export interface IContainer {
 	children: JSX.Element;
 }
@@ -25,6 +20,11 @@ export interface IInputField extends ITextField {
 	message: string;
 }
 
+export interface IForm {
+	buttonText: string;
+	onSubmit: () => void;
+}
+
 export interface IFormButton extends IButton {
 	isValid: boolean;
 }
@@ -41,9 +41,3 @@ export interface ILoginCard {
 	children: JSX.Element;
 	onClick: () => void;
 }
-
-export type PathType = {
-	role: string;
-};
-
-export type ObjectType<V> = { [key: string]: V };

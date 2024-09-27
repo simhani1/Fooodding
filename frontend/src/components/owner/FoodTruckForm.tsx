@@ -7,10 +7,10 @@ import Category from "@components/owner/Category";
 
 import { IForm } from "@interface/common";
 import { IFoodTruckMessage } from "@interface/owner";
-import { IFoodTruckDTO } from "@interface/api";
 import { categoryList } from "@utils/foodTruckData";
 import { allElementsHaveValues, allPropertiesNotHaveValues } from "@utils/util";
 import useFoodTruckStore from "@store/foodTruckStore";
+import { FoodTruckReq } from "@swagger/data-contracts";
 
 const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 	const nav = useNavigate();
@@ -26,7 +26,7 @@ const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 		updateCategory,
 	} = useFoodTruckStore();
 
-	const [form, setForm] = useState<IFoodTruckDTO>({
+	const [form, setForm] = useState<FoodTruckReq>({
 		name,
 		licenseNumber,
 		introduction,

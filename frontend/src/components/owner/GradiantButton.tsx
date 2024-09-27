@@ -1,20 +1,14 @@
-import { IGradiantButton } from "@interface/map";
-
 import { CaretCircleRight } from "@phosphor-icons/react";
 
-const GradiantButton = ({ onClick, text }: IGradiantButton) => {
+const GradiantButton = () => {
 	return (
 		<div
 			id="gradiant-button"
-			className="absolute z-10 flex items-center justify-between p-6 rounded-lg shadow-sm laeding-none w-104 bg-gradient-to-r from-main to-boss right-8 top-8"
-			onClick={onClick}
+			className="absolute flex items-center justify-between p-4 rounded-lg shadow-sm w-72 bg-gradient-to-r from-main to-boss right-8 top-8"
 		>
-			<div className="">
-				<p className="mb-1 text-3xl font-bold text-white laeding-none">{text}</p>
-				<p className="text-3xl font-bold text-white laeding-none">상권 정보 보기</p>
-			</div>
+			<p className="text-3xl font-bold text-white">상권 정보 보기</p>
 			<CaretCircleRight
-				size={48}
+				size={40}
 				weight="fill"
 				color="#FFF"
 			/>

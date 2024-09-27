@@ -11,29 +11,13 @@ export interface IMenu {
 	price: number | string;
 }
 
-export interface IMenuForm extends IFormContainer {
+export interface IMenuForm {
+	title: string;
+	buttonText: string;
 	menu?: IMenu;
+	onSubmit: () => void;
 }
 
 export interface IMenuMessage {
 	name: string;
-}
-
-export interface IFormContainer {
-	title: string;
-	buttonText: string;
-	onSubmit: () => void;
-}
-
-export interface ITodayMenu {
-	id: number;
-	image?: string | null;
-	name: string;
-	price: number;
-	isSelected: boolean;
-}
-
-export interface ITodayMenuProps {
-	todayMenu: ITodayMenu;
-	onSelect: () => void;
 }

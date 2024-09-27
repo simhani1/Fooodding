@@ -11,47 +11,41 @@ import OwnerFoodTruck from "@pages/owner/OwnerFoodTruck";
 import FoodTruckEdit from "@pages/owner/FoodTruckEdit";
 import UserMap from "@pages/user/UserMap";
 import UserFoodTruck from "@pages/user/UserFoodTruck";
-import UserWaiting from "@pages/user/UserWaiting";
-import UserWaitingList from "@pages/user/UserWaitingList";
-import NaverLoginHandler from "@pages/auth/NaverLoginHandler";
-import OwnerOpening from "@pages/owner/OwnerOpening";
 
 import "./App.css";
+import UserWaiting from "@pages/user/UserWaiting";
 
 function App() {
 	const nav = useNavigate();
 
 	return (
 		<>
-			{/* <div className="flex gap-5 m-10">
+			<div className="flex gap-5 m-10">
 				<button
 					className="text-xl border-b border-black border-solid"
 					onClick={() => nav("/")}
 				>
 					로그인
 				</button>
-
 				<button
 					className="text-xl border-b border-black border-solid"
 					onClick={() => nav("/owner/mypage")}
 				>
 					사장님 마이페이지
 				</button>
-
 				<button
 					className="text-xl border-b border-black border-solid"
 					onClick={() => nav("/owner/map")}
 				>
 					사장님 지도페이지
 				</button>
-
 				<button
 					className="text-xl border-b border-black border-solid"
 					onClick={() => nav("/user")}
 				>
 					유저 메인 페이지
 				</button>
-			</div> */}
+			</div>
 
 			<Routes>
 				<Route
@@ -63,10 +57,6 @@ function App() {
 						<Route
 							path=""
 							element={<LoginSelect />}
-						/>
-						<Route
-							path="naver"
-							element={<NaverLoginHandler />}
 						/>
 					</Route>
 				</Route>
@@ -105,10 +95,6 @@ function App() {
 							element={<OwnerMenu />}
 						/>
 					</Route>
-					<Route
-						path="open"
-						element={<OwnerOpening />}
-					/>
 				</Route>
 				<Route path="/user">
 					<Route
@@ -122,10 +108,6 @@ function App() {
 					<Route
 						path="waiting"
 						element={<UserWaiting />}
-					/>
-					<Route
-						path="list"
-						element={<UserWaitingList />}
 					/>
 				</Route>
 			</Routes>

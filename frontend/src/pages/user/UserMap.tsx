@@ -27,33 +27,6 @@ const UserMap = () => {
 	const [trucks, setTrucks] = useState<ITruckInfo[]>([]);
 
 	useEffect(() => {
-		// 사용자 현재 위치 가져오기
-		const setMyLocation = () => {
-			if (navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(
-					(position) => {
-						const newPosition = {
-							lat: position.coords.latitude,
-							lng: position.coords.longitude,
-						};
-
-						setCurrentPosition(newPosition);
-						setMapCenter(newPosition);
-
-						// Kakao Maps의 panTo 메서드를 사용하여 지도를 이동
-						if (mapRef.current) {
-							mapRef.current.panTo(new kakao.maps.LatLng(newPosition.lat, newPosition.lng));
-						}
-					},
-					(error) => {
-						console.error("Error occurred while fetching location:", error);
-					},
-				);
-			} else {
-				console.error("Geolocation is not supported by this browser.");
-			}
-		};
-
 		setMyLocation();
 
 		// 더미데이터 대신 axios 연결
@@ -128,7 +101,6 @@ const UserMap = () => {
 					className="w-full h-5/6"
 					level={3}
 					ref={mapRef}
-					// minLevel={5}
 				>
 					{trucks.map((truck, index) => (
 						<MapMarker
@@ -150,7 +122,7 @@ const UserMap = () => {
 					<MapMarker
 						position={currentPosition}
 						image={{
-							src: "/MapPin.png",
+							src: "src/assets/MapPin.png",
 							size: {
 								width: 36,
 								height: 36,

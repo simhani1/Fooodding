@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Title from "@components/common/Title";
@@ -6,14 +7,29 @@ import Container from "@components/owner/Container";
 import Main from "@components/owner/Main";
 
 import useFoodTruckStore from "@store/foodTruckStore";
+import { getFoodTruck } from "@api/food-truck-api";
+import { categories } from "@utils/foodTruckData";
 
 const OwnerFoodTruck = () => {
 	const nav = useNavigate();
-	const { name, licenseNumber, introduction, category, isExist } = useFoodTruckStore();
+	const { name, licenseNumber, introduction, category, foodTruckId, updateAll } = useFoodTruckStore();
+
+	useEffect(() => {
+		const load = async () => {
+			if (foodTruckId) {
+				const { data } = await getFoodTruck(foodTruckId);
+				if (data.isSuccess) {
+					updateAll({ ...data.data, foodTruckId });
+				}
+			}
+		};
+
+		load();
+	}, []);
 
 	return (
 		<Container>
-			{isExist ? (
+			{foodTruckId ? (
 				<Main>
 					<>
 						<div className="flex justify-between">
@@ -39,7 +55,7 @@ const OwnerFoodTruck = () => {
 						/>
 						<TextField
 							label={"카테고리"}
-							value={category}
+							value={categories[category]}
 						/>
 					</>
 				</Main>

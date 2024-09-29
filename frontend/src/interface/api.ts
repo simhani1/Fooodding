@@ -1,4 +1,5 @@
 import { AxiosResponse } from "axios";
+import { Category } from "@interface/owner";
 
 export enum ContentType {
 	Json = "application/json",
@@ -16,6 +17,10 @@ export interface IBaseResponseDTO {
 	isSuccess: boolean;
 }
 
+export interface INoResponseDTO extends IBaseResponseDTO {
+	data: null;
+}
+
 export interface IReissueResponseDTO extends IBaseResponseDTO {
 	data: {
 		accessToken: string;
@@ -26,6 +31,16 @@ export interface INaverLoginResponseDTO extends IBaseResponseDTO {
 	data: {
 		nickname: string;
 		accessToken: string;
+	};
+}
+
+export interface IFoodTruckResponseDTO extends IBaseResponseDTO {
+	data: IFoodTruckDTO;
+}
+
+export interface IFoodTruckCreateResponseDTO extends IBaseResponseDTO {
+	data: {
+		foodTruckId: number;
 	};
 }
 
@@ -67,5 +82,5 @@ export interface IFoodTruckDTO {
 	name: string;
 	licenseNumber: string;
 	introduction?: string;
-	category: string;
+	category: Category;
 }

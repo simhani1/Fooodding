@@ -1,21 +1,33 @@
-import { IMenuDTO, IMenuResponseDTO, ApiResponse, IFoodTruckDTO } from "@interface/api";
+import {
+	IMenuDTO,
+	IMenuResponseDTO,
+	ApiResponse,
+	IFoodTruckDTO,
+	INoResponseDTO,
+	IFoodTruckResponseDTO,
+	IFoodTruckCreateResponseDTO,
+	ContentType,
+} from "@interface/api";
 import axiosInstance from "@api/axiosInstance";
-import { ContentType } from "@interface/api";
 
 const path = "/foodtrucks";
 
-export const foodTruckRegister = (req: IFoodTruckDTO) => {
+export const registerFoodTruck = (req: IFoodTruckDTO): ApiResponse<IFoodTruckCreateResponseDTO> => {
 	return axiosInstance.post(`${path}`, req);
 };
 
-export const foodTruckUpdate = (foodTruckId: number, req: IFoodTruckDTO) => {
+export const updateFoodTruck = (foodTruckId: number, req: IFoodTruckDTO): ApiResponse<INoResponseDTO> => {
 	return axiosInstance.post(`${path}/${foodTruckId}`, req);
 };
 
-export const menuList = (foodTruckId: number): ApiResponse<IMenuResponseDTO> => {
+export const getFoodTruck = (foodTruckId: number): ApiResponse<IFoodTruckResponseDTO> => {
+	return axiosInstance.get(`${path}?ft-id=${foodTruckId}`);
+};
+
+export const getMenuList = (foodTruckId: number): ApiResponse<IMenuResponseDTO> => {
 	return axiosInstance.get(`${path}/${foodTruckId}/menu`);
 };
-export const menuRegister = ({ req, menuImg }: IMenuDTO) => {
+export const registerMenu = ({ req, menuImg }: IMenuDTO) => {
 	return axiosInstance.post(
 		`${path}/menu`,
 		{
@@ -29,12 +41,12 @@ export const menuRegister = ({ req, menuImg }: IMenuDTO) => {
 		},
 	);
 };
-export const menuUpdate = (menuId: number, { req, menuImg }: IMenuDTO) => {
+export const updateMenu = (menuId: number, { req, menuImg }: IMenuDTO) => {
 	return axiosInstance.patch(`${path}/menu/${menuId}`, {
 		req,
 		menuImg,
 	});
 };
-export const menuDelete = (menuId: number) => {
+export const deleteMenu = (menuId: number) => {
 	return axiosInstance.delete(`${path}/menu/${menuId}`);
 };

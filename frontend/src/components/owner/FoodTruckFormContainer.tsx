@@ -4,9 +4,16 @@ import Title from "@components/common/Title";
 import Container from "@components/owner/Container";
 import Main from "@components/owner/Main";
 import FoodTruckForm from "@components/owner/FoodTruckForm";
-import { IFormContainer } from "@interface/owner";
 
-const FoodTruckFormContainer = ({ title, buttonText, onSubmit }: IFormContainer) => {
+import { IFoodTruckForm, IFormContainer } from "@interface/owner";
+
+const FoodTruckFormContainer = ({
+	title,
+	formData,
+	buttonText,
+	setFormData,
+	onSubmit,
+}: IFormContainer & IFoodTruckForm) => {
 	const nav = useNavigate();
 
 	return (
@@ -24,7 +31,9 @@ const FoodTruckFormContainer = ({ title, buttonText, onSubmit }: IFormContainer)
 					</div>
 					<FoodTruckForm
 						buttonText={buttonText}
+						formData={formData}
 						onSubmit={onSubmit}
+						setFormData={setFormData}
 					/>
 				</>
 			</Main>

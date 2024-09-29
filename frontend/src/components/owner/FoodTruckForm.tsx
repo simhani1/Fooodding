@@ -1,38 +1,14 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import FormButton from "@components/common/FormButton";
 import InputField from "@components/common/InputField";
 import Category from "@components/owner/Category";
 
-import { IForm } from "@interface/common";
-import { IFoodTruckMessage } from "@interface/owner";
-import { IFoodTruckDTO } from "@interface/api";
-import { categoryList } from "@utils/foodTruckData";
+import { Category as CategoryType, IFoodTruckForm, IFoodTruckMessage } from "@interface/owner";
+import { categories } from "@utils/foodTruckData";
 import { allElementsHaveValues, allPropertiesNotHaveValues } from "@utils/util";
-import useFoodTruckStore from "@store/foodTruckStore";
 
-const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
-	const nav = useNavigate();
-
-	const {
-		name,
-		licenseNumber,
-		introduction,
-		category,
-		updateName,
-		updateLicenseNumber,
-		updateIntroduction,
-		updateCategory,
-	} = useFoodTruckStore();
-
-	const [form, setForm] = useState<IFoodTruckDTO>({
-		name,
-		licenseNumber,
-		introduction,
-		category,
-	});
-
+const FoodTruckForm = ({ formData, buttonText, setFormData, onSubmit }: IFoodTruckForm) => {
 	const [validateMessage, setValidateMessage] = useState<IFoodTruckMessage>({
 		name: "",
 		licenseNumber: "",
@@ -40,11 +16,11 @@ const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 	});
 
 	const isValid =
-		allElementsHaveValues(form.name, form.licenseNumber, form.category) &&
+		allElementsHaveValues(formData.name, formData.licenseNumber, formData.category) &&
 		allPropertiesNotHaveValues(validateMessage);
 
 	const handleChangeName = (name: string) => {
-		setForm({ ...form, name });
+		setFormData({ ...formData, name });
 		if (name.length === 0) {
 			setValidateMessage({ ...validateMessage, name: "상호명을 입력해야 합니다." });
 			return;
@@ -57,7 +33,7 @@ const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 	};
 
 	const handleChangeLicenseNumber = (licenseNumber: string) => {
-		setForm({ ...form, licenseNumber });
+		setFormData({ ...formData, licenseNumber });
 		if (licenseNumber.length === 0) {
 			setValidateMessage({ ...validateMessage, licenseNumber: "사업자 등록번호를 입력해야 합니다." });
 			return;
@@ -70,7 +46,7 @@ const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 	};
 
 	const handleChangeIntroduction = (introduction: string) => {
-		setForm({ ...form, introduction });
+		setFormData({ ...formData, introduction });
 		if (introduction.length > 20) {
 			setValidateMessage({ ...validateMessage, introduction: "소개글은 20자 이하입니다." });
 			return;
@@ -80,11 +56,6 @@ const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 
 	const handleSubmit = () => {
 		onSubmit();
-		updateName(form.name);
-		updateLicenseNumber(form.licenseNumber);
-		updateIntroduction(form.introduction);
-		updateCategory(form.category);
-		nav("/owner/foodtruck");
 	};
 
 	return (
@@ -93,7 +64,7 @@ const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 				<InputField
 					label="상호명"
 					type="text"
-					value={form.name}
+					value={formData.name}
 					placeholder="상호명을 입력하세요(10자 이하, 필수)"
 					onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeName(event.target.value)}
 					message={validateMessage.name}
@@ -101,7 +72,7 @@ const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 				<InputField
 					label="사업자 등록번호"
 					type="text"
-					value={form.licenseNumber}
+					value={formData.licenseNumber}
 					placeholder="사업자 등록번호를 입력하세요(10자, 필수)"
 					onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
 						handleChangeLicenseNumber(event.target.value)
@@ -111,7 +82,7 @@ const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 				<InputField
 					label="소개글"
 					type="text"
-					value={form.introduction}
+					value={formData.introduction}
 					placeholder="소개글을 입력하세요(20자 이하, 선택)"
 					onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
 						handleChangeIntroduction(event.target.value)
@@ -122,12 +93,12 @@ const FoodTruckForm = ({ buttonText, onSubmit }: IForm) => {
 					<div className="flex flex-col">
 						<label className="mb-3 text-3xl font-bold">카테고리</label>
 						<div className="flex flex-wrap justify-start gap-5">
-							{categoryList.map(({ name }) => (
+							{(Object.entries(categories) as [CategoryType, string][]).map(([key, value]) => (
 								<Category
-									className={name === form.category ? "bg-boss text-white" : "bg-white text-black"}
-									buttonText={name}
-									key={name}
-									onClick={() => setForm({ ...form, category: name })}
+									className={key === formData.category ? "bg-boss text-white" : "bg-white text-black"}
+									buttonText={value}
+									key={value}
+									onClick={() => setFormData({ ...formData, category: key })}
 								/>
 							))}
 						</div>

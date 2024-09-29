@@ -1,3 +1,7 @@
+import { Dispatch, SetStateAction } from "react";
+
+import { IFoodTruckDTO } from "@interface/api";
+
 export interface IFoodTruckMessage {
 	licenseNumber: string;
 	name: string;
@@ -19,10 +23,18 @@ export interface IMenuMessage {
 	name: string;
 }
 
-export interface IFormContainer {
-	title: string;
+export interface IForm {
 	buttonText: string;
 	onSubmit: () => void;
+}
+
+export interface IFormContainer extends IForm {
+	title: string;
+}
+
+export interface IFoodTruckForm extends IForm {
+	formData: IFoodTruckDTO;
+	setFormData: Dispatch<SetStateAction<IFoodTruckDTO>>;
 }
 
 export interface ITodayMenu {
@@ -37,3 +49,13 @@ export interface ITodayMenuProps {
 	todayMenu: ITodayMenu;
 	onSelect: () => void;
 }
+
+export type Category =
+	| "KOREAN"
+	| "JAPANESE"
+	| "CHINESE"
+	| "WESTERN"
+	| "BUNSIK"
+	| "ASIAN"
+	| "FAST_FOOD"
+	| "CAFE_DESSERT";

@@ -16,7 +16,7 @@ export interface IAuthAction {
 }
 
 export interface IFoodTruckState extends IFoodTruckDTO {
-	isExist: boolean;
+	foodTruckId: number;
 }
 
 export interface IFoodTruckAction {
@@ -24,6 +24,7 @@ export interface IFoodTruckAction {
 	updateLicenseNumber: (licenseNumber: IFoodTruckState["licenseNumber"]) => void;
 	updateIntroduction: (introduction: IFoodTruckState["introduction"]) => void;
 	updateCategory: (category: IFoodTruckState["category"]) => void;
-	updateIsExist: (isExist: IFoodTruckState["isExist"]) => void;
+	updateFoodTruckId: (category: IFoodTruckState["foodTruckId"]) => void;
+	updateAll: (newState: IFoodTruckState) => void;
 	reset: () => void;
 }

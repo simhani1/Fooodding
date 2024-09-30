@@ -17,6 +17,10 @@ export interface IBarGraph {
 	labels: any;
 }
 
+export interface IFloating {
+	setActiveSection: (section: string) => void;
+}
+
 // 지도 폴리곤 관련 인터페이스
 export interface ILatLng {
 	lat: number;

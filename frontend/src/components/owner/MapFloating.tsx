@@ -1,9 +1,16 @@
 import { useState } from "react";
 
+import { IFloating } from "@interface/map";
+
 import { Circle } from "@phosphor-icons/react";
 
-const MapFloating = () => {
+const MapFloating = ({setActiveSection} : IFloating) => {
 	const [active, setActive] = useState("recommend");
+
+	const handleSection = (section: string) => {
+		setActive(section);
+		setActiveSection(section);
+	}
 
 	// 구역별 컴포넌트 변경 연산
 	const clickRecommend = active === "recommend" ? "bg-boss text-white" : "bg-white text-gray";
@@ -18,19 +25,19 @@ const MapFloating = () => {
 			<div className="flex justify-center">
 				<div
 					className={`recommend w-24 py-2 rounded-l-lg flex justify-center text-xl font-semibold border border-solid border-gray ${clickRecommend}`}
-					onClick={() => setActive("recommend")}
+					onClick={() => handleSection("recommend")}
 				>
 					추천구역
 				</div>
 				<div
 					className={`permission w-24 py-2 flex justify-center text-xl font-semibold border border-solid border-gray ${clickPermission}`}
-					onClick={() => setActive("permission")}
+					onClick={() => handleSection("permission")}
 				>
 					허가구역
 				</div>
 				<div
 					className={`congestion w-24 py-2 rounded-r-lg flex justify-center text-xl font-semibold border border-solid border-gray ${clickCongestion}`}
-					onClick={() => setActive("congestion")}
+					onClick={() => handleSection("congestion")}
 				>
 					혼잡도
 				</div>

@@ -9,9 +9,10 @@ import seoulPath from "@utils/seoul-si-path.json";
 import gooPath from "@utils/seoul-goo-path.json";
 import dongPath from "@utils/seoul-dong-path.json";
 import transform from "@utils/transform-wgs84";
+import permissionSection from "@utils/food-truck-permission.json";
 import { IFeatureCollection, ILatLng, IPolygonPath } from "@interface/map";
 
-import { CustomOverlayMap, Map, Polygon } from "react-kakao-maps-sdk";
+import { CustomOverlayMap, Map, MapMarker, Polygon } from "react-kakao-maps-sdk";
 
 const OwnerMap = () => {
 	const [map, setMap] = useState<any>();
@@ -20,6 +21,7 @@ const OwnerMap = () => {
 	const [selectDong, setSelectDong] = useState<string>("");
 	const [isButton, setIsButton] = useState<boolean>(false);
 	const [showDetail, setShowDetail] = useState<boolean>(false);
+	const [activeSection, setActiveSection] = useState<string>("recommend");
 
 	// 초기 지도 설정 (서울시)
 	useEffect(() => {
@@ -44,6 +46,34 @@ const OwnerMap = () => {
 			setOuter(outerPolygon);
 		}
 	}, [map]);
+
+	// MapFloating 상태에 따른 지도 표시 초기 설정
+	////////// 임시
+	const recommendMark = [
+		"일원1동",
+		"서초2동",
+		"종암1동",
+		"수유3동",
+		"창5동",
+		"중계4동",
+		"잠실2동",
+		"신림동",
+		"천호3동",
+		"면목4동",
+	];
+	//////////
+
+	const permissionMark = permissionSection.map((section) => ({
+		name: section.name,
+		address: section.address,
+		path: [section.lat, section.lng],
+	}));
+
+	////////// 임시
+	const colorMap = ["#EE494C", "#F5CE0C", "#56E87B", "#67C7FF"];
+	const length = 454;
+	const congestionColor = Array.from({ length }, (_, index) => (index % 4) + 1);
+	//////////
 
 	// 서울 전체 보기 버튼
 	const handleButtonClick = () => {
@@ -131,6 +161,13 @@ const OwnerMap = () => {
 		setShowDetail(true);
 	};
 
+	// 마커 클릭 시 요소 띄우기
+	const [isOpenTruck, setIsOpenTruck] = useState<boolean[]>(new Array(permissionMark.length).fill(false));
+
+	const toggleOpenTruck = (index: number) => {
+		setIsOpenTruck((prev) => prev.map((isOpenTruck, i) => (i === index ? !isOpenTruck : isOpenTruck)));
+	};
+
 	return (
 		<div
 			id="boss-map"
@@ -139,15 +176,13 @@ const OwnerMap = () => {
 			<TheSideBar />
 			<WhiteButton onClick={handleButtonClick} />
 
-			{level === 8 ? (
-				<MapFloating />
+			{!isButton ? (
+				<MapFloating setActiveSection={setActiveSection} />
 			) : (
-				isButton && (
-					<GradiantButton
-						onClick={handleDetailButtonClick}
-						text={selectDong}
-					/>
-				)
+				<GradiantButton
+					onClick={handleDetailButtonClick}
+					text={selectDong}
+				/>
 			)}
 
 			<Map
@@ -166,6 +201,64 @@ const OwnerMap = () => {
 					/>
 				)}
 
+				{/* 추천구역 & 허가구역 & 혼잡도 표시 */}
+				{activeSection === "recommend"
+					? dongPolygons
+							.filter((dong) => recommendMark.some((recommend) => dong.name.includes(recommend)))
+							.map((dong, index) => {
+								return (
+									<Polygon
+										key={index}
+										path={dong.path}
+										strokeColor="#F27387"
+										strokeWeight={2}
+										fillColor="#F27387"
+										fillOpacity={0.8}
+										onClick={() => handleDongClick(dong.path, dong.name)}
+										zIndex={10}
+									/>
+								);
+							})
+					: activeSection === "permission"
+					? permissionMark.map((mark, index) => (
+							<div key={index}>
+								<MapMarker
+									position={{ lat: mark.path[0], lng: mark.path[1] }}
+									onClick={() => toggleOpenTruck(index)}
+									image={{
+										src: "/MapTruckPin.png",
+										size: {
+											width: level === 8 ? 64 : 96,
+											height: level === 8 ? 64 : 96,
+										},
+									}}
+								>
+									{isOpenTruck[index] && (
+										<div className="p-2 mx-auto text-2xl font-semibold text-center truncate">
+											{mark.name}
+										</div>
+									)}
+								</MapMarker>
+							</div>
+					  ))
+					: dongPolygons.map((dongPolygon, index) => {
+							const colorKey = congestionColor[index % congestionColor.length]; // 색상 키 가져오기
+							const fillColor = colorMap[colorKey];
+
+							return (
+								<Polygon
+									key={index}
+									path={dongPolygon.path}
+									strokeColor={fillColor}
+									strokeWeight={2}
+									fillColor={fillColor}
+									fillOpacity={0.5}
+									zIndex={10}
+									onClick={() => handleDongClick(dongPolygon.path, dongPolygon.name)}
+								/>
+							);
+					  })}
+
 				{/* 구별 폴리곤 */}
 				{level === 8
 					? gooPolygons.map((gooPolygon, index) => (
@@ -179,7 +272,7 @@ const OwnerMap = () => {
 								zIndex={10}
 								onClick={() => handleGooClick(gooPolygon.path)}
 							/>
-						))
+					  ))
 					: gooPolygons.map((gooPolygon, index) => (
 							<Polygon
 								key={index}
@@ -188,10 +281,9 @@ const OwnerMap = () => {
 								strokeWeight={5}
 								fillColor="#000000"
 								fillOpacity={0.01}
-								zIndex={10}
 								onClick={() => handleGooClick(gooPolygon.path)}
 							/>
-						))}
+					  ))}
 
 				{/* 폴리곤 중앙에 구 이름 표시 */}
 				{level === 8 &&
@@ -287,7 +379,6 @@ const OwnerMap = () => {
 							<CustomOverlayMap
 								key={index}
 								position={{ lat: adjustCenter.lat, lng: adjustCenter.lng }}
-								zIndex={10}
 							>
 								<div
 									onClick={() => handleGooClick(gooPolygon.path)}

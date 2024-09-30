@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Modal from "@components/common/Modal";
 import MenuForm from "@components/owner/MenuForm";
@@ -6,20 +6,59 @@ import MenuForm from "@components/owner/MenuForm";
 import { IMenu } from "@interface/owner";
 import defaultImage from "@assets/default_menu_image.png";
 import { menuModalStyle } from "@utils/modalStyle";
+import useMenuModal from "@hooks/useMenuModal";
+import { deleteMenu, updateMenu } from "@api/food-truck-api";
+import useFoodTruckStore from "@store/foodTruckStore";
 
 const Menu = ({ id, image, name, price }: IMenu) => {
-	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	const nav = useNavigate();
 
-	const closeModal = () => {
-		setIsModalOpen(false);
+	const { isModalOpen, imageFile, formData, setImageFile, setFormData, closeModal, openModal } = useMenuModal({
+		name,
+		price,
+		image,
+	});
+
+	const { foodTruckId } = useFoodTruckStore();
+
+	const handleUpdate = async () => {
+		try {
+			const { data } = await updateMenu(foodTruckId, id, {
+				req: {
+					name: formData.name,
+					price: formData.price,
+				},
+				menuImg: imageFile,
+			});
+
+			if (data.isSuccess) {
+				alert("메뉴 수정 성공");
+				nav(0);
+				closeModal();
+			} else {
+				alert("메뉴 수정 실패");
+			}
+		} catch (error) {
+			alert("요청 실패");
+		}
 	};
 
-	const openModal = () => {
-		setIsModalOpen(true);
+	const handleDelete = async () => {
+		const check = confirm("메뉴를 삭제하시겠습니까?");
+		if (check) {
+			try {
+				const { data } = await deleteMenu(id);
+				if (data.isSuccess) {
+					nav(0);
+					alert("메뉴 삭제 성공");
+				} else {
+					alert("메뉴 삭제 실패");
+				}
+			} catch (error) {
+				alert("요청 실패");
+			}
+		}
 	};
-
-	const handleUpdate = () => {};
-	const handleDelete = () => {};
 
 	return (
 		<div className="flex flex-col justify-around w-56 rounded-md shadow-md h-72">
@@ -54,7 +93,9 @@ const Menu = ({ id, image, name, price }: IMenu) => {
 				<MenuForm
 					title="메뉴 수정"
 					buttonText="수정 완료"
-					menu={{ id, image, name, price }}
+					formData={formData}
+					setFormData={setFormData}
+					setImageFile={setImageFile}
 					onSubmit={handleUpdate}
 				/>
 			</Modal>

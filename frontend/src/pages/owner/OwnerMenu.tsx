@@ -1,24 +1,77 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Modal from "@components/common/Modal";
 import Title from "@components/common/Title";
 import Container from "@components/owner/Container";
+import BackButton from "@components/owner/BackButton";
 import Main from "@components/owner/Main";
 import Menu from "@components/owner/Menu";
 import MenuForm from "@components/owner/MenuForm";
 
 import { menuModalStyle } from "@utils/modalStyle";
-import BackButton from "@components/owner/BackButton";
+import useMenuModal from "@hooks/useMenuModal";
+import { getMenuList, registerMenu } from "@api/food-truck-api";
+import useFoodTruckStore from "@store/foodTruckStore";
+import { IMenu } from "@interface/owner";
 
 const OwnerMenu = () => {
-	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	const nav = useNavigate();
+	const { isModalOpen, imageFile, formData, setImageFile, setFormData, closeModal, openModal } = useMenuModal({
+		name: "",
+		price: 0,
+		image: "",
+	});
 
-	const closeModal = () => {
-		setIsModalOpen(false);
-	};
+	const [menuList, setMenuList] = useState<IMenu[]>([]);
 
-	const openModal = () => {
-		setIsModalOpen(true);
+	const { foodTruckId } = useFoodTruckStore();
+
+	useEffect(() => {
+		const loadMenuList = async () => {
+			try {
+				const { data } = await getMenuList(foodTruckId);
+				if (data.isSuccess) {
+					const menuData: IMenu[] = data.data.map((item) => {
+						return {
+							id: item.menuId,
+							name: item.name,
+							price: item.price,
+							image: item.img,
+						};
+					});
+					setMenuList(menuData);
+				} else {
+					alert("메뉴 조회 실패");
+				}
+			} catch (error) {
+				alert("요청 실패");
+			}
+		};
+
+		loadMenuList();
+	}, []);
+
+	const handleCreate = async () => {
+		try {
+			const { data } = await registerMenu(foodTruckId, {
+				req: {
+					name: formData.name,
+					price: formData.price,
+				},
+				menuImg: imageFile,
+			});
+
+			if (data.isSuccess) {
+				alert("메뉴 등록 성공");
+				nav(0);
+				closeModal();
+			} else {
+				alert("메뉴 등록 실패");
+			}
+		} catch (error) {
+			alert("요청 실패");
+		}
 	};
 
 	return (
@@ -37,7 +90,7 @@ const OwnerMenu = () => {
 							추가
 						</button>
 					</div>
-					<div className="">
+					<div>
 						<div className="flex flex-wrap gap-6">
 							{menuList.map((item) => (
 								<Menu
@@ -55,7 +108,10 @@ const OwnerMenu = () => {
 						<MenuForm
 							title="메뉴 추가"
 							buttonText="추가"
-							onSubmit={() => {}}
+							formData={formData}
+							setFormData={setFormData}
+							setImageFile={setImageFile}
+							onSubmit={handleCreate}
 						/>
 					</Modal>
 				</>
@@ -65,54 +121,3 @@ const OwnerMenu = () => {
 };
 
 export default OwnerMenu;
-
-const menuList = [
-	{
-		id: 1,
-		image: "",
-		name: "팥 붕어빵",
-		price: 1000,
-	},
-	{
-		id: 2,
-		image: "",
-		name: "슈크림 붕어빵",
-		price: 1500,
-	},
-	{
-		id: 3,
-		image: "",
-		name: "민트초코 붕어빵",
-		price: 2000,
-	},
-	{
-		id: 4,
-		image: "",
-		name: "파인애플 붕어빵",
-		price: 2000,
-	},
-	{
-		id: 5,
-		image: "",
-		name: "바나나 붕어빵",
-		price: 2000,
-	},
-	{
-		id: 6,
-		image: "",
-		name: "초코 붕어빵",
-		price: 1500,
-	},
-	{
-		id: 7,
-		image: "",
-		name: "녹차 붕어빵",
-		price: 1500,
-	},
-	{
-		id: 8,
-		image: "",
-		name: "땅콩 붕어빵",
-		price: 1500,
-	},
-];

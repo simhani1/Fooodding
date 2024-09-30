@@ -8,11 +8,17 @@ export interface IFoodTruckMessage {
 	introduction: string;
 }
 
-export interface IMenu {
-	id: number;
-	image?: string;
+export interface IMenuRequired {
 	name: string;
-	price: number | string;
+	price: number;
+}
+
+export interface IMenuFormData extends IMenuRequired {
+	image?: string;
+}
+
+export interface IMenu extends IMenuFormData {
+	id: number;
 }
 
 export interface IMenuForm extends IFormContainer {
@@ -21,6 +27,20 @@ export interface IMenuForm extends IFormContainer {
 
 export interface IMenuMessage {
 	name: string;
+}
+
+export interface IMenuImage {
+	image: string | undefined;
+	setImage: (file: File) => void;
+}
+
+export interface IMenuFormProps {
+	title: string;
+	buttonText: string;
+	formData: IMenuFormData;
+	setFormData: Dispatch<SetStateAction<IMenuFormData>>;
+	setImageFile: Dispatch<SetStateAction<File | undefined>>;
+	onSubmit: () => void;
 }
 
 export interface IForm {

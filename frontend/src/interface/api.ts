@@ -46,15 +46,7 @@ export interface IFoodTruckCreateResponseDTO extends IBaseResponseDTO {
 }
 
 export interface IMenuResponseDTO extends IBaseResponseDTO {
-	data: [
-		{
-			menuId: number;
-			name: string;
-			price: number;
-			img: string;
-			onSale: boolean;
-		},
-	];
+	data: { menuId: number; name: string; price: number; img: string; onSale: boolean }[];
 }
 
 // auth

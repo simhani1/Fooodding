@@ -41,7 +41,7 @@ public class MenuFacade {
 
 	private String getImgUrl(MultipartFile menuImg) {
 		String imgUrl = null;
-		if (!menuImg.isEmpty()) {
+		if (menuImg != null && !menuImg.isEmpty()) {
 			imgUrl = uploadMenuImgHelper.uploadMenuImg(menuImg);
 		}
 		return imgUrl;

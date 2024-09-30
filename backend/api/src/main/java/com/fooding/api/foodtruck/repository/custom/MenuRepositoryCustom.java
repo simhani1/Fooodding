@@ -21,8 +21,8 @@ public class MenuRepositoryCustom {
 
 	public List<Menu> findMenuListJoinWithFoodTruck(FoodTruck foodTruck) {
 		return queryFactory.selectFrom(menu)
-			.leftJoin(QFoodTruck.foodTruck)
-			.on(menu.foodTruck.eq(foodTruck))
+			.leftJoin(menu.foodTruck, QFoodTruck.foodTruck)
+			.where(menu.foodTruck.eq(foodTruck))
 			.fetch();
 	}
 

@@ -78,10 +78,11 @@ public class FoodTruck {
 	}
 
 	public void open(Double latitude, Double longitude, List<Long> unsoldMenuId) {
-		this.menuList.stream()
-			.filter(menu -> unsoldMenuId.contains(menu.getId()))
-			.forEach(Menu::disableSale);
-
+		if (unsoldMenuId != null && !unsoldMenuId.isEmpty()) {
+			this.menuList.stream()
+				.filter(menu -> unsoldMenuId.contains(menu.getId()))
+				.forEach(Menu::disableSale);
+		}
 		this.commerceInfo = CommerceInfo.getOpened(latitude, longitude);
 	}
 

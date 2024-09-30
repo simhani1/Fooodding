@@ -8,6 +8,7 @@ import Menu from "@components/owner/Menu";
 import MenuForm from "@components/owner/MenuForm";
 
 import { menuModalStyle } from "@utils/modalStyle";
+import BackButton from "@components/owner/BackButton";
 
 const OwnerMenu = () => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -25,7 +26,10 @@ const OwnerMenu = () => {
 			<Main>
 				<>
 					<div className="flex justify-between">
-						<Title title="메뉴 관리" />
+						<div className="flex items-center gap-4">
+							<BackButton />
+							<Title title="메뉴 관리" />
+						</div>
 						<button
 							className="text-3xl"
 							onClick={() => openModal()}

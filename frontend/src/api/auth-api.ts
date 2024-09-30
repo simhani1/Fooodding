@@ -13,11 +13,11 @@ const path: ObjectType<string> = {
 };
 
 export const reissue = (): ApiResponse<IReissueResponseDTO> => {
-	return axiosInstance.post(`${path[role]}/reissue`, { role });
+	return axiosInstance.post(`${basePath}${path[role]}/reissue`, { role });
 };
 
 export const logout = () => {
-	return axiosInstance.post(`${path[role]}/logout`);
+	return axiosInstance.post(`${basePath}${path[role]}/logout`);
 };
 
 export const loginNaver = (dto: INaverLoginDTO): ApiResponse<INaverLoginResponseDTO> => {
@@ -25,5 +25,5 @@ export const loginNaver = (dto: INaverLoginDTO): ApiResponse<INaverLoginResponse
 };
 
 export const withdraw = () => {
-	return axiosInstance.patch(`${path}/withdraw`);
+	return axiosInstance.patch(`${basePath}${path}/withdraw`);
 };

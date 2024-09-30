@@ -17,7 +17,7 @@ export const registerFoodTruck = (req: IFoodTruckDTO): ApiResponse<IFoodTruckCre
 };
 
 export const updateFoodTruck = (foodTruckId: number, req: IFoodTruckDTO): ApiResponse<INoResponseDTO> => {
-	return axiosInstance.post(`${path}/${foodTruckId}`, req);
+	return axiosInstance.patch(`${path}/${foodTruckId}`, req);
 };
 
 export const getFoodTruck = (foodTruckId: number): ApiResponse<IFoodTruckResponseDTO> => {

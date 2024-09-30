@@ -31,6 +31,7 @@ export interface INaverLoginResponseDTO extends IBaseResponseDTO {
 	data: {
 		nickname: string;
 		accessToken: string;
+		foodTruckId: number;
 	};
 }
 

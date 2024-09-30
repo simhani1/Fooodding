@@ -19,6 +19,7 @@ const useAuthStore = create(
 			updateRole: (role) => set(() => ({ role })),
 			updateNickname: (nickname) => set(() => ({ nickname })),
 			updateAccessToken: (accessToken) => set(() => ({ accessToken })),
+			updateOnLogin: (newState) => set(() => ({ ...newState })),
 			reset: () => set(initialState),
 		}),
 		{

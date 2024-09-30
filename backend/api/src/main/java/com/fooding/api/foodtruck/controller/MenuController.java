@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,8 +37,8 @@ public class MenuController {
 
 	@PostMapping(value = "/{ft-id}/menu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<BaseResponse<?>> registerMenu(
-		@PathVariable("ft-id") long foodTruckId,
-		@RequestPart("req") MenuReq req,
+		@PathVariable("ft-id") Long foodTruckId,
+		@RequestBody MenuReq req,
 		@RequestPart(value = "menuImg", required = false) MultipartFile menuImg) {
 		menuFacade.registerMenu(foodTruckId, req, menuImg);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
@@ -45,9 +46,9 @@ public class MenuController {
 
 	@PatchMapping(value = "/{ft-id}/menu/{menu-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<BaseResponse<?>> updateMenu(
-		@PathVariable("ft-id") long foodTruckId,
+		@PathVariable("ft-id") Long foodTruckId,
 		@PathVariable("menu-id") Long menuId,
-		@RequestPart("req") MenuReq req,
+		@RequestBody MenuReq req,
 		@RequestPart(value = "menuImg", required = false) MultipartFile menuImg) {
 		menuFacade.updateMenu(foodTruckId, menuId, req, menuImg);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());

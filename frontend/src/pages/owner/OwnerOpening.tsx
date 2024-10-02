@@ -161,7 +161,7 @@ const OwnerOpening = () => {
 
 		try {
 			await openMarket(foodTruckId, request);
-			nav("/owner/close");
+			nav("/owners/close");
 		} catch (err) {
 			console.error("장사 시작 중 오류가 발생했습니다!", err);
 		}
@@ -240,7 +240,7 @@ const OwnerOpening = () => {
 									<p className="my-20 text-2xl font-bold text-center"> 메뉴를 먼저 등록해주세요. </p>
 									<button
 										className="px-6 py-3 my-5 text-xl font-bold text-white rounded bg-gradient-to-r from-main to-boss"
-										onClick={() => nav("/owner/foodtruck/menu")} //나중에 메뉴란으로 연결
+										onClick={() => nav("/owners/foodtruck/menu")} //나중에 메뉴란으로 연결
 									>
 										메뉴 등록하기
 									</button>

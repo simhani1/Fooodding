@@ -36,7 +36,7 @@ const OwnerFoodTruck = () => {
 							<Title title="푸드트럭 정보 관리" />
 							<button
 								className="text-3xl"
-								onClick={() => nav("/owner/foodtruck/edit")}
+								onClick={() => nav("/owners/foodtruck/edit")}
 							>
 								수정
 							</button>
@@ -64,7 +64,7 @@ const OwnerFoodTruck = () => {
 					<h4 className="text-3xl text-center">아직 푸드트럭을 등록하지 않았어요.</h4>
 					<button
 						className="h-16 mx-auto text-2xl text-white w-96 bg-gradient-to-r from-main to-boss rounded-xl"
-						onClick={() => nav("/owner/foodtruck/create")}
+						onClick={() => nav("/owners/foodtruck/create")}
 					>
 						푸드트럭 등록하기
 					</button>

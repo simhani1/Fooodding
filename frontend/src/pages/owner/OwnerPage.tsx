@@ -5,7 +5,7 @@ import NavButton from "@components/common/NavButton";
 import Container from "@components/owner/Container";
 import Main from "@components/owner/Main";
 
-const basePath = "/owner";
+const basePath = "/owners";
 
 const OwnerPage = () => {
 	const nav = useNavigate();

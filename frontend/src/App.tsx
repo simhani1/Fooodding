@@ -13,7 +13,7 @@ import OwnerFoodTruck from "@pages/owner/OwnerFoodTruck";
 import FoodTruckEdit from "@pages/owner/FoodTruckEdit";
 import OwnerOpening from "@pages/owner/OwnerOpening";
 import OwnerWaiting from "@pages/owner/OwnerWaiting";
-import OwnerAnnouncement from "@pages/owner/OwnerAnnounceMent";
+import OwnerAnnouncement from "@pages/owner/OwnerAnnouncement";
 import UserMap from "@pages/user/UserMap";
 import UserFoodTruck from "@pages/user/UserFoodTruck";
 import UserWaiting from "@pages/user/UserWaiting";

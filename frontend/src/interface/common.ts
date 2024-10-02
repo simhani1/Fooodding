@@ -33,7 +33,6 @@ export interface IAnnouncementButton extends IButton {
 	place?: string;
 	duration?: string;
 	lastDate?: string;
-	link?: string;
 }
 
 export interface IModal {

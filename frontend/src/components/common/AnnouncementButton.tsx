@@ -1,6 +1,6 @@
 import { IAnnouncementButton } from "@interface/common";
 
-const AnnouncementButton = ({ buttonText, onClick, place, duration, lastDate, link }: IAnnouncementButton) => {
+const AnnouncementButton = ({ buttonText, onClick, place, duration, lastDate }: IAnnouncementButton) => {
 	return (
 		<button
 			type="button"

@@ -69,7 +69,7 @@ public class FoodTruckController {
 	}
 
 	@RequireJwtToken
-	@GetMapping("/owner")
+	@GetMapping("/owners")
 	public ResponseEntity<BaseResponse<FoodTruckDto>> getFoodTruckDetailForOwner() {
 		Long ownerId = MemberContext.getMemberId();
 		return ResponseEntity.ok(

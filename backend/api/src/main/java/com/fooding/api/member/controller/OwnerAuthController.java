@@ -1,11 +1,8 @@
 package com.fooding.api.member.controller;
 
-import java.time.Duration;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -49,15 +46,12 @@ public class OwnerAuthController {
 		HttpServletResponse response) {
 		LoginDto res = authService.naverLogin(req.accessToken(), req.role());
 
-		ResponseCookie responseCookie = ResponseCookie.from(REFRESH_TOKEN, res.refreshToken())
-			.httpOnly(true)
-			.secure(true)
-			.path("/")
-			.maxAge(Duration.ofMillis(REFRESH_TOKEN_EXPIRATION_TIME))
-			.domain("j11a608.p.ssafy.io")
-			.sameSite("None")
-			.build();
-		response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
+		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, res.refreshToken());
+		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setPath("/");
+		refreshTokenCookie.setDomain("j11a608.p.ssafy.io");
+		response.addCookie(refreshTokenCookie);
 
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}

@@ -44,9 +44,11 @@ public class UserAuthController {
 		LoginDto res = authService.naverLogin(req.accessToken(), req.role());
 
 		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, res.refreshToken());
+		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
 		refreshTokenCookie.setHttpOnly(true);
 		refreshTokenCookie.setPath("/");
-		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
+		refreshTokenCookie.setDomain("j11a608.p.ssafy.io");
+		response.addCookie(refreshTokenCookie);
 
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}

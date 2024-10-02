@@ -29,7 +29,7 @@ const FoodTruckCreate = () => {
 			}
 		} catch (error) {
 		} finally {
-			nav("/owner/foodtruck");
+			nav("/owners/foodtruck");
 		}
 	};
 

@@ -45,7 +45,7 @@ const TheFooter = () => {
 						src={navbarReservation}
 						alt="예약"
 						className="mt-24 mb-1 w-11 h-11"
-						onClick={() => nav("/user/list")}
+						onClick={() => nav("/users/list")}
 					/>
 				</div>
 				<div className="flex items-center justify-center w-12 h-12 rounded-full">
@@ -53,7 +53,7 @@ const TheFooter = () => {
 						src={navbarHome}
 						alt="홈화면"
 						className="w-12 h-12 mt-14"
-						onClick={() => nav("/user")}
+						onClick={() => nav("/users")}
 					/>
 				</div>
 				<div className="flex items-center justify-center w-12 h-12 rounded-full">

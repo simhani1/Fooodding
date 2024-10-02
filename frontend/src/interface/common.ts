@@ -47,9 +47,3 @@ export interface ILoginCard {
 	children: JSX.Element;
 	onClick: () => void;
 }
-
-export type PathType = {
-	role: string;
-};
-
-export type ObjectType<V> = { [key: string]: V };

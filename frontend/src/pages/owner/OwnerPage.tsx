@@ -28,10 +28,6 @@ const OwnerPage = () => {
 							buttonText="공고 알림 목록"
 							onClick={() => nav(`${basePath}/announcement`)}
 						/>
-						<NavButton
-							buttonText="소셜 계정"
-							onClick={() => nav(`/auth/social`)}
-						/>
 					</div>
 					<div className="flex items-center justify-center mt-10">
 						<button className="text-xl text-gray">로그아웃</button>

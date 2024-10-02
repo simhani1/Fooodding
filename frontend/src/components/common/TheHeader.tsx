@@ -16,7 +16,7 @@ const TheHeader = () => {
 					className="w-36"
 					src={Logo}
 					alt="logo"
-					onClick={() => nav("/user")}
+					onClick={() => nav("/users")}
 				/>
 				<div style={{ width: 24 }}></div>
 			</div>

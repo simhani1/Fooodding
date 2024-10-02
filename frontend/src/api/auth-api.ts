@@ -1,29 +1,57 @@
-import { ApiResponse, INaverLoginDTO, INaverLoginResponseDTO, IReissueResponseDTO } from "@interface/api";
-import { ObjectType } from "@interface/common";
+import { ApiResponse, INaverLoginDTO, INaverLoginResponseDTO, IReissueResponseDTO, RoleParam } from "@interface/api";
 import axiosInstance from "@api/axiosInstance";
-import useAuthStore from "@store/authStore";
-
-const { role } = useAuthStore.getState();
 
 const basePath = `/members/auth`;
 
-const path: ObjectType<string> = {
-	OWNER: "/owners",
-	USER: "/users",
+const OWNER = "owners";
+const USER = "users";
+
+const reissue = (role: RoleParam): ApiResponse<IReissueResponseDTO> => {
+	return axiosInstance.post(`${basePath}/${role}/reissue`);
 };
 
-export const reissue = (): ApiResponse<IReissueResponseDTO> => {
-	return axiosInstance.post(`${basePath}${path[role]}/reissue`, { role });
+const logout = (role: RoleParam) => {
+	return axiosInstance.post(`${basePath}/${role}/logout`);
 };
 
-export const logout = () => {
-	return axiosInstance.post(`${basePath}${path[role]}/logout`);
+const loginNaver = (role: RoleParam, dto: INaverLoginDTO): ApiResponse<INaverLoginResponseDTO> => {
+	return axiosInstance.post(`${basePath}/${role}/login/naver`, dto);
 };
 
-export const loginNaver = (dto: INaverLoginDTO): ApiResponse<INaverLoginResponseDTO> => {
-	return axiosInstance.post(`${basePath}${path[dto.role]}/login/naver`, dto);
+const withdraw = (role: RoleParam) => {
+	return axiosInstance.patch(`${basePath}/${role}/withdraw`);
 };
 
-export const withdraw = () => {
-	return axiosInstance.patch(`${basePath}${path}/withdraw`);
+// owner
+export const ownerReissue = (): ApiResponse<IReissueResponseDTO> => {
+	return reissue(OWNER);
+};
+
+export const ownerLogout = () => {
+	return logout(OWNER);
+};
+
+export const ownerLoginNaver = (dto: INaverLoginDTO): ApiResponse<INaverLoginResponseDTO> => {
+	return loginNaver(OWNER, dto);
+};
+
+export const ownerWithdraw = () => {
+	return withdraw(OWNER);
+};
+
+// user
+export const userReissue = (): ApiResponse<IReissueResponseDTO> => {
+	return reissue(USER);
+};
+
+export const userLogout = () => {
+	return logout(USER);
+};
+
+export const userLoginNaver = (dto: INaverLoginDTO): ApiResponse<INaverLoginResponseDTO> => {
+	return loginNaver(USER, dto);
+};
+
+export const userWithdraw = () => {
+	return withdraw(USER);
 };

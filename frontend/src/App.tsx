@@ -1,29 +1,29 @@
+import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import Login from "@pages/Login";
-import LoginSelect from "@pages/auth/LoginSelect";
-import SocialLogin from "@pages/auth/SocialLogin";
-import NaverLoginHandler from "@pages/auth/NaverLoginHandler";
-import OwnerMain from "@pages/owner/OwnerMain";
-import OwnerPage from "@pages/owner/OwnerPage";
-import OwnerMap from "@pages/owner/OwnerMap";
-import OwnerMenu from "@pages/owner/OwnerMenu";
-import FoodTruckCreate from "@pages/owner/FoodTruckCreate";
-import OwnerFoodTruck from "@pages/owner/OwnerFoodTruck";
-import FoodTruckEdit from "@pages/owner/FoodTruckEdit";
-import OwnerOpening from "@pages/owner/OwnerOpening";
-import OwnerWaiting from "@pages/owner/OwnerWaiting";
-import OwnerAnnouncement from "@pages/owner/OwnerAnnouncement";
-import UserMap from "@pages/user/UserMap";
-import UserFoodTruck from "@pages/user/UserFoodTruck";
-import UserWaiting from "@pages/user/UserWaiting";
-import UserWaitingList from "@pages/user/UserWaitingList";
+const Login = lazy(() => import("@pages/Login"));
+const LoginSelect = lazy(() => import("@pages/auth/LoginSelect"));
+const NaverLoginHandler = lazy(() => import("@pages/auth/NaverLoginHandler"));
+const OwnerMain = lazy(() => import("@pages/owner/OwnerMain"));
+const OwnerPage = lazy(() => import("@pages/owner/OwnerPage"));
+const OwnerMap = lazy(() => import("@pages/owner/OwnerMap"));
+const OwnerMenu = lazy(() => import("@pages/owner/OwnerMenu"));
+const FoodTruckCreate = lazy(() => import("@pages/owner/FoodTruckCreate"));
+const OwnerFoodTruck = lazy(() => import("@pages/owner/OwnerFoodTruck"));
+const FoodTruckEdit = lazy(() => import("@pages/owner/FoodTruckEdit"));
+const OwnerOpening = lazy(() => import("@pages/owner/OwnerOpening"));
+const OwnerWaiting = lazy(() => import("@pages/owner/OwnerWaiting"));
+const OwnerAnnouncement = lazy(() => import("@pages/owner/OwnerAnnouncement"));
+const UserMap = lazy(() => import("@pages/user/UserMap"));
+const UserFoodTruck = lazy(() => import("@pages/user/UserFoodTruck"));
+const UserWaiting = lazy(() => import("@pages/user/UserWaiting"));
+const UserWaitingList = lazy(() => import("@pages/user/UserWaitingList"));
 
 import "./App.css";
 
 function App() {
 	return (
-		<>
+		<Suspense fallback={<div>로딩 중...</div>}>
 			<Routes>
 				<Route
 					path="/"
@@ -40,12 +40,8 @@ function App() {
 							element={<NaverLoginHandler />}
 						/>
 					</Route>
-					<Route
-						path="social"
-						element={<SocialLogin />}
-					/>
 				</Route>
-				<Route path="/owner">
+				<Route path="/owners">
 					<Route
 						path=""
 						element={<OwnerMain />}
@@ -93,7 +89,7 @@ function App() {
 						element={<OwnerWaiting />}
 					/>
 				</Route>
-				<Route path="/user">
+				<Route path="/users">
 					<Route
 						path=""
 						element={<UserMap />}
@@ -112,7 +108,7 @@ function App() {
 					/>
 				</Route>
 			</Routes>
-		</>
+		</Suspense>
 	);
 }
 

@@ -24,7 +24,7 @@ const FoodTruckFormContainer = ({
 						<Title title={title} />
 						<button
 							className="text-3xl"
-							onClick={() => nav("/owner/foodtruck")}
+							onClick={() => nav("/owners/foodtruck")}
 						>
 							취소
 						</button>

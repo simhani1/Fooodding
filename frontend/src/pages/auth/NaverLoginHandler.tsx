@@ -1,22 +1,30 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { loginNaver } from "@api/auth-api";
-import { INaverLoginDTO, Role } from "@interface/api";
-import { ObjectType, PathType } from "@interface/common";
-import useAuthStore from "@store/authStore";
-import useFoodTruckStore from "@store/foodTruckStore";
+import { ownerLoginNaver, userLoginNaver } from "@api/auth-api";
+import { ApiResponse, INaverLoginDTO, INaverLoginResponseDTO, Role, RoleParam } from "@interface/api";
 
 const NaverLoginHandler = () => {
 	const nav = useNavigate();
-	const { role } = useParams() as PathType;
+	const { role } = useParams();
 
-	const { updateOnLogin } = useAuthStore();
-	const { updateFoodTruckId } = useFoodTruckStore();
-
-	const roleMap: ObjectType<Role> = {
-		owner: Role.OWNER,
-		user: Role.USER,
+	const handleLogin = async (
+		loginFn: (dto: INaverLoginDTO) => ApiResponse<INaverLoginResponseDTO>,
+		params: INaverLoginDTO,
+		role: RoleParam,
+	) => {
+		try {
+			const { data } = await loginFn(params);
+			if (data.isSuccess) {
+				const { accessToken } = data.data;
+				localStorage.setItem("token", accessToken);
+				nav(`/${role}`);
+				return;
+			}
+			nav("/");
+		} catch (error) {
+			nav("/");
+		}
 	};
 
 	useEffect(() => {
@@ -25,7 +33,7 @@ const NaverLoginHandler = () => {
 
 			const params: INaverLoginDTO = {
 				accessToken: "",
-				role: roleMap[role],
+				role: role === "owners" ? Role.owners : Role.users,
 			};
 
 			queryParams.forEach((param) => {
@@ -35,19 +43,14 @@ const NaverLoginHandler = () => {
 				}
 			});
 
-			try {
-				const { data } = await loginNaver(params);
-				if (data.isSuccess) {
-					const { nickname, accessToken, foodTruckId } = data.data;
-					updateOnLogin({ accessToken, nickname, isLoggined: true, role: roleMap[role] });
-					updateFoodTruckId(foodTruckId);
-					nav(`/${role}`);
-				} else {
-					nav("/");
-				}
-			} catch (error) {
-				console.log(error);
-				nav("/");
+			if (role === "owners") {
+				handleLogin(ownerLoginNaver, params, "owners");
+				return;
+			}
+
+			if (role === "users") {
+				handleLogin(userLoginNaver, params, "users");
+				return;
 			}
 		};
 

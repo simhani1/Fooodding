@@ -67,13 +67,14 @@ export interface IMenuResponseDTO extends IBaseResponseDTO {
 // auth
 export interface INaverLoginDTO {
 	accessToken: string;
-	role: Role;
+	role: string;
 }
 
+export type RoleParam = "owners" | "users";
+
 export enum Role {
-	GUEST = "",
-	USER = "USER",
-	OWNER = "OWNER",
+	owners = "OWNER",
+	users = "USER",
 }
 
 // menu

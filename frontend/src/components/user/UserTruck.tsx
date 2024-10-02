@@ -16,7 +16,7 @@ const UserTruck: React.FC<UserTruckProps> = ({ truck }) => {
 	return (
 		<div
 			className="flex flex-row items-center p-2 m-4 border border-solid w-96 border-gray rounded-2xl"
-			onClick={() => nav("/user/foodtruck", { state: { truckId } })}
+			onClick={() => nav("/users/foodtruck", { state: { truckId } })}
 		>
 			<img
 				src={truck.img}

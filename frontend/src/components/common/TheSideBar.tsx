@@ -11,10 +11,10 @@ const TheSideBar = () => {
 
 	// URL 경로에 따라 active 상태 결정
 	const getActiveState = (path: string) => {
-		if (path === "/owner") return "home";
-		if (path === "/owner/map") return "map";
-		if (path === "/owner/open") return "business";
-		if (path === "/owner/mypage") return "mypage";
+		if (path === "/owners") return "home";
+		if (path === "/owners/map") return "map";
+		if (path === "/owners/open") return "business";
+		if (path === "/owners/mypage") return "mypage";
 
 		return null;
 	};
@@ -41,7 +41,7 @@ const TheSideBar = () => {
 						src={logo}
 						alt="fooodding"
 						className="w-20 h-20"
-						onClick={() => nav("/owner")}
+						onClick={() => nav("/owners")}
 					/>
 				</div>
 
@@ -51,7 +51,7 @@ const TheSideBar = () => {
 					}`}
 					onClick={() => {
 						setActive("home");
-						nav("/owner");
+						nav("/owners");
 					}}
 				>
 					<HouseLine
@@ -67,7 +67,7 @@ const TheSideBar = () => {
 					}`}
 					onClick={() => {
 						setActive("map");
-						nav("/owner/map");
+						nav("/owners/map");
 					}}
 				>
 					<MapTrifold
@@ -83,7 +83,7 @@ const TheSideBar = () => {
 					}`}
 					onClick={() => {
 						setActive("business");
-						nav("/owner/open");
+						nav("/owners/open");
 					}}
 				>
 					<FireTruck
@@ -99,7 +99,7 @@ const TheSideBar = () => {
 					}`}
 					onClick={() => {
 						setActive("mypage");
-						nav("/owner/mypage");
+						nav("/owners/mypage");
 					}}
 				>
 					<UserCircle

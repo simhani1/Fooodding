@@ -13,7 +13,7 @@ const UserTruckInfo = ({ truck }: ITruckInfoProps) => {
 		try {
 			// const response = await axios.post("/api");
 
-			nav("/user/waiting");
+			nav("/users/waiting");
 		} catch (err) {
 			console.error(err);
 		}
@@ -24,7 +24,9 @@ const UserTruckInfo = ({ truck }: ITruckInfoProps) => {
 			<h1 className="mb-2 text-2xl font-extrabold">{truck.name}</h1>
 			<h3 className="mb-4 text-lg">{truck.content}</h3>
 			<button
-				className={`flex flex-row items-center px-4 py-3 rounded-md ${truck.isReserved ? "bg-gray" : "bg-user"}`}
+				className={`flex flex-row items-center px-4 py-3 rounded-md ${
+					truck.isReserved ? "bg-gray" : "bg-user"
+				}`}
 				onClick={reserveTruck}
 				disabled={truck.isReserved}
 			>

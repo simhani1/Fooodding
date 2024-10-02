@@ -34,7 +34,7 @@ const UserWaitingInfo = ({ waitingInfo }: IWaitingProps) => {
 	// 줄서기 취소 확인
 	const confirmCancellation = () => {
 		// 여기에서 줄서기 취소 로직 추가
-		nav("/user");
+		nav("/users");
 		closeModal(); // 모달 닫기
 	};
 
@@ -54,12 +54,16 @@ const UserWaitingInfo = ({ waitingInfo }: IWaitingProps) => {
 			<div className="relative flex items-center justify-between w-full max-w-sm my-4">
 				{/* 첫 번째 선 (예약 신청 ~ 줄서는 중) */}
 				<div
-					className={`absolute top-[calc(0.75rem)] left-[calc(1.5rem)] transform -translate-y-1/2 w-[calc(50%-1.5rem)] h-1 ${isWaiting || isOrdering ? "bg-user" : "bg-gray"}`}
+					className={`absolute top-[calc(0.75rem)] left-[calc(1.5rem)] transform -translate-y-1/2 w-[calc(50%-1.5rem)] h-1 ${
+						isWaiting || isOrdering ? "bg-user" : "bg-gray"
+					}`}
 				></div>
 
 				{/* 두 번째 선 (줄서는 중 ~ 주문 대기) */}
 				<div
-					className={`absolute top-[calc(0.75rem)] left-[calc(42%+1.5rem)] transform -translate-y-1/2 w-[calc(50%-1.5rem)] h-1 ${isOrdering ? "bg-user" : "bg-gray"}`}
+					className={`absolute top-[calc(0.75rem)] left-[calc(42%+1.5rem)] transform -translate-y-1/2 w-[calc(50%-1.5rem)] h-1 ${
+						isOrdering ? "bg-user" : "bg-gray"
+					}`}
 				></div>
 
 				{/* 예약 신청 */}

@@ -13,7 +13,7 @@ const Login = () => {
 			<div className="flex gap-10">
 				<LoginCard
 					title="사장님으로 로그인"
-					onClick={() => nav("/auth/owner")}
+					onClick={() => nav("/auth/owners")}
 				>
 					<User
 						size={120}
@@ -23,7 +23,7 @@ const Login = () => {
 				</LoginCard>
 				<LoginCard
 					title="손님으로 로그인"
-					onClick={() => nav("/auth/user")}
+					onClick={() => nav("/auth/users")}
 				>
 					<Users
 						size={120}

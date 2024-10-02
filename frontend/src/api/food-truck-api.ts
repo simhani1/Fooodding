@@ -7,6 +7,7 @@ import {
 	IFoodTruckResponseDTO,
 	IFoodTruckCreateResponseDTO,
 	ContentType,
+	ITodayTruckDTO,
 } from "@interface/api";
 import axiosInstance from "@api/axiosInstance";
 
@@ -63,4 +64,9 @@ export const updateMenu = (
 
 export const deleteMenu = (menuId: number): ApiResponse<INoResponseDTO> => {
 	return axiosInstance.delete(`${path}/menu/${menuId}`);
+};
+
+//장사시작
+export const openMarket = (foodTruckId: number, req: ITodayTruckDTO) => {
+	return axiosInstance.patch(`${path}/${foodTruckId}/open`, req);
 };

@@ -8,11 +8,18 @@ import Container from "@components/owner/Container";
 import Main from "@components/owner/Main";
 import TodayMenu from "@components/owner/TodayMenu";
 import Modal from "@components/common/Modal";
+
 import { waitingCancelingModalStyle } from "@utils/modalStyle";
+import { getMenuList, openMarket } from "@api/food-truck-api";
+import useFoodTruckStore from "@store/foodTruckStore";
+import useAuthStore from "@store/authStore";
 
 import { FireTruck } from "@phosphor-icons/react";
 
 const OwnerOpening = () => {
+	const { foodTruckId } = useFoodTruckStore();
+	const { nickname } = useAuthStore.getState();
+
 	const nav = useNavigate();
 
 	const today = new Date();
@@ -30,16 +37,7 @@ const OwnerOpening = () => {
 	});
 
 	//메뉴
-	const [todayMenuList, setTodayMenuList] = useState<ITodayMenu[]>([
-		{
-			id: 0,
-			image: null,
-			name: "",
-			price: 0,
-			isSelected: true,
-			//선택해제된 애들만 배열로 넘겨주세용
-		},
-	]);
+	const [todayMenuList, setTodayMenuList] = useState<ITodayMenu[]>([]);
 
 	//모달
 	const [errorModal, setErrorModal] = useState(false); //유효성검사
@@ -55,39 +53,30 @@ const OwnerOpening = () => {
 
 		// 토글이 false가 되면 모든 메뉴의 isSelected를 false로 변경
 		if (!newToggleState) {
-			setTodayMenuList((prevList) => prevList.map((menu) => ({ ...menu, isSelected: false })));
+			setTodayMenuList((prevList) => prevList.map((menu) => ({ ...menu, onSale: false })));
 		} else {
 			// 토글이 true가 되면 모든 메뉴의 isSelected를 true로 변경
-			setTodayMenuList((prevList) => prevList.map((menu) => ({ ...menu, isSelected: true })));
+			setTodayMenuList((prevList) => prevList.map((menu) => ({ ...menu, onSale: true })));
 		}
 	};
-
-	const [disselected, setDisselected] = useState<ITodayMenu[]>([
-		{
-			id: 0,
-			image: null,
-			name: "",
-			price: 0,
-			isSelected: true,
-			//선택해제된 애들만 배열로 넘겨주세용
-		},
-	]);
 
 	// 메뉴 선택 상태 변경 함수
 	const handleSelectMenu = (id: number) => {
 		setTodayMenuList((prevList) =>
-			prevList.map((menu) => (menu.id === id ? { ...menu, isSelected: !menu.isSelected } : menu)),
+			prevList.map((menu) => (menu.menuId === id ? { ...menu, onSale: !menu.onSale } : menu)),
 		);
 	};
 
+	const [disselected, setDisselected] = useState<number[]>([]);
+
 	//개별선택 감지 후 토글변경
 	useEffect(() => {
-		const allSelected = todayMenuList.every((menu) => menu.isSelected);
+		const allSelected = todayMenuList.every((menu) => menu.onSale);
 		setIsToggled(allSelected);
 
-		// 선택되지 않은 메뉴 필터링
-		const notSelectedMenus = todayMenuList.filter((menu) => !menu.isSelected);
-		setDisselected(notSelectedMenus);
+		// 선택되지 않은 메뉴의 menuId만 추출하여 배열 생성
+		const notSelectedMenuIds = todayMenuList.filter((menu) => menu.onSale).map((menu) => menu.menuId);
+		setDisselected(notSelectedMenuIds);
 	}, [todayMenuList]);
 
 	useEffect(() => {
@@ -110,18 +99,26 @@ const OwnerOpening = () => {
 						}
 					},
 					(error) => {
-						console.error("Error occurred while fetching location:", error);
+						console.error("위치를 찾을 수 없습니다.", error);
 					},
 				);
 			} else {
-				console.error("Geolocation is not supported by this browser.");
+				console.error("여기에서 위치 기능을 사용할 수 없습니다.");
+			}
+		};
+
+		//메뉴리스트 가져오기
+		const fetchMenuList = async () => {
+			try {
+				const response = await getMenuList(foodTruckId);
+				setTodayMenuList(response.data.data);
+			} catch (err) {
+				console.error(err);
 			}
 		};
 
 		setMyLocation();
-
-		//////메뉴 가져오기
-		setTodayMenuList(exampleMenuList);
+		fetchMenuList();
 	}, []);
 
 	// 지도의 중앙이 변경될 때 호출되는 함수
@@ -140,7 +137,7 @@ const OwnerOpening = () => {
 	};
 
 	//장사 시작하기
-	const beforeStartToday = () => {
+	const beforeStartToday = async () => {
 		// 유효성 검사
 		if (!currentPosition || disselected.length === todayMenuList.length) {
 			setErrorModal(true);
@@ -148,15 +145,28 @@ const OwnerOpening = () => {
 		}
 
 		setStartModal(true);
+	};
 
-		//axios
+	const openTruck = async () => {
+		const request = {
+			latitude: currentPosition.lat,
+			longitude: currentPosition.lng,
+			menuList: disselected,
+		};
+
+		try {
+			await openMarket(foodTruckId, request);
+			nav("/owner/close");
+		} catch (err) {
+			console.error("장사 시작 중 오류가 발생했습니다!", err);
+		}
 	};
 
 	return (
 		<Container>
 			<Main>
 				<>
-					<h1 className="text-3xl font-extrabold">멋지다 붕어빵 가게 사장님</h1>
+					<h1 className="text-3xl font-extrabold">{nickname} 사장님</h1>
 					<div>
 						<div className="flex items-center justify-between mb-8">
 							<div className="flex items-center gap-6">
@@ -177,7 +187,7 @@ const OwnerOpening = () => {
 								className="w-full h-full"
 								level={2}
 								ref={mapRef}
-								onCenterChanged={handleCenterChanged} // 지도의 중앙이 변경될 때 호출
+								onCenterChanged={handleCenterChanged}
 							>
 								<MapMarker
 									position={currentPosition}
@@ -220,13 +230,25 @@ const OwnerOpening = () => {
 						</div>
 
 						<div className="flex flex-wrap justify-between gap-4 mb-12">
-							{todayMenuList.map((todayMenu) => (
-								<TodayMenu
-									key={todayMenu.id}
-									todayMenu={todayMenu}
-									onSelect={() => handleSelectMenu(todayMenu.id)}
-								/>
-							))}
+							{todayMenuList.length === 0 ? (
+								<div className="flex flex-col items-center justify-center w-full">
+									<p className="my-20 text-2xl font-bold text-center"> 메뉴를 먼저 등록해주세요. </p>
+									<button
+										className="px-6 py-3 my-5 text-xl font-bold text-white rounded bg-gradient-to-r from-main to-boss"
+										onClick={() => nav("/owner/foodtruck/menu")} //나중에 메뉴란으로 연결
+									>
+										메뉴 등록하기
+									</button>
+								</div>
+							) : (
+								todayMenuList.map((todayMenu) => (
+									<TodayMenu
+										key={todayMenu.menuId}
+										todayMenu={todayMenu}
+										onSelect={() => handleSelectMenu(todayMenu.menuId)}
+									/>
+								))
+							)}
 						</div>
 					</div>
 
@@ -272,7 +294,7 @@ const OwnerOpening = () => {
 								<p className="my-4 text-2xl font-bold text-center">장사를 시작하시겠습니까?</p>
 								<button
 									className="px-6 py-3 my-5 font-bold text-white rounded text-md bg-gradient-to-r from-main to-user"
-									onClick={() => nav("/owner/close")}
+									onClick={openTruck}
 								>
 									시작하겠습니다
 								</button>
@@ -286,62 +308,3 @@ const OwnerOpening = () => {
 };
 
 export default OwnerOpening;
-
-const exampleMenuList: ITodayMenu[] = [
-	{
-		id: 8,
-		name: "팥 붕어빵",
-		price: 2000,
-		image: "https://img.bizthenaum.co.kr/img2022/bean_bread_01.jpg",
-		isSelected: true,
-	},
-	{
-		id: 1,
-		name: "슈크림 붕어빵",
-		price: 3000,
-		image: "https://cdn.011st.com/11dims/resize/600x600/quality/75/11src/product/3295018730/B.jpg?422000000",
-		isSelected: true,
-	},
-	{
-		id: 2,
-		name: "파인애플 붕어빵",
-		price: 4000,
-		image: null,
-		isSelected: true,
-	},
-	{
-		id: 3,
-		name: "김치치즈 붕어빵",
-		price: 4000,
-		image: "https://ssproxy.ucloudbiz.olleh.com/v1/AUTH_e59809eb-bdc9-44d7-9d8f-2e7f0e47ba91/post_card/73254_1606288078_kzDftX5a.png",
-		isSelected: true,
-	},
-	{
-		id: 4,
-		name: "민트초코 붕어빵",
-		price: 4000,
-		image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaMtr_ewivkWhWmpGr7RS-noq0NO-oAfdPKQ&s",
-		isSelected: true,
-	},
-	{
-		id: 5,
-		name: "초코초코 붕어빵",
-		price: 4000,
-		image: null,
-		isSelected: true,
-	},
-	{
-		id: 6,
-		name: "피자 붕어빵",
-		price: 4000,
-		image: null,
-		isSelected: true,
-	},
-	{
-		id: 7,
-		name: "고구마 붕어빵",
-		price: 4000,
-		image: "https://contents.kyobobook.co.kr/sih/fit-in/400x0/gift/pdt/1583/S1616570666704.jpg",
-		isSelected: true,
-	},
-];

@@ -22,6 +22,7 @@ const FoodTruckCreate = () => {
 			const { data } = await registerFoodTruck({
 				...formData,
 			});
+
 			if (data.isSuccess) {
 				const foodTruckId = data.data.foodTruckId;
 				updateAll({ ...formData, foodTruckId });

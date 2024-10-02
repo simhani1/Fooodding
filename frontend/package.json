@@ -29,6 +29,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.9.0",
+		"@types/axios": "^0.14.0",
 		"@types/node": "^22.5.4",
 		"@types/proj4": "^2.5.5",
 		"@types/react": "^18.3.5",

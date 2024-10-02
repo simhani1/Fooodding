@@ -58,11 +58,11 @@ export interface IFoodTruckForm extends IForm {
 }
 
 export interface ITodayMenu {
-	id: number;
-	image?: string | null;
+	menuId: number;
+	img?: string | null;
 	name: string;
 	price: number;
-	isSelected: boolean;
+	onSale: boolean;
 }
 
 export interface ITodayMenuProps {

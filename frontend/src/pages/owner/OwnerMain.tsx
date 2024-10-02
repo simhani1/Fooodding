@@ -1,5 +1,5 @@
-import Container from "@components/owner/Container";
 import Main from "@components/owner/Main";
+import Container from "@components/owner/Container";
 
 const OwnerMain = () => {
 	return (

@@ -77,3 +77,9 @@ export interface IFoodTruckDTO {
 	introduction?: string;
 	category: Category;
 }
+
+export interface ITodayTruckDTO {
+	latitude: number;
+	longitude: number;
+	menuList: number[];
+}

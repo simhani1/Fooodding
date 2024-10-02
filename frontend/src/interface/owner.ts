@@ -70,6 +70,18 @@ export interface ITodayMenuProps {
 	onSelect: () => void;
 }
 
+//장사 시작
+export interface ITodayMarketOpen {
+	latitude: number;
+	longitude: number;
+	menuList: IMenuNotOnSale[];
+}
+
+//팔지 않는 메뉴
+export interface IMenuNotOnSale {
+	menuId: number;
+}
+
 export type Category =
 	| "KOREAN"
 	| "JAPANESE"

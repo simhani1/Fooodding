@@ -9,6 +9,7 @@ import {
 	IFoodTruckOwnerInfoDTO,
 } from "@interface/api";
 import axiosInstance from "@api/axiosInstance";
+import { ITodayMarketOpen } from "@interface/owner";
 
 const path = "/foodtrucks";
 
@@ -66,6 +67,6 @@ export const deleteMenu = (menuId: number): ApiResponse<INoResponseDTO> => {
 };
 
 //장사시작
-// export const openMarket = (foodTruckId: number, req: ) => {
-// 	return axiosInstance.patch(`${path}/${foodTruckId}/open`);
-// };
+export const openMarket = (foodTruckId: number, req: ITodayMarketOpen) => {
+	return axiosInstance.patch(`${path}/${foodTruckId}/open`, req);
+};

@@ -45,6 +45,7 @@ export interface IFoodTruckCreateResponseDTO extends IBaseResponseDTO {
 	};
 }
 
+//푸드트럭 정보 조회
 export interface IFoodTruckOwnerInfoDTO extends IBaseResponseDTO {
 	data: {
 		foodTruckId: number;

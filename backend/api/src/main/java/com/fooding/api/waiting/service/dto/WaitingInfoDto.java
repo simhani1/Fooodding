@@ -1,6 +1,6 @@
 package com.fooding.api.waiting.service.dto;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;
 
@@ -8,7 +8,8 @@ import lombok.Builder;
 public record WaitingInfoDto(
 	Integer number,
 	Long rank,
-	LocalDateTime reservedAt,
+	Long changedAt,
+	@JsonProperty("isCancelable")
 	boolean cancelable
 ) {
 }

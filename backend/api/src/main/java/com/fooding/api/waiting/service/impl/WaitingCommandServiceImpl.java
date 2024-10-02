@@ -43,41 +43,35 @@ class WaitingCommandServiceImpl implements WaitingCommandService {
 			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
 		}
 		// waitingLine에 예약 내역이 있는 경우
-		String waitingNumber = getWaitingNumber(RedisKeyGenerator.waitingLineByFoodTruckAndMember(foodTruckId, userId));
+		String waitingNumber = waitingNumber = getWaitingNumber(
+			RedisKeyGenerator.waitingLineByFoodTruckAndMember(foodTruckId, userId));
 		if (waitingNumber != null) {
-			LocalDateTime reservedAt = toLocalDateTime(getReservedAt(userId, foodTruckId), ZoneId.systemDefault());
-			Long rank = getRank(RedisKeyGenerator.waitingLineByFoodTruck(foodTruckId), userId);
+			Long rank = getRank(RedisKeyGenerator.waitingLineByFoodTruckAndMember(foodTruckId, userId), waitingNumber);
 			return WaitingInfoDto.builder()
 				.number(Integer.parseInt(waitingNumber))
 				.rank(rank)
-				.reservedAt(reservedAt)
 				.cancelable(true)
 				.build();
 		}
 		// orderLine에 예약 내역이 있는 경우
 		waitingNumber = getWaitingNumber(RedisKeyGenerator.orderLineByFoodTruckAndMember(foodTruckId, userId));
 		if (waitingNumber != null) {
-			LocalDateTime reservedAt = toLocalDateTime(getReservedAt(userId, foodTruckId), ZoneId.systemDefault());
 			return WaitingInfoDto.builder()
 				.number(Integer.parseInt(waitingNumber))
-				.reservedAt(reservedAt)
+				.changedAt(null)  // TODO: 사장님이 orderLine으로 변경한 시점
 				.cancelable(false)
 				.build();
 		}
 		throw new NoWaitingInfoException("No waiting info");
 	}
 
-	private Long getRank(String key, Long userId) {
-		return redisTemplate.opsForZSet().rank(key, userId);
-	}
-
-	private Instant getReservedAt(Long userId, Long foodTruckId) {
-		return Instant.ofEpochMilli(redisTemplate.opsForZSet()
-			.score(RedisKeyGenerator.waitingLineByFoodTruck(foodTruckId), userId).longValue());
+	private Long getRank(String key, String waitingNumber) {
+		return redisTemplate.opsForZSet().rank(key, waitingNumber);
 	}
 
 	private String getWaitingNumber(String key) {
-		return redisTemplate.opsForValue().get(key);
+		return redisTemplate.opsForZSet().range(key, 0, -1).stream().findFirst()
+			.orElseThrow(() -> new NoWaitingInfoException("No waiting info"));
 	}
 
 	private LocalDateTime toLocalDateTime(Instant reservedAt, ZoneId zoneId) {

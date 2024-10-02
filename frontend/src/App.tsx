@@ -12,13 +12,14 @@ import FoodTruckCreate from "@pages/owner/FoodTruckCreate";
 import OwnerFoodTruck from "@pages/owner/OwnerFoodTruck";
 import FoodTruckEdit from "@pages/owner/FoodTruckEdit";
 import OwnerOpening from "@pages/owner/OwnerOpening";
+import OwnerWaiting from "@pages/owner/OwnerWaiting";
+import OwnerAnnouncement from "@pages/owner/OwnerAnnounceMent";
 import UserMap from "@pages/user/UserMap";
 import UserFoodTruck from "@pages/user/UserFoodTruck";
 import UserWaiting from "@pages/user/UserWaiting";
 import UserWaitingList from "@pages/user/UserWaitingList";
 
 import "./App.css";
-import OwnerWaiting from "@pages/owner/OwnerWaiting";
 
 function App() {
 	return (
@@ -79,6 +80,10 @@ function App() {
 							element={<OwnerMenu />}
 						/>
 					</Route>
+					<Route
+						path="announcement"
+						element={<OwnerAnnouncement />}
+					/>
 					<Route
 						path="open"
 						element={<OwnerOpening />}

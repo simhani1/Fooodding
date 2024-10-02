@@ -26,7 +26,7 @@ const OwnerPage = () => {
 						/>
 						<NavButton
 							buttonText="공고 알림 목록"
-							onClick={() => {}}
+							onClick={() => nav(`${basePath}/announcement`)}
 						/>
 						<NavButton
 							buttonText="소셜 계정"

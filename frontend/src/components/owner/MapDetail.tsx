@@ -77,10 +77,14 @@ const MapDetail = ({ dongName, setShowDetail }: IMapDetail) => {
 					<div className="flex items-center gap-3">
 						<div
 							onClick={handleToggle}
-							className={`w-16 h-8 flex items-center bg-${isToggled ? "user" : "boss"} rounded-full p-1 cursor-pointer transition-colors duration-300`}
+							className={`w-16 h-8 flex items-center bg-${
+								isToggled ? "user" : "boss"
+							} rounded-full p-1 cursor-pointer transition-colors duration-300`}
 						>
 							<div
-								className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${isToggled ? "translate-x-8" : "translate-x-0"}`}
+								className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${
+									isToggled ? "translate-x-8" : "translate-x-0"
+								}`}
 							></div>
 						</div>
 					</div>

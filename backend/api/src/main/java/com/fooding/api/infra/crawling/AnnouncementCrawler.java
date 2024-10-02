@@ -26,7 +26,8 @@ public class AnnouncementCrawler {
 			.get();
 
 		// 게시물 링크 크롤링
-		Elements postLinks = doc.select("a[href^=https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/]");
+		Elements postLinks = doc.select(
+			"a[href^=https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/]");
 
 		for (Element link : postLinks) {
 			String postLink = link.attr("href");
@@ -45,7 +46,7 @@ public class AnnouncementCrawler {
 				.date(eventDate)
 				.time(operatingTime)
 				.place(location)
-				.isopened(false)
+				.opened(false)
 				.build();
 
 			announcementList.add(announcementDto);

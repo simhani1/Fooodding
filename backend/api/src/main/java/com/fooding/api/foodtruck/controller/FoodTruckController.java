@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fooding.api.core.aop.annotation.RequireJwtToken;
@@ -61,11 +60,20 @@ public class FoodTruckController {
 	}
 
 	@RequireJwtToken
-	@GetMapping("")
-	public ResponseEntity<BaseResponse<FoodTruckDto>> getFoodTruckDetail(@RequestParam("ft-id") Long foodTruckId) {
+	@GetMapping("/{ft-id}/users")
+	public ResponseEntity<BaseResponse<FoodTruckDto>> getFoodTruckDetailForUser(
+		@PathVariable("ft-id") Long foodTruckId) {
 		Long memberId = MemberContext.getMemberId();
 		return ResponseEntity.ok(
-			BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetail(memberId, foodTruckId)));
+			BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetailForUser(memberId, foodTruckId)));
+	}
+
+	@RequireJwtToken
+	@GetMapping("/owner")
+	public ResponseEntity<BaseResponse<FoodTruckDto>> getFoodTruckDetailForOwner() {
+		Long ownerId = MemberContext.getMemberId();
+		return ResponseEntity.ok(
+			BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetailForOwner(ownerId)));
 	}
 
 	@PatchMapping("/{ft-id}/open")

@@ -34,12 +34,19 @@ public class AnnouncementCrawler {
 			Document postDoc = Jsoup.connect(postLink).get();
 			String title = postDoc.select("h1").text();
 
+			// 제목에서 날짜 제거
+			title = title.replaceAll("\\[.*?\\]", "").trim();
+
+			// 제목에 특정 문자열이 포함된 경우 전체 크롤링 건너뛰기
+			if (title.contains("※ 푸드트럭 행사 한국푸드트럭협회 카카오톡 플러스친구 안내")) {
+				continue;
+			}
+
 			// 상세 정보 크롤링 (일자, 운영시간, 장소)
 			String eventDate = postDoc.select("p:contains(일자)").text().split(":")[1].trim();
 			String operatingTime = postDoc.select("p:contains(운영시간)").text().split(":")[1].trim();
 			String location = postDoc.select("p:contains(장소)").text().split(":")[1].trim();
 
-			// AnnouncementDto 생성 및 리스트에 추가
 			AnnouncementDto announcementDto = AnnouncementDto.builder()
 				.url(postLink)
 				.title(title)

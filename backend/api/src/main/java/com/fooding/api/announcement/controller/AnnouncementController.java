@@ -13,6 +13,7 @@ import com.fooding.api.announcement.service.AnnouncementCommandService;
 import com.fooding.api.announcement.service.AnnouncementQueryService;
 import com.fooding.api.announcement.service.dto.AnnouncementDto;
 import com.fooding.api.announcement.service.dto.AnnouncementLogDto;
+import com.fooding.api.core.aop.annotation.RequireJwtToken;
 import com.fooding.api.core.aop.member.MemberContext;
 import com.fooding.api.core.template.response.BaseResponse;
 
@@ -34,6 +35,7 @@ public class AnnouncementController {
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
+	@RequireJwtToken
 	@PostMapping("/{announcement_id}/open")
 	public ResponseEntity<BaseResponse<?>> openAnnouncement(
 		@PathVariable("announcement_id") Long announcementId) {
@@ -46,6 +48,7 @@ public class AnnouncementController {
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
+	@RequireJwtToken
 	@GetMapping("")
 	public ResponseEntity<BaseResponse<List<AnnouncementDto>>> getAnnouncements() {
 		Long ownerId = MemberContext.getMemberId();

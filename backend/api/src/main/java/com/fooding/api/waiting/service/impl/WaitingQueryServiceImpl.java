@@ -2,6 +2,7 @@ package com.fooding.api.waiting.service.impl;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.exception.FoodTruckAlreadyClosedException;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Transactional
 @RequiredArgsConstructor
 @Service
 class WaitingQueryServiceImpl implements WaitingQueryService {
@@ -34,10 +36,10 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 		if (foodTruck.isClosed()) {
 			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
 		}
-		String waitingLineKey = RedisKeyGenerator.waitingLine(foodTruckId, userId);
+		String waitingLineKey = RedisKeyGenerator.waitingLineByFoodTruckAndMember(foodTruckId, userId);
 		long reservedAt = System.currentTimeMillis();
-		String waitingLineNumber = getWaitingNumber(foodTruckId);
-		redisTemplate.opsForZSet().add(waitingLineKey, waitingLineNumber, reservedAt);
+		String waitingNumber = getWaitingNumber(foodTruckId);
+		redisTemplate.opsForZSet().add(waitingLineKey, waitingNumber, reservedAt);
 	}
 
 	private String getWaitingNumber(Long foodTruckId) {

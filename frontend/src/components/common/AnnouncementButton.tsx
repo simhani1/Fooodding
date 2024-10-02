@@ -1,10 +1,10 @@
 import { IAnnouncementButton } from "@interface/common";
 
-const AnnouncementButton = ({ buttonText, onClick, place, duration, lastDate }: IAnnouncementButton) => {
+const AnnouncementButton = ({ buttonText, onClick, place, duration }: IAnnouncementButton) => {
 	return (
 		<button
 			type="button"
-			className="box-border flex items-center justify-between w-full h-40 px-10 py-4 mb-6 text-4xl font-semibold border border-solid shadow-md border-gray-light rounded-2xl"
+			className="box-border w-full h-40 px-10 py-4 mb-6 text-4xl font-semibold border border-solid shadow-md border-gray-light rounded-2xl"
 			onClick={onClick}
 		>
 			<div>
@@ -13,7 +13,6 @@ const AnnouncementButton = ({ buttonText, onClick, place, duration, lastDate }: 
 					{duration} | {place}
 				</p>
 			</div>
-			<span className="text-3xl font-normal text-gray">{lastDate}</span>
 		</button>
 	);
 };

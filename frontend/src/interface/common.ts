@@ -32,7 +32,6 @@ export interface IFormButton extends IButton {
 export interface IAnnouncementButton extends IButton {
 	place?: string;
 	duration?: string;
-	lastDate?: string;
 }
 
 export interface IModal {

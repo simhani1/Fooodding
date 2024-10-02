@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Container from "@components/owner/Container";
 import Main from "@components/owner/Main";
@@ -9,6 +9,14 @@ import AnnouncementButton from "@components/common/AnnouncementButton";
 const OwnerAnnouncement = () => {
 	const [alarm, setAlarm] = useState("whole");
 	const [isToggled, setIsToggled] = useState(false);
+	const [visibleCount, setVisibleCount] = useState(10);
+
+	const announcements = new Array(50).fill({
+		buttonText: "양평생활문화페스타",
+		place: "양평생활문화센터 일원(물안개공원)",
+		duration: "24.11.2(토) 11:00~18:00",
+		link: "https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/2024nyeon-11weol2il-yangpyeongsaenghwalmunhwapeseuta",
+	});
 
 	// 토글 버튼 클릭 시 그래프 전환
 	const handleToggle = () => {
@@ -24,6 +32,23 @@ const OwnerAnnouncement = () => {
 	const handleLink = (url: string) => {
 		window.open(url, "_blank");
 	};
+
+	const handleScroll = () => {
+		const scrollTop = document.getElementById("infinite-scroll")?.scrollTop || 0;
+		const scrollHeight = document.getElementById("infinite-scroll")?.scrollHeight || 0;
+		const clientHeight = document.getElementById("infinite-scroll")?.clientHeight || 0;
+
+		if (scrollTop + clientHeight >= scrollHeight - 5) {
+			console.log("Loading more items...");
+			setVisibleCount((prevCount) => prevCount + 10);
+		}
+	};
+
+	useEffect(() => {
+		const scrollContainer = document.getElementById("infinite-scroll");
+		scrollContainer?.addEventListener("scroll", handleScroll);
+		return () => scrollContainer?.removeEventListener("scroll", handleScroll);
+	}, []);
 
 	return (
 		<Container>
@@ -74,73 +99,19 @@ const OwnerAnnouncement = () => {
 							</div>
 						</div>
 					</div>
-					<div className="overflow-y-auto h-[calc(100vh-300px)]">
-						<AnnouncementButton
-							buttonText="양평생활문화페스타"
-							onClick={() =>
-								handleLink(
-									"https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/2024nyeon-11weol2il-yangpyeongsaenghwalmunhwapeseuta",
-								)
-							}
-							place="양평생활문화센터 일원(물안개공원)"
-							duration="24.11.2(토) 11:00~18:00"
-							lastDate="2일 전"
-						/>
-						<AnnouncementButton
-							buttonText="양평생활문화페스타"
-							onClick={() =>
-								handleLink(
-									"https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/2024nyeon-11weol2il-yangpyeongsaenghwalmunhwapeseuta",
-								)
-							}
-							place="양평생활문화센터 일원(물안개공원)"
-							duration="24.11.2(토) 11:00~18:00"
-							lastDate="2일 전"
-						/>
-						<AnnouncementButton
-							buttonText="양평생활문화페스타"
-							onClick={() =>
-								handleLink(
-									"https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/2024nyeon-11weol2il-yangpyeongsaenghwalmunhwapeseuta",
-								)
-							}
-							place="양평생활문화센터 일원(물안개공원)"
-							duration="24.11.2(토) 11:00~18:00"
-							lastDate="2일 전"
-						/>
-						<AnnouncementButton
-							buttonText="양평생활문화페스타"
-							onClick={() =>
-								handleLink(
-									"https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/2024nyeon-11weol2il-yangpyeongsaenghwalmunhwapeseuta",
-								)
-							}
-							place="양평생활문화센터 일원(물안개공원)"
-							duration="24.11.2(토) 11:00~18:00"
-							lastDate="2일 전"
-						/>
-						<AnnouncementButton
-							buttonText="양평생활문화페스타"
-							onClick={() =>
-								handleLink(
-									"https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/2024nyeon-11weol2il-yangpyeongsaenghwalmunhwapeseuta",
-								)
-							}
-							place="양평생활문화센터 일원(물안개공원)"
-							duration="24.11.2(토) 11:00~18:00"
-							lastDate="2일 전"
-						/>
-						<AnnouncementButton
-							buttonText="양평생활문화페스타"
-							onClick={() =>
-								handleLink(
-									"https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/2024nyeon-11weol2il-yangpyeongsaenghwalmunhwapeseuta",
-								)
-							}
-							place="양평생활문화센터 일원(물안개공원)"
-							duration="24.11.2(토) 11:00~18:00"
-							lastDate="2일 전"
-						/>
+					<div
+						id="infinite-scroll"
+						className="overflow-y-auto h-[calc(100vh-300px)]"
+					>
+						{announcements.slice(0, visibleCount).map((announcement, index) => (
+							<AnnouncementButton
+								key={index}
+								buttonText={announcement.buttonText}
+								onClick={() => handleLink(announcement.link)}
+								place={announcement.place}
+								duration={announcement.duration}
+							/>
+						))}
 					</div>
 				</>
 			</Main>

@@ -1,18 +1,21 @@
 import { useNavigate } from "react-router-dom";
 
 import { ITruckInfoProps } from "@interface/foodTruck";
+import axiosInstance from "@api/axiosInstance";
 
 import { Ticket } from "@phosphor-icons/react";
 
 const UserTruckInfo = ({ truck }: ITruckInfoProps) => {
 	const nav = useNavigate();
 
+	// const foodTruckId = truck.foodTruckId;
+	const foodTruckId = 1;
+
 	//예약하기 눌렀을 떄
 	const reserveTruck = async () => {
 		//axios를 쏘고 나서
 		try {
-			// const response = await axios.post("/api");
-
+			await axiosInstance.post(`/waiting/foodtrucks/${foodTruckId}`);
 			nav("/users/waiting");
 		} catch (err) {
 			console.error(err);

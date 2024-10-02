@@ -10,16 +10,11 @@ import TodayMenu from "@components/owner/TodayMenu";
 import Modal from "@components/common/Modal";
 
 import { waitingCancelingModalStyle } from "@utils/modalStyle";
-import { getMenuList, openMarket } from "@api/food-truck-api";
-import useFoodTruckStore from "@store/foodTruckStore";
-import useAuthStore from "@store/authStore";
+import { getMenuList } from "@api/food-truck-api";
 
 import { FireTruck } from "@phosphor-icons/react";
 
 const OwnerOpening = () => {
-	const { foodTruckId } = useFoodTruckStore();
-	const { nickname } = useAuthStore.getState();
-
 	const nav = useNavigate();
 
 	const today = new Date();
@@ -38,6 +33,7 @@ const OwnerOpening = () => {
 
 	//메뉴
 	const [todayMenuList, setTodayMenuList] = useState<ITodayMenu[]>([]);
+	// const [foodTruckId, setFoodTruckId] = useState<number>();
 
 	//모달
 	const [errorModal, setErrorModal] = useState(false); //유효성검사
@@ -110,8 +106,9 @@ const OwnerOpening = () => {
 		//메뉴리스트 가져오기
 		const fetchMenuList = async () => {
 			try {
-				const response = await getMenuList(foodTruckId);
-				setTodayMenuList(response.data.data);
+				const response = await getMenuList();
+				const data = response.data.data;
+				setTodayMenuList(data.menuList);
 			} catch (err) {
 				console.error(err);
 			}
@@ -124,6 +121,7 @@ const OwnerOpening = () => {
 	// 지도의 중앙이 변경될 때 호출되는 함수
 	const handleCenterChanged = (map: kakao.maps.Map) => {
 		const center = map.getCenter();
+
 		setCurrentPosition({
 			lat: center.getLat(),
 			lng: center.getLng(),
@@ -148,15 +146,15 @@ const OwnerOpening = () => {
 	};
 
 	const openTruck = async () => {
-		const request = {
-			latitude: currentPosition.lat,
-			longitude: currentPosition.lng,
-			menuList: disselected,
-		};
+		// const request = {
+		// 	latitude: currentPosition.lat,
+		// 	longitude: currentPosition.lng,
+		// 	menuList: disselected,
+		// };
 
 		try {
-			await openMarket(foodTruckId, request);
-			nav("/owner/close");
+			// await openMarket(foodTruckId, request);
+			// nav("/owner/close");
 		} catch (err) {
 			console.error("장사 시작 중 오류가 발생했습니다!", err);
 		}
@@ -166,7 +164,7 @@ const OwnerOpening = () => {
 		<Container>
 			<Main>
 				<>
-					<h1 className="text-3xl font-extrabold">{nickname} 사장님</h1>
+					<h1 className="text-3xl font-extrabold">{} 사장님</h1>
 					<div>
 						<div className="flex items-center justify-between mb-8">
 							<div className="flex items-center gap-6">

@@ -45,8 +45,23 @@ export interface IFoodTruckCreateResponseDTO extends IBaseResponseDTO {
 	};
 }
 
+export interface IFoodTruckOwnerInfoDTO extends IBaseResponseDTO {
+	data: {
+		foodTruckId: number;
+		licenseNumber: string;
+		name: string;
+		introduction: string;
+		category: string;
+		menuList: IMenuResponseDTO[];
+	};
+}
+
 export interface IMenuResponseDTO extends IBaseResponseDTO {
-	data: { menuId: number; name: string; price: number; img: string; onSale: boolean }[];
+	menuId: number;
+	name: string;
+	price: number;
+	img: string;
+	onSale: boolean;
 }
 
 // auth
@@ -76,10 +91,4 @@ export interface IFoodTruckDTO {
 	licenseNumber: string;
 	introduction?: string;
 	category: Category;
-}
-
-export interface ITodayTruckDTO {
-	latitude: number;
-	longitude: number;
-	menuList: number[];
 }

@@ -1,13 +1,12 @@
 import {
 	IMenuDTO,
-	IMenuResponseDTO,
 	ApiResponse,
 	IFoodTruckDTO,
 	INoResponseDTO,
 	IFoodTruckResponseDTO,
 	IFoodTruckCreateResponseDTO,
 	ContentType,
-	ITodayTruckDTO,
+	IFoodTruckOwnerInfoDTO,
 } from "@interface/api";
 import axiosInstance from "@api/axiosInstance";
 
@@ -34,8 +33,8 @@ export const getFoodTruck = (foodTruckId: number): ApiResponse<IFoodTruckRespons
 	return axiosInstance.get(`${path}?ft-id=${foodTruckId}`);
 };
 
-export const getMenuList = (foodTruckId: number): ApiResponse<IMenuResponseDTO> => {
-	return axiosInstance.get(`${path}/${foodTruckId}/menu`);
+export const getMenuList = (): ApiResponse<IFoodTruckOwnerInfoDTO> => {
+	return axiosInstance.get(`${path}/owners`);
 };
 
 export const registerMenu = (foodTruckId: number, { req, menuImg }: IMenuDTO): ApiResponse<INoResponseDTO> => {
@@ -67,6 +66,6 @@ export const deleteMenu = (menuId: number): ApiResponse<INoResponseDTO> => {
 };
 
 //장사시작
-export const openMarket = (foodTruckId: number, req: ITodayTruckDTO) => {
-	return axiosInstance.patch(`${path}/${foodTruckId}/open`, req);
-};
+// export const openMarket = (foodTruckId: number, req: ) => {
+// 	return axiosInstance.patch(`${path}/${foodTruckId}/open`);
+// };

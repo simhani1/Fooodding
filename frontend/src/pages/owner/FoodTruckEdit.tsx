@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import FoodTruckFormContainer from "@components/owner/FoodTruckFormContainer";
 
 import { IFoodTruckDTO } from "@interface/api";
 import { updateFoodTruck } from "@api/food-truck-api";
-import useFoodTruckStore from "@store/foodTruckStore";
 
 const FoodTruckEdit = () => {
 	const nav = useNavigate();
+	const location = useLocation();
 
-	const { name, licenseNumber, introduction, category, foodTruckId, updateAll } = useFoodTruckStore();
+	const { foodTruckId, name, licenseNumber, introduction, category } = location.state;
+	console.log(location.state);
 
 	const [formData, setFormData] = useState<IFoodTruckDTO>({
 		name,
@@ -25,9 +26,10 @@ const FoodTruckEdit = () => {
 				...formData,
 			});
 			if (data.isSuccess) {
-				updateAll({ ...formData, foodTruckId });
+				alert("푸드트럭 정보 수정 완료");
 			}
 		} catch (error) {
+			alert("푸드트럭 정보 수정 실패");
 		} finally {
 			nav("/owners/foodtruck");
 		}

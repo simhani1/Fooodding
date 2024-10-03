@@ -3,14 +3,13 @@ import { useNavigate } from "react-router-dom";
 import Modal from "@components/common/Modal";
 import MenuForm from "@components/owner/MenuForm";
 
-import { IMenu } from "@interface/owner";
 import defaultImage from "@assets/default_menu_image.png";
 import { menuModalStyle } from "@utils/modalStyle";
 import useMenuModal from "@hooks/useMenuModal";
 import { deleteMenu, updateMenu } from "@api/food-truck-api";
-import useFoodTruckStore from "@store/foodTruckStore";
+import { IMenuProps } from "@interface/owner";
 
-const Menu = ({ id, image, name, price }: IMenu) => {
+const Menu = ({ foodTruckId, menuId, image, name, price }: IMenuProps) => {
 	const nav = useNavigate();
 
 	const { isModalOpen, imageFile, formData, setImageFile, setFormData, closeModal, openModal } = useMenuModal({
@@ -19,11 +18,9 @@ const Menu = ({ id, image, name, price }: IMenu) => {
 		image,
 	});
 
-	const { foodTruckId } = useFoodTruckStore();
-
 	const handleUpdate = async () => {
 		try {
-			const { data } = await updateMenu(foodTruckId, id, {
+			const { data } = await updateMenu(foodTruckId, menuId, {
 				req: {
 					name: formData.name,
 					price: formData.price,
@@ -47,7 +44,7 @@ const Menu = ({ id, image, name, price }: IMenu) => {
 		const check = confirm("메뉴를 삭제하시겠습니까?");
 		if (check) {
 			try {
-				const { data } = await deleteMenu(id);
+				const { data } = await deleteMenu(menuId);
 				if (data.isSuccess) {
 					nav(0);
 					alert("메뉴 삭제 성공");

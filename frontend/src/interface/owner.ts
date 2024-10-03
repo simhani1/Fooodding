@@ -17,12 +17,9 @@ export interface IMenuFormData extends IMenuRequired {
 	image?: string;
 }
 
-export interface IMenu extends IMenuFormData {
-	id: number;
-}
-
-export interface IMenuForm extends IFormContainer {
-	menu?: IMenu;
+export interface IMenuProps extends IMenuFormData {
+	foodTruckId: number;
+	menuId: number;
 }
 
 export interface IMenuMessage {
@@ -91,3 +88,8 @@ export type Category =
 	| "ASIAN"
 	| "FAST_FOOD"
 	| "CAFE_DESSERT";
+
+export interface IOwnerExceptionProps {
+	title: string;
+	content: string;
+}

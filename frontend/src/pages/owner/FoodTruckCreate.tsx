@@ -5,11 +5,10 @@ import FoodTruckFormContainer from "@components/owner/FoodTruckFormContainer";
 
 import { registerFoodTruck } from "@api/food-truck-api";
 import { IFoodTruckDTO } from "@interface/api";
-import useFoodTruckStore from "@store/foodTruckStore";
 
 const FoodTruckCreate = () => {
 	const nav = useNavigate();
-	const { updateAll } = useFoodTruckStore();
+
 	const [formData, setFormData] = useState<IFoodTruckDTO>({
 		name: "",
 		licenseNumber: "",
@@ -24,10 +23,10 @@ const FoodTruckCreate = () => {
 			});
 
 			if (data.isSuccess) {
-				const foodTruckId = data.data.foodTruckId;
-				updateAll({ ...formData, foodTruckId });
+				alert("푸드트럭 정보 등록 성공");
 			}
 		} catch (error) {
+			alert("푸드트럭이 등록 실패");
 		} finally {
 			nav("/owners/foodtruck");
 		}

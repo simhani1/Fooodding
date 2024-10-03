@@ -36,7 +36,7 @@ export interface INaverLoginResponseDTO extends IBaseResponseDTO {
 }
 
 export interface IFoodTruckResponseDTO extends IBaseResponseDTO {
-	data: IFoodTruckDTO;
+	data: IFoodTruckInfo;
 }
 
 export interface IFoodTruckCreateResponseDTO extends IBaseResponseDTO {
@@ -92,5 +92,13 @@ export interface IFoodTruckDTO {
 	name: string;
 	licenseNumber: string;
 	introduction?: string;
+	category: Category;
+}
+
+export interface IFoodTruckInfo {
+	foodTruckId: number;
+	licenseNumber: string;
+	name: string;
+	introduction: string;
 	category: Category;
 }

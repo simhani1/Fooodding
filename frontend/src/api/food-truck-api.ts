@@ -3,10 +3,10 @@ import {
 	ApiResponse,
 	IFoodTruckDTO,
 	INoResponseDTO,
-	IFoodTruckResponseDTO,
 	IFoodTruckCreateResponseDTO,
 	ContentType,
 	IFoodTruckOwnerInfoDTO,
+	IFoodTruckResponseDTO,
 } from "@interface/api";
 import axiosInstance from "@api/axiosInstance";
 import { ITodayMarketOpen } from "@interface/owner";
@@ -30,8 +30,9 @@ export const updateFoodTruck = (foodTruckId: number, req: IFoodTruckDTO): ApiRes
 	return axiosInstance.patch(`${path}/${foodTruckId}`, req);
 };
 
-export const getFoodTruck = (foodTruckId: number): ApiResponse<IFoodTruckResponseDTO> => {
-	return axiosInstance.get(`${path}?ft-id=${foodTruckId}`);
+// 사장님 푸드트럭 상세 조회
+export const getOwnerFoodTruck = (): ApiResponse<IFoodTruckResponseDTO> => {
+	return axiosInstance.get(`${path}/owners`);
 };
 
 export const getMenuList = (): ApiResponse<IFoodTruckOwnerInfoDTO> => {

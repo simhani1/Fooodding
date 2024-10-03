@@ -1,6 +1,5 @@
 package com.fooding.api.waiting.service.impl;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +10,9 @@ import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.member.domain.Member;
 import com.fooding.api.member.exception.NoMemberException;
 import com.fooding.api.member.repository.MemberRepository;
+import com.fooding.api.waiting.domain.Waiting;
+import com.fooding.api.waiting.repository.WaitingRepository;
 import com.fooding.api.waiting.service.WaitingQueryService;
-import com.fooding.api.waiting.util.RedisKeyGenerator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 class WaitingQueryServiceImpl implements WaitingQueryService {
 
-	private final RedisTemplate<String, String> redisTemplate;
 	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
+	private final WaitingRepository waitingRepository;
 
 	@Override
 	public void reserve(Long userId, Long foodTruckId) {
@@ -36,24 +36,13 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 		if (foodTruck.isClosed()) {
 			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
 		}
-		String waitingLineKey = RedisKeyGenerator.waitingLineByFoodTruckAndMember(foodTruckId, userId);
-		long reservedAt = System.currentTimeMillis();
-		String waitingNumber = getWaitingNumber(foodTruckId);
-		redisTemplate.opsForZSet().add(waitingLineKey, waitingNumber, reservedAt);
-	}
-
-	private String getWaitingNumber(Long foodTruckId) {
-		String waitingNumberKey = RedisKeyGenerator.waitingNumber(foodTruckId);
-		Long waitingNumber = redisTemplate.opsForValue().increment(waitingNumberKey);
-		if (waitingNumber == null || waitingNumber < 100) {
-			redisTemplate.opsForValue().set(waitingNumberKey, "100");
-			return "100";
-		}
-		if (waitingNumber > 999) {
-			redisTemplate.opsForValue().set(waitingNumberKey, "1000");
-			return "100";
-		}
-		return String.valueOf(waitingNumber.intValue());
+		int waitingNumber = foodTruck.nextWaitingNumber();
+		Waiting waiting = Waiting.builder()
+			.member(user)
+			.foodTruck(foodTruck)
+			.number(waitingNumber)
+			.build();
+		waitingRepository.save(waiting);
 	}
 
 }

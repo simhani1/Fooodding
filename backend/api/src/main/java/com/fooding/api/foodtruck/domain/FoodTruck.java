@@ -60,6 +60,7 @@ public class FoodTruck {
 	@AttributeOverride(name = "closedAt", column = @Column(name = "closed_at", nullable = false))
 	@AttributeOverride(name = "latitude", column = @Column(name = "latitude"))
 	@AttributeOverride(name = "longitude", column = @Column(name = "longitude"))
+	@AttributeOverride(name = "waitingNumber", column = @Column(name = "waiting_number"))
 	private CommerceInfo commerceInfo;
 
 	@CreationTimestamp
@@ -88,7 +89,6 @@ public class FoodTruck {
 
 	public void close() {
 		this.menuList.forEach(Menu::enableSale);
-
 		this.commerceInfo = CommerceInfo.getClosed(this.commerceInfo);
 	}
 
@@ -102,6 +102,12 @@ public class FoodTruck {
 
 	public boolean isClosed() {
 		return this.commerceInfo.getOpenStatus().equals(OpenStatus.CLOSED);
+	}
+
+	public int nextWaitingNumber() {
+		int waitingNumber = this.commerceInfo.getWaitingNumber();
+		this.commerceInfo.plusWaitingNumber();
+		return waitingNumber;
 	}
 
 }

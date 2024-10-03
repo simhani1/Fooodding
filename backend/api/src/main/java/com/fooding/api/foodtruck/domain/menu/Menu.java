@@ -3,7 +3,7 @@ package com.fooding.api.foodtruck.domain.menu;
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.exception.IllegalMenuNameException;
 import com.fooding.api.foodtruck.exception.IllegalMenuPriceException;
-import com.fooding.api.foodtruck.exception.MenuNameOverFlowException;
+import com.fooding.api.foodtruck.exception.MenuNameOverflowException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -86,7 +86,7 @@ public class Menu {
 		}
 
 		if (name.trim().isEmpty() || name.length() > 15) {
-			throw new MenuNameOverFlowException("Invalid name value");
+			throw new MenuNameOverflowException("Invalid name value");
 		}
 	}
 

@@ -11,13 +11,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fooding.api.foodtruck.domain.FoodCategory;
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.domain.FoodTruckInfo;
-import com.fooding.api.foodtruck.domain.FoodCategory;
 import com.fooding.api.foodtruck.domain.menu.Menu;
 import com.fooding.api.foodtruck.exception.IllegalMenuNameException;
 import com.fooding.api.foodtruck.exception.IllegalMenuPriceException;
-import com.fooding.api.foodtruck.exception.MenuNameOverFlowException;
+import com.fooding.api.foodtruck.exception.MenuNameOverflowException;
 import com.fooding.api.member.domain.Member;
 
 @ExtendWith(MockitoExtension.class)
@@ -82,7 +82,7 @@ class MenuTest {
 		Menu menu = new Menu("종한이의 닭꼬치", 5000, "chicken_skewer.jpg", foodTruck);
 
 		// when & then
-		assertThrows(MenuNameOverFlowException.class, () -> menu.update(invalidName, 6000, "new_chicken_skewer.jpg"));
+		assertThrows(MenuNameOverflowException.class, () -> menu.update(invalidName, 6000, "new_chicken_skewer.jpg"));
 	}
 
 	@DisplayName("메뉴 업데이트 시 가격이 유효하지 않을 때 IllegalMenuPriceException 발생")

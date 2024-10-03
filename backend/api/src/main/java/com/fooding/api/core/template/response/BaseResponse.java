@@ -1,6 +1,7 @@
 package com.fooding.api.core.template.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fooding.api.core.exception.ResponseCode;
 
 import lombok.Builder;
 import lombok.Getter;

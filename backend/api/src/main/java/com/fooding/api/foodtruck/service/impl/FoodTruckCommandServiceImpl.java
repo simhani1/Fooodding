@@ -64,7 +64,7 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 					.collect(Collectors.toList())
 			)
 			.reserved(waitingInfoDto != null)
-			.waitingInfoDto(waitingInfoDto)
+			.waitingInfo(waitingInfoDto)
 			.build();
 	}
 

@@ -1,13 +1,9 @@
-import { useNavigate } from "react-router-dom";
-
 import { ITruckInfoProps } from "@interface/foodTruck";
-import axiosInstance from "@api/axiosInstance";
+import { reserveTruckWaiting } from "@api/waiting-api";
 
 import { Ticket } from "@phosphor-icons/react";
 
-const UserTruckInfo = ({ truck }: ITruckInfoProps) => {
-	const nav = useNavigate();
-
+const UserTruckInfo = ({ truck, setTruck }: ITruckInfoProps) => {
 	// const foodTruckId = truck.foodTruckId;
 	const foodTruckId = 1;
 
@@ -15,8 +11,13 @@ const UserTruckInfo = ({ truck }: ITruckInfoProps) => {
 	const reserveTruck = async () => {
 		//axios를 쏘고 나서
 		try {
-			await axiosInstance.post(`/waiting/foodtrucks/${foodTruckId}`);
-			nav("/users/waiting");
+			await reserveTruckWaiting(foodTruckId);
+
+			// 예약 성공 시 `isReserved` 상태 업데이트
+			setTruck((prevState) => ({
+				...prevState,
+				isReserved: true,
+			}));
 		} catch (err) {
 			console.error(err);
 		}
@@ -25,7 +26,7 @@ const UserTruckInfo = ({ truck }: ITruckInfoProps) => {
 	return (
 		<div className="flex flex-col items-center p-6 m-8 border border-solid rounded-xl border-gray">
 			<h1 className="mb-2 text-2xl font-extrabold">{truck.name}</h1>
-			<h3 className="mb-4 text-lg">{truck.content}</h3>
+			<h3 className="mb-4 text-lg">{truck.introduction}</h3>
 			<button
 				className={`flex flex-row items-center px-4 py-3 rounded-md ${
 					truck.isReserved ? "bg-gray" : "bg-user"

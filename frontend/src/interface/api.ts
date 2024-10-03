@@ -1,5 +1,7 @@
 import { AxiosResponse } from "axios";
 import { Category } from "@interface/owner";
+import { IWaitingInfo } from "./waiting";
+import { IMenuInfo } from "./foodTruck";
 
 export enum ContentType {
 	Json = "application/json",
@@ -17,6 +19,7 @@ export interface IBaseResponseDTO {
 	isSuccess: boolean;
 }
 
+//응답 data가 없을 떄
 export interface INoResponseDTO extends IBaseResponseDTO {
 	data: null;
 }
@@ -57,6 +60,21 @@ export interface IFoodTruckOwnerInfoDTO extends IBaseResponseDTO {
 	};
 }
 
+//사용자의 푸드트럭 상세 조회
+export interface IFoodTruckDetailUserInfoDTO extends IBaseResponseDTO {
+	data: {
+		foodTruckId: number;
+		licenseNumber: string;
+		name: string;
+		introduction: string;
+		category: string;
+		menuList: IMenuInfo[];
+		isReserved: boolean;
+		waitingInfo: IWaitingInfo;
+	};
+}
+
+//메뉴
 export interface IMenuResponseDTO extends IBaseResponseDTO {
 	menuId: number;
 	name: string;

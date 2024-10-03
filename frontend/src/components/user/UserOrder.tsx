@@ -5,30 +5,30 @@ import { IOrderingProps } from "@interface/waiting";
 import { HourglassLow } from "@phosphor-icons/react";
 
 const UserOrder = ({ callTime }: IOrderingProps) => {
-	const [minutes, setMinutes] = useState(parseInt(callTime.slice(3, 5)));
-	const [seconds, setSeconds] = useState(parseInt(callTime.slice(6, 8)));
+	const [remainingTime, setRemainingTime] = useState(600); // 10분 = 600초
 
 	useEffect(() => {
-		// 1초마다 초를 감소시키는 타이머
-		const timer = setInterval(() => {
-			setSeconds((prevSeconds) => {
-				if (prevSeconds === 0) {
-					if (minutes === 0) {
-						clearInterval(timer); // 시간이 0이 되면 타이머 정지
-						return 0;
-					} else {
-						setMinutes((prevMinutes) => prevMinutes - 1); // 분 감소
-						return 59;
-					}
-				}
+		// 현재 시간과 백엔드에서 받은 시간 차이를 계산하고 600초(10분)에서 뺌
+		const calculateRemainingTime = () => {
+			const currentTime = Math.floor(Date.now() / 1000); // 현재 시간 (초 단위)
+			const startTime = Math.floor(callTime / 1000); // 백엔드에서 받은 시간 (밀리초 -> 초 변환)
+			const elapsedTime = currentTime - startTime; // 경과 시간 계산
+			const timeLeft = 600 - elapsedTime; // 10분에서 경과 시간을 빼서 남은 시간 계산
+			return timeLeft > 0 ? timeLeft : 0; // 남은 시간이 0보다 작아지지 않도록 처리
+		};
 
-				return prevSeconds - 1;
-			});
+		// 1초마다 카운트다운 업데이트
+		const timer = setInterval(() => {
+			setRemainingTime(calculateRemainingTime());
 		}, 1000);
 
-		// 컴포넌트가 언마운트되면 타이머 정리
+		// 컴포넌트 언마운트 시 타이머 정리
 		return () => clearInterval(timer);
-	}, [minutes]);
+	}, [callTime]);
+
+	// 분과 초를 포맷팅
+	const minutes = Math.floor(remainingTime / 60);
+	const seconds = remainingTime % 60;
 
 	return (
 		<>
@@ -42,7 +42,7 @@ const UserOrder = ({ callTime }: IOrderingProps) => {
 			<div className="flex">
 				<HourglassLow size={24} />
 				<h3>
-					{minutes}분 {seconds < 10 ? `0${seconds}` : seconds}초
+					남은 시간: {minutes}분 {seconds < 10 ? `0${seconds}` : seconds}초
 				</h3>
 			</div>
 		</>

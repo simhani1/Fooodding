@@ -16,7 +16,6 @@ const OwnerWaiting = lazy(() => import("@pages/owner/OwnerWaiting"));
 const OwnerAnnouncement = lazy(() => import("@pages/owner/OwnerAnnouncement"));
 const UserMap = lazy(() => import("@pages/user/UserMap"));
 const UserFoodTruck = lazy(() => import("@pages/user/UserFoodTruck"));
-const UserWaiting = lazy(() => import("@pages/user/UserWaiting"));
 const UserWaitingList = lazy(() => import("@pages/user/UserWaitingList"));
 
 import "./App.css";
@@ -97,10 +96,6 @@ function App() {
 					<Route
 						path="foodtruck"
 						element={<UserFoodTruck />}
-					/>
-					<Route
-						path="waiting"
-						element={<UserWaiting />}
 					/>
 					<Route
 						path="list"

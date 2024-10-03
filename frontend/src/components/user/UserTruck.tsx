@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const UserTruck: React.FC<UserTruckProps> = ({ truck }) => {
 	const nav = useNavigate();
-	const truckId = truck?.id;
+	const truckId = truck?.foodTruckId;
 
 	if (!truck) {
 		return (
@@ -16,13 +16,14 @@ const UserTruck: React.FC<UserTruckProps> = ({ truck }) => {
 	return (
 		<div
 			className="flex flex-row items-center p-2 m-4 border border-solid w-96 border-gray rounded-2xl"
-			onClick={() => nav("/users/foodtruck", { state: { truckId } })}
+			onClick={() => nav("/users/foodtruck", { state: truckId })}
 		>
 			<img
 				src={truck.img}
 				alt="푸드트럭 음식사진"
 				className="object-cover m-2 rounded-md w-28 h-28"
 			/>
+
 			<div className="flex flex-col ml-2 mr-4">
 				<h3 className="my-1 text-lg font-bold">{truck.name}</h3>
 				<p className="text-sm font-light ">{truck.content}</p>

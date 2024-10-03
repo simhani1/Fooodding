@@ -59,7 +59,7 @@ const UserMap = () => {
 		// 더미데이터 대신 axios 연결
 		const exampleTrucks: ITruckInfo[] = [
 			{
-				id: 1,
+				foodTruckId: 1,
 				name: "유니네 오꼬노미야끼",
 				content: "싸피인들 오꼬노미야끼 한입 고?",
 				menu: ["오꼬노미야끼", "야끼소바"],
@@ -68,7 +68,7 @@ const UserMap = () => {
 				lng: 126.979,
 			},
 			{
-				id: 2,
+				foodTruckId: 2,
 				name: "예훈이네 붕어빵",
 				content: "따끈따끈 붕어빵 어서오세요!",
 				menu: ["팥붕어빵", "슈크림붕어빵"],

@@ -1,4 +1,4 @@
-// import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { ITruckInfoDetail } from "@interface/foodTruck";
@@ -7,50 +7,56 @@ import TheHeader from "@components/common/TheHeader";
 
 import UserMenu from "@components/user/UserMenu";
 import UserTruckInfo from "@components/user/UserTruckInfo";
+import { getFoodTruckDetailInfo } from "@api/user-api";
+import UserWaiting from "../../components/user/UserWaiting";
 
 const UserFoodTruck = () => {
-	// const location = useLocation();
-	// const truckId = location.state.truckId;
+	const location = useLocation();
+	const truckId = location.state.foodTruckId;
 
 	const [truck, setTruck] = useState<ITruckInfoDetail>({
-		id: 0,
+		foodTruckId: 0,
+		licenseNumber: "",
 		name: "",
-		content: "",
-		isReserved: false,
-		img: "",
+		introduction: "",
+		category: "",
 		menuList: [],
+		isReserved: false, //예약전인지
+		waitingInfo: {
+			waitingId: 0,
+			isCancelable: true, //취소 가능한지
+			number: 0,
+			rank: 0,
+			changedAt: 0,
+		}, //웨이팅정보
 	});
+
+	const getTruckDetail = async () => {
+		try {
+			const response = await getFoodTruckDetailInfo(truckId);
+			setTruck(response.data.data);
+		} catch (err) {
+			console.error(err);
+		}
+	};
 
 	useEffect(() => {
 		//여기에서 axios 연결
-
-		setTruck({
-			id: 1,
-			name: "유니네 오꼬노미야끼",
-			content: "싸피인들 오꼬노미야끼 한입 고?",
-			isReserved: false,
-			img: "https://recipe1.ezmember.co.kr/cache/recipe/2015/09/30/9f010965c00c8edd4439e0d1e359c7fe.jpg",
-			menuList: [
-				{
-					menuName: "오꼬노미야끼",
-					price: 8000,
-					menuImg: "DEFAULT",
-				},
-				{
-					menuName: "야끼소바",
-					price: 12000,
-					menuImg:
-						"https://recipe1.ezmember.co.kr/cache/recipe/2015/09/30/9f010965c00c8edd4439e0d1e359c7fe.jpg",
-				},
-			],
-		});
-	}, []);
+		getTruckDetail();
+	}, [truck.isReserved]);
 
 	return (
 		<>
 			<TheHeader />
-			<UserTruckInfo truck={truck} />
-			<UserMenu menuList={truck.menuList} />
+			<UserTruckInfo
+				truck={truck}
+				setTruck={setTruck}
+			/>
+			{truck.isReserved ? (
+				<UserWaiting waitingInfo={truck.waitingInfo} />
+			) : (
+				<UserMenu menuList={truck.menuList} />
+			)}
 			<TheFooter />
 		</>
 	);

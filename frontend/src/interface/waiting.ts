@@ -1,19 +1,23 @@
 //user
 export interface IWaitingInfo {
-	id: number;
-	name: string;
-	waitingNumber: number;
-	peopleNumber: number;
-	isWaiting: boolean;
-	isOrdering: boolean;
+	waitingId: number;
+	isCancelable: boolean; //취소 가능한지
+	number: number;
+	rank: number; //내 앞에 몇 명
+	changedAt: number;
 }
 
 export interface IWaitingProps {
 	waitingInfo: IWaitingInfo;
+	foodTruckName?: string;
+}
+
+export interface UserWaitingImgProps {
+	isCancelable: boolean;
 }
 
 export interface IOrderingProps {
-	callTime: string;
+	callTime: number;
 }
 
 //owner

@@ -35,6 +35,7 @@ export const getOwnerFoodTruck = (): ApiResponse<IFoodTruckResponseDTO> => {
 	return axiosInstance.get(`${path}/owners`);
 };
 
+//메뉴 가져오기
 export const getMenuList = (): ApiResponse<IFoodTruckOwnerInfoDTO> => {
 	return axiosInstance.get(`${path}/owners`);
 };

@@ -60,6 +60,9 @@ dependencies {
 
     /* Jsoup */
     implementation 'org.jsoup:jsoup:1.14.2'
+
+    /* Fcm */
+    implementation 'com.google.firebase:firebase-admin:9.3.0'
 }
 
 tasks.named('test') {

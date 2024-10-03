@@ -16,9 +16,10 @@ import com.fooding.api.foodtruck.service.FoodTruckCommandService;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
 import com.fooding.api.foodtruck.service.dto.MenuDto;
 import com.fooding.api.member.domain.Member;
-import com.fooding.api.member.domain.MemberRole;
 import com.fooding.api.member.exception.NoMemberException;
 import com.fooding.api.member.repository.MemberRepository;
+import com.fooding.api.waiting.repository.custom.WaitingRepositoryCustom;
+import com.fooding.api.waiting.service.dto.WaitingInfoDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,16 +33,18 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
 	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
+	private final WaitingRepositoryCustom waitingRepositoryCustom;
 
 	@Override
-	public FoodTruckDto getFoodTruckDetailForUser(Long memberId, Long foodTruckId) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + memberId));
+	public FoodTruckDto getFoodTruckDetailForUser(Long userId, Long foodTruckId) {
+		Member user = memberRepository.findById(userId)
+			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + userId));
 		FoodTruck foodTruck = foodTruckRepository.findById(foodTruckId)
 			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found by foodTruckID: " + foodTruckId));
-		if (member.getRole().equals(MemberRole.USER) && foodTruck.isClosed()) {
+		if (foodTruck.isClosed()) {
 			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
 		}
+		WaitingInfoDto waitingInfoDto = waitingRepositoryCustom.findWaitingInfoByFoodTruck(foodTruck, user);
 		return FoodTruckDto.builder()
 			.foodTruckId(foodTruck.getId())
 			.name(foodTruck.getInfo().getName())
@@ -60,6 +63,8 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 						.build())
 					.collect(Collectors.toList())
 			)
+			.reserved(waitingInfoDto != null)
+			.waitingInfoDto(waitingInfoDto)
 			.build();
 	}
 

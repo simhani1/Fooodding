@@ -63,9 +63,9 @@ public class FoodTruckController {
 	@GetMapping("/{ft-id}/users")
 	public ResponseEntity<BaseResponse<FoodTruckDto>> getFoodTruckDetailForUser(
 		@PathVariable("ft-id") Long foodTruckId) {
-		Long memberId = MemberContext.getMemberId();
+		Long userId = MemberContext.getMemberId();
 		return ResponseEntity.ok(
-			BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetailForUser(memberId, foodTruckId)));
+			BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetailForUser(userId, foodTruckId)));
 	}
 
 	@RequireJwtToken

@@ -6,6 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record WaitingInfoDto(
+	Long waitingId,
 	Integer number,
 	Long rank,
 	Long changedAt,

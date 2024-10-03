@@ -9,6 +9,7 @@ import com.fooding.api.member.domain.Member;
 import com.fooding.api.waiting.domain.QWaiting;
 import com.fooding.api.waiting.service.dto.WaitingInfoDto;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -31,7 +32,8 @@ public class WaitingRepositoryCustom {
 						.where(subWaiting.foodTruck.eq(waiting.foodTruck)
 							.and(subWaiting.id.lt(waiting.id))
 							.and(subWaiting.cancellable.isFalse())),
-					waiting.cancellable
+					waiting.cancellable,
+					Expressions.numberTemplate(Long.class, "UNIX_TIMESTAMP({0})", waiting.changedAt)
 				)
 			)
 			.from(waiting)

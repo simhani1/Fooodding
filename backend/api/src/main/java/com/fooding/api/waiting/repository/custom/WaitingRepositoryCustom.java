@@ -32,8 +32,8 @@ public class WaitingRepositoryCustom {
 						.where(subWaiting.foodTruck.eq(waiting.foodTruck)
 							.and(subWaiting.id.lt(waiting.id))
 							.and(subWaiting.cancellable.isFalse())),
-					waiting.cancellable,
-					Expressions.numberTemplate(Long.class, "UNIX_TIMESTAMP({0})", waiting.changedAt)
+					Expressions.numberTemplate(Long.class, "UNIX_TIMESTAMP({0})", waiting.changedAt),
+					waiting.cancellable
 				)
 			)
 			.from(waiting)

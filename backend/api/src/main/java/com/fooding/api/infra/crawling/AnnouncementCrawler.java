@@ -33,7 +33,7 @@ public class AnnouncementCrawler {
 		// 게시물 링크 크롤링
 		Elements postLinks = doc.select(
 			"a[href^=https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/]");
-
+		
 		for (Element link : postLinks) {
 			String postLink = link.attr("href");
 

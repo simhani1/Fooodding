@@ -89,6 +89,31 @@ export type Category =
 	| "FAST_FOOD"
 	| "CAFE_DESSERT";
 
+export interface IOwnerGraph {
+	weekday: string;
+}
+
+export interface ITodayWeather {
+	dt: number;
+	main: {
+		temp: number;
+		feels_like: number;
+		temp_min: number;
+		temp_max: number;
+		pressure: number;
+		humidity: number;
+	};
+	weather: { main: string; description: string; icon: string }[];
+	clouds: { all: number };
+	wind: { speed: number; deg: number };
+	dt_txt: string;
+}
+
+export interface ILocation {
+	lat: number;
+	lng: number;
+}
+
 export interface IOwnerExceptionProps {
 	title: string;
 	content: string;

@@ -13,6 +13,7 @@ import UserWaiting from "../../components/user/UserWaiting";
 const UserFoodTruck = () => {
 	const location = useLocation();
 	const truckId = location.state.foodTruckId;
+	// const truckId = 1;
 
 	const [truck, setTruck] = useState<ITruckInfoDetail>({
 		foodTruckId: 0,

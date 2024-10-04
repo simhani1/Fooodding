@@ -5,13 +5,12 @@ import java.io.IOException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class AnnouncementCrawlingScheduler {
 	private final AnnouncementCrawler announcementCrawler;
-
-	public AnnouncementCrawlingScheduler(AnnouncementCrawler announcementCrawler) {
-		this.announcementCrawler = announcementCrawler;
-	}
 
 	@Scheduled(cron = "0 0/5 * * * ?")
 	public void scheduleCrawling() {

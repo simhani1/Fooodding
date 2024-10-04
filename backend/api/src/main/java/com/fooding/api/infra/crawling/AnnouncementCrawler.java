@@ -53,10 +53,32 @@ public class AnnouncementCrawler {
 				continue;
 			}
 
-			// 상세 정보 크롤링 (일자, 운영시간, 장소)
-			String eventDate = postDoc.select("p:contains(일자)").text().split(":")[1].trim();
-			String operatingTime = postDoc.select("p:contains(운영시간)").text().split(":")[1].trim();
-			String location = postDoc.select("p:contains(장소)").text().split(":")[1].trim();
+			// 세부 정보를 추출
+			String eventDate = null;
+			String operatingTime = null;
+			String location = null;
+			Elements paragraphs = postDoc.select("p");
+
+			boolean extract = false;
+			for (Element paragraph : paragraphs) {
+				String text = paragraph.text();
+				// 원하는 구간 시작
+				if (text.contains("행사명")) {
+					extract = true;
+				}
+				if (extract) {
+					// 각각의 정보를 추출
+					if (text.contains("일 자")) {
+						eventDate = text.split(":")[1].trim();
+					}
+					if (text.contains("운영시간")) {
+						operatingTime = text.substring(text.indexOf(":") + 1).trim();  // ":" 이후의 전체 텍스트를 추출
+					}
+					if (text.contains("장 소")) {
+						location = text.split(":")[1].trim();
+					}
+				}
+			}
 
 			Announcement announcement = Announcement.builder()
 				.url(postLink)

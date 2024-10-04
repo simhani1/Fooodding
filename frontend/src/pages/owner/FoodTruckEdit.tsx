@@ -11,7 +11,6 @@ const FoodTruckEdit = () => {
 	const location = useLocation();
 
 	const { foodTruckId, name, licenseNumber, introduction, category } = location.state;
-	console.log(location.state);
 
 	const [formData, setFormData] = useState<IFoodTruckDTO>({
 		name,

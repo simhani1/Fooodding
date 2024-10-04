@@ -93,7 +93,7 @@ export interface IOwnerGraph {
 	weekday: string;
 }
 
-export interface ITodayWeather {
+export interface IWeather {
 	dt: number;
 	main: {
 		temp: number;
@@ -107,6 +107,13 @@ export interface ITodayWeather {
 	clouds: { all: number };
 	wind: { speed: number; deg: number };
 	dt_txt: string;
+	pop: number;
+}
+
+export type IWeatherList = IWeather[];
+
+export interface IWeatherProps {
+	weather: IWeather;
 }
 
 export interface ILocation {
@@ -117,4 +124,10 @@ export interface ILocation {
 export interface IOwnerExceptionProps {
 	title: string;
 	content: string;
+}
+
+export interface IRecommendProps {
+	placeName: string;
+	target: string;
+	count: number;
 }

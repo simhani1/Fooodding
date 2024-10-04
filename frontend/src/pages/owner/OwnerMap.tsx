@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import TheSideBar from "@components/common/TheSideBar";
 import WhiteButton from "@components/owner/WhiteButton";
@@ -15,12 +16,15 @@ import { IFeatureCollection, ILatLng, IPolygonPath } from "@interface/map";
 import { CustomOverlayMap, Map, MapMarker, Polygon } from "react-kakao-maps-sdk";
 
 const OwnerMap = () => {
+	const location = useLocation();
+	const state = location.state;
+
 	const [map, setMap] = useState<any>();
 	const [level, setLevel] = useState(8);
 	const [outer, setOuter] = useState<any>([]);
-	const [selectDong, setSelectDong] = useState<string>("");
+	const [selectDong, setSelectDong] = useState<string>(state?.dong || "");
 	const [isButton, setIsButton] = useState<boolean>(false);
-	const [showDetail, setShowDetail] = useState<boolean>(false);
+	const [showDetail, setShowDetail] = useState<boolean>(state?.dong ? true : false);
 	const [activeSection, setActiveSection] = useState<string>("recommend");
 
 	// 초기 지도 설정 (서울시)

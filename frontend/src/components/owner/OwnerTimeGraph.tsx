@@ -21,10 +21,10 @@ const OwnerTimeGraph = ({ weekday }: IOwnerGraph) => {
 			{
 				label: `${weekday} 기준: 시간대별 평균 손님 수`,
 				data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 100, 120, 20, 21, 22, 23, 24],
-				backgroundColor: "rgba(207, 105, 163, 0.7)",
-				borderWidth: 2,
-				borderRadius: 2,
-				borderColor: "rgb(207, 105, 163)",
+				backgroundColor: "#F27387",
+				borderRadius: 5,
+				borderColor: "#F27387",
+				barThickness: 30,
 			},
 		],
 	};
@@ -32,18 +32,20 @@ const OwnerTimeGraph = ({ weekday }: IOwnerGraph) => {
 	// 그래프 옵션
 	const options = {
 		responsive: true,
+		scales: {
+			x: {
+				display: true,
+				grid: {
+					lineWidth: 0,
+				},
+				ticks: {
+					color: "black",
+				},
+			},
+		},
 		plugins: {
 			legend: {
-				display: true,
-				position: "bottom" as const,
-				labels: {
-					font: {
-						family: "Pretendard",
-						weight: 500,
-						size: 16,
-					},
-					padding: 16,
-				},
+				display: false,
 			},
 			title: {
 				display: false,
@@ -62,7 +64,6 @@ const OwnerTimeGraph = ({ weekday }: IOwnerGraph) => {
 			options={options}
 			data={data}
 			height={80}
-			className="mt-8 mb-4"
 		/>
 	);
 };

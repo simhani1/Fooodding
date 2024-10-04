@@ -33,18 +33,20 @@ const OwnerGenderGraph = () => {
 	// 그래프 옵션
 	const options = {
 		responsive: true,
+		scales: {
+			x: {
+				display: true,
+				grid: {
+					lineWidth: 0,
+				},
+				ticks: {
+					color: "black",
+				},
+			},
+		},
 		plugins: {
 			legend: {
-				display: true,
-				position: "bottom" as const,
-				labels: {
-					font: {
-						family: "Pretendard",
-						weight: 500,
-						size: 16,
-					},
-					padding: 16,
-				},
+				display: false,
 			},
 			title: {
 				display: false,
@@ -63,7 +65,6 @@ const OwnerGenderGraph = () => {
 			options={options}
 			data={data}
 			height={80}
-			className="mt-8 mb-4"
 		/>
 	);
 };

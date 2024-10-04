@@ -120,3 +120,18 @@ export interface IFoodTruckInfo {
 	introduction: string;
 	category: Category;
 }
+
+// owner-api
+export interface IOwnerAnnouncementResponseDTO extends IBaseResponseDTO {
+	data: IOwnerAnnouncementDTO[];
+}
+
+export interface IOwnerAnnouncementDTO {
+	announcementId: number;
+	url: string;
+	title: string;
+	date: string;
+	time: string;
+	place: string;
+	isOpened: boolean;
+}

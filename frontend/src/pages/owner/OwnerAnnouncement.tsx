@@ -5,18 +5,25 @@ import Main from "@components/owner/Main";
 import Title from "@components/common/Title";
 import BackButton from "@components/owner/BackButton";
 import AnnouncementButton from "@components/common/AnnouncementButton";
+import { IOwnerAnnouncementDTO } from "@interface/api";
+import { createAnnounementLog, getAunnouncementInfo } from "@api/owner-api";
 
 const OwnerAnnouncement = () => {
 	const [alarm, setAlarm] = useState("whole");
 	const [isToggled, setIsToggled] = useState(false);
 	const [visibleCount, setVisibleCount] = useState(10);
+	const [announcements, setAnnounements] = useState<IOwnerAnnouncementDTO[]>([]);
 
-	const announcements = new Array(50).fill({
-		buttonText: "양평생활문화페스타",
-		place: "양평생활문화센터 일원(물안개공원)",
-		duration: "24.11.2(토) 11:00~18:00",
-		link: "https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/2024nyeon-11weol2il-yangpyeongsaenghwalmunhwapeseuta",
-	});
+	// 공고 데이터 가져오기
+	const loadAnnounements = async () => {
+		try {
+			const response = await getAunnouncementInfo();
+			const data = response.data.data;
+			setAnnounements(data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	// 토글 버튼 클릭 시 그래프 전환
 	const handleToggle = () => {
@@ -29,22 +36,38 @@ const OwnerAnnouncement = () => {
 	};
 
 	// 외부 링크로 이동
-	const handleLink = (url: string) => {
-		window.open(url, "_blank");
+	const handleLink = async (announcementId: number, url: string) => {
+		try {
+			await createAnnounementLog(announcementId);
+			loadAnnounements();
+			window.open(url, "_blank");
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
+	// 무한 스크롤을 위한 세팅 메서드
 	const handleScroll = () => {
 		const scrollTop = document.getElementById("infinite-scroll")?.scrollTop || 0;
 		const scrollHeight = document.getElementById("infinite-scroll")?.scrollHeight || 0;
 		const clientHeight = document.getElementById("infinite-scroll")?.clientHeight || 0;
 
 		if (scrollTop + clientHeight >= scrollHeight - 5) {
-			console.log("Loading more items...");
 			setVisibleCount((prevCount) => prevCount + 10);
 		}
 	};
 
+	// 전체 공고 & 안 읽은 공고 목록 필터 처리 메서드
+	const filteredAnnounements = () => {
+		if (alarm === "unread") {
+			return announcements.filter((announcement) => !announcement.isOpened);
+		}
+
+		return announcements;
+	};
+
 	useEffect(() => {
+		loadAnnounements();
 		const scrollContainer = document.getElementById("infinite-scroll");
 		scrollContainer?.addEventListener("scroll", handleScroll);
 		return () => scrollContainer?.removeEventListener("scroll", handleScroll);
@@ -103,15 +126,19 @@ const OwnerAnnouncement = () => {
 						id="infinite-scroll"
 						className="overflow-y-auto h-[calc(100vh-300px)]"
 					>
-						{announcements.slice(0, visibleCount).map((announcement, index) => (
-							<AnnouncementButton
-								key={index}
-								buttonText={announcement.buttonText}
-								onClick={() => handleLink(announcement.link)}
-								place={announcement.place}
-								duration={announcement.duration}
-							/>
-						))}
+						{filteredAnnounements()
+							.slice(0, visibleCount)
+							.map((announcement, index) => (
+								<AnnouncementButton
+									key={index}
+									buttonText={announcement.title}
+									onClick={() => handleLink(announcement.announcementId, announcement.url)}
+									place={announcement.place}
+									date={announcement.date}
+									time={announcement.time}
+									isOpened={announcement.isOpened}
+								/>
+							))}
 					</div>
 				</>
 			</Main>

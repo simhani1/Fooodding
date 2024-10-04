@@ -45,4 +45,8 @@ public class Announcement {
 		this.time = time;
 		this.place = place;
 	}
+
+	public void changeTitle(String title) {
+		this.title = title;
+	}
 }

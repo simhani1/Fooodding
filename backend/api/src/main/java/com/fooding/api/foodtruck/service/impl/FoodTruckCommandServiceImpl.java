@@ -1,5 +1,6 @@
 package com.fooding.api.foodtruck.service.impl;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -96,6 +97,30 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 					.collect(Collectors.toList())
 			)
 			.build();
+	}
+
+	@Override
+	public List<FoodTruckDto> getFoodTrucks(Double latitude, Double longitude) {
+		// TODO: 반경 1km 이내로 조회하도록 수정할 것
+		List<FoodTruck> foodTruckList = foodTruckRepository.findAllByOpened();
+		return foodTruckList.stream().map(
+				foodTruck ->
+					FoodTruckDto.builder()
+						.foodTruckId(foodTruck.getId())
+						.name(foodTruck.getInfo().getName())
+						.introduction(foodTruck.getInfo().getIntroduction())
+						.licenseNumber(foodTruck.getInfo().getLicenseNumber())
+						.category(foodTruck.getInfo().getCategory().toString())
+						.menuList(foodTruck.getMenuList()
+							.stream()
+							.map(menu -> MenuDto.builder()
+								.img(menu.getImg())
+								.name(menu.getName())
+								.build())
+							.collect(Collectors.toList()))
+						.build()
+			)
+			.collect(Collectors.toList());
 	}
 
 }

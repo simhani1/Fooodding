@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.fooding.api.core.template.response.BaseResponse;
+import com.fooding.api.waiting.exception.CannotCancelWaitingException;
 import com.fooding.api.waiting.exception.NoWaitingInfoException;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,13 @@ public class WaitingExHandler {
 
 	@ExceptionHandler(NoWaitingInfoException.class)
 	public ResponseEntity<BaseResponse<Object>> noWaitingInfoException(NoWaitingInfoException e) {
+		log.info(e.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(BaseResponse.ofFail(NO_WAITING_INFO_EXCEPTION));
+	}
+
+	@ExceptionHandler(CannotCancelWaitingException.class)
+	public ResponseEntity<BaseResponse<Object>> cannotCancelWaitingException(CannotCancelWaitingException e) {
 		log.info(e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(NO_WAITING_INFO_EXCEPTION));

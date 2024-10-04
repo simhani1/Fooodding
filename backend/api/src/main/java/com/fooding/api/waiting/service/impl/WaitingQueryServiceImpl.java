@@ -11,6 +11,8 @@ import com.fooding.api.member.domain.Member;
 import com.fooding.api.member.exception.NoMemberException;
 import com.fooding.api.member.repository.MemberRepository;
 import com.fooding.api.waiting.domain.Waiting;
+import com.fooding.api.waiting.exception.CannotCancelWaitingException;
+import com.fooding.api.waiting.exception.NoWaitingInfoException;
 import com.fooding.api.waiting.repository.WaitingRepository;
 import com.fooding.api.waiting.service.WaitingQueryService;
 
@@ -43,6 +45,18 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			.number(waitingNumber)
 			.build();
 		waitingRepository.save(waiting);
+	}
+
+	@Override
+	public void cancel(Long userId, Long waitingId) {
+		Member user = memberRepository.findById(userId)
+			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + userId));
+		Waiting waiting = waitingRepository.findByIdAndMember(waitingId, user)
+			.orElseThrow(() -> new NoWaitingInfoException("Waiting not found with ID: " + waitingId));
+		if (!waiting.getCancellable()) {
+			throw new CannotCancelWaitingException("Cannot cancel waiting");
+		}
+		waitingRepository.deleteById(waitingId);
 	}
 
 }

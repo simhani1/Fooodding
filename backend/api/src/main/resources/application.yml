@@ -55,5 +55,5 @@ cloud:
     s3:
       bucket: ${AWS_S3_BUCKET_NAME}
 
-fcm-service-key:
-  fcmcertification.json
+#fcm-service-key:
+#  fcmcertification.json

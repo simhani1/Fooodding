@@ -17,12 +17,13 @@ const OwnerAnnouncement = lazy(() => import("@pages/owner/OwnerAnnouncement"));
 const UserMap = lazy(() => import("@pages/user/UserMap"));
 const UserFoodTruck = lazy(() => import("@pages/user/UserFoodTruck"));
 const UserWaitingList = lazy(() => import("@pages/user/UserWaitingList"));
+const Loading = lazy(() => import("@components/common/Loading"));
 
 import "./App.css";
 
 function App() {
 	return (
-		<Suspense fallback={<div>로딩 중...</div>}>
+		<Suspense fallback={<Loading />}>
 			<Routes>
 				<Route
 					path="/"

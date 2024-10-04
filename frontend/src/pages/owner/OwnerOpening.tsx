@@ -11,8 +11,10 @@ import Modal from "@components/common/Modal";
 
 import { waitingCancelingModalStyle } from "@utils/modalStyle";
 import { getMenuList, openMarket } from "@api/food-truck-api";
+import { isCustomAxiosError } from "@api/error";
 
 import { FireTruck } from "@phosphor-icons/react";
+import Loading from "@components/common/Loading";
 
 const OwnerOpening = () => {
 	const nav = useNavigate();
@@ -20,12 +22,17 @@ const OwnerOpening = () => {
 	const today = new Date();
 	const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
 
+	// Loading 상태
+	const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+
 	///지도
 	const mapRef = useRef<kakao.maps.Map | null>(null);
+
 	const [currentPosition, setCurrentPosition] = useState({
 		lat: 37.566826,
 		lng: 126.9786567,
 	});
+
 	const [mapCenter, setMapCenter] = useState({
 		lat: 37.566826,
 		lng: 126.9786567,
@@ -77,6 +84,7 @@ const OwnerOpening = () => {
 			.map((menu) => ({
 				menuId: menu.menuId,
 			}));
+
 		setDisselected(notSelectedMenuIds);
 	}, [todayMenuList]);
 
@@ -113,11 +121,34 @@ const OwnerOpening = () => {
 			try {
 				const response = await getMenuList();
 				const data = response.data.data;
+
 				setTodayMenuList(data.menuList);
 				setFoodTruckId(data.foodTruckId);
 				setOwnerNickName(data.name);
+
+				setIsLoading(false); // 로딩 상태 해제
 			} catch (err) {
-				console.error(err);
+				if (isCustomAxiosError(err) && err.response && err.response.data) {
+					const { code } = err.response?.data;
+
+					if (code === "6001") {
+						//이미 장사 중인 푸드트럭
+						// 최소 1초 대기 후 로딩 상태 해제
+						setTimeout(() => {
+							setIsLoading(false); // 로딩 상태 해제
+							nav("/owners/close");
+						}, 500);
+
+						return;
+					}
+				} else {
+					console.error(err);
+				}
+			} finally {
+				// 최소 1초 대기 후 로딩 상태 해제
+				setTimeout(() => {
+					setIsLoading(false);
+				}, 500);
 			}
 		};
 
@@ -171,140 +202,149 @@ const OwnerOpening = () => {
 		<Container>
 			<Main>
 				<>
-					<h1 className="text-3xl font-extrabold">{ownerNickName} 사장님</h1>
-					<div>
-						<div className="flex items-center justify-between mb-8">
-							<div className="flex items-center gap-6">
-								<p className="text-xl font-bold">{formattedDate}</p>
-								<p className="text-sm text-gray">지도를 움직여 내 위치를 설정해주세요</p>
-							</div>
-							<button
-								className="px-8 py-2 text-lg font-bold text-white rounded-md bg-gradient-to-r from-main to-boss"
-								onClick={beforeStartToday}
-							>
-								오늘 장사 시작하기
-							</button>
-						</div>
-
-						<div className="w-full h-48 overflow-hidden rounded-lg shadow-lg">
-							<Map
-								center={mapCenter}
-								className="w-full h-full"
-								level={2}
-								ref={mapRef}
-								onCenterChanged={handleCenterChanged}
-							>
-								<MapMarker
-									position={currentPosition}
-									image={{
-										src: "/MapPin.png",
-										size: {
-											width: 48,
-											height: 48,
-										},
-									}}
-								></MapMarker>
-							</Map>
-						</div>
-					</div>
-
-					<div>
-						<div className="flex items-center justify-between mb-8">
-							<div className="flex items-center gap-6">
-								<p className="text-2xl font-bold">오늘의 메뉴</p>
-								<p className="text-sm text-gray">
-									오늘 판매할 메뉴를 클릭한 후 '시작하기'를 눌러주세요.
-								</p>
-							</div>
-
-							<div className="flex items-center gap-3">
-								<div
-									onClick={handleToggle}
-									className={`w-12 h-6 flex items-center bg-${
-										isToggled ? "boss" : "gray"
-									} rounded-full p-1 cursor-pointer transition-colors duration-300`}
-								>
-									<div
-										className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
-											isToggled ? "translate-x-6" : "translate-x-0"
-										}`}
-									></div>
-								</div>
-								<p className="font-bold">모두 선택</p>
-							</div>
-						</div>
-
-						<div className="flex flex-wrap justify-between gap-4 mb-12">
-							{todayMenuList.length === 0 ? (
-								<div className="flex flex-col items-center justify-center w-full">
-									<p className="my-20 text-2xl font-bold text-center"> 메뉴를 먼저 등록해주세요. </p>
+					{isLoading ? (
+						<Loading />
+					) : (
+						<>
+							<h1 className="text-3xl font-extrabold">{ownerNickName} 사장님</h1>
+							<div>
+								<div className="flex items-center justify-between mb-8">
+									<div className="flex items-center gap-6">
+										<p className="text-xl font-bold">{formattedDate}</p>
+										<p className="text-sm text-gray">지도를 움직여 내 위치를 설정해주세요</p>
+									</div>
 									<button
-										className="px-6 py-3 my-5 text-xl font-bold text-white rounded bg-gradient-to-r from-main to-boss"
-										onClick={() => nav("/owners/foodtruck/menu")} //나중에 메뉴란으로 연결
+										className="px-8 py-2 text-lg font-bold text-white rounded-md bg-gradient-to-r from-main to-boss"
+										onClick={beforeStartToday}
 									>
-										메뉴 등록하기
+										오늘 장사 시작하기
 									</button>
 								</div>
-							) : (
-								todayMenuList.map((todayMenu) => (
-									<TodayMenu
-										key={todayMenu.menuId}
-										todayMenu={todayMenu}
-										onSelect={() => handleSelectMenu(todayMenu.menuId)}
-									/>
-								))
+
+								<div className="w-full h-48 overflow-hidden rounded-lg shadow-lg">
+									<Map
+										center={mapCenter}
+										className="w-full h-full"
+										level={2}
+										ref={mapRef}
+										onCenterChanged={handleCenterChanged}
+									>
+										<MapMarker
+											position={currentPosition}
+											image={{
+												src: "/MapPin.png",
+												size: {
+													width: 48,
+													height: 48,
+												},
+											}}
+										></MapMarker>
+									</Map>
+								</div>
+							</div>
+
+							<div>
+								<div className="flex items-center justify-between mb-8">
+									<div className="flex items-center gap-6">
+										<p className="text-2xl font-bold">오늘의 메뉴</p>
+										<p className="text-sm text-gray">
+											오늘 판매할 메뉴를 클릭한 후 '시작하기'를 눌러주세요.
+										</p>
+									</div>
+
+									<div className="flex items-center gap-3">
+										<div
+											onClick={handleToggle}
+											className={`w-12 h-6 flex items-center bg-${
+												isToggled ? "boss" : "gray"
+											} rounded-full p-1 cursor-pointer transition-colors duration-300`}
+										>
+											<div
+												className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
+													isToggled ? "translate-x-6" : "translate-x-0"
+												}`}
+											></div>
+										</div>
+										<p className="font-bold">모두 선택</p>
+									</div>
+								</div>
+
+								<div className="flex flex-wrap justify-between gap-4 mb-12">
+									{todayMenuList.length === 0 ? (
+										<div className="flex flex-col items-center justify-center w-full">
+											<p className="my-20 text-2xl font-bold text-center">
+												{" "}
+												메뉴를 먼저 등록해주세요.{" "}
+											</p>
+											<button
+												className="px-6 py-3 my-5 text-xl font-bold text-white rounded bg-gradient-to-r from-main to-boss"
+												onClick={() => nav("/owners/foodtruck/menu")} //나중에 메뉴란으로 연결
+											>
+												메뉴 등록하기
+											</button>
+										</div>
+									) : (
+										todayMenuList.map((todayMenu) => (
+											<TodayMenu
+												key={todayMenu.menuId}
+												todayMenu={todayMenu}
+												onSelect={() => handleSelectMenu(todayMenu.menuId)}
+											/>
+										))
+									)}
+								</div>
+							</div>
+
+							{/* 모달 표시 */}
+							{errorModal && (
+								<Modal
+									isOpen={errorModal}
+									close={closeModal}
+									style={waitingCancelingModalStyle}
+								>
+									{/* 모달에 children으로 전달할 내용 */}
+									<div className="flex flex-col items-center">
+										<FireTruck
+											size={96}
+											className="m-10 text-user"
+										/>
+										<p className="my-4 text-2xl font-bold text-center">
+											판매할 메뉴 없이 <br /> 시작할 수 없습니다.
+										</p>
+										<button
+											className="px-6 py-3 my-5 font-bold text-white rounded text-md bg-gradient-to-r from-main to-user"
+											onClick={closeModal}
+										>
+											메뉴 선택하기
+										</button>
+									</div>
+								</Modal>
 							)}
-						</div>
-					</div>
 
-					{/* 모달 표시 */}
-					{errorModal && (
-						<Modal
-							isOpen={errorModal}
-							close={closeModal}
-							style={waitingCancelingModalStyle}
-						>
-							{/* 모달에 children으로 전달할 내용 */}
-							<div className="flex flex-col items-center">
-								<FireTruck
-									size={96}
-									className="m-10 text-user"
-								/>
-								<p className="my-4 text-2xl font-bold text-center">
-									판매할 메뉴 없이 <br /> 시작할 수 없습니다.
-								</p>
-								<button
-									className="px-6 py-3 my-5 font-bold text-white rounded text-md bg-gradient-to-r from-main to-user"
-									onClick={closeModal}
+							{/* 모달 표시 */}
+							{startModal && (
+								<Modal
+									isOpen={startModal}
+									close={closeModal}
+									style={waitingCancelingModalStyle}
 								>
-									메뉴 선택하기
-								</button>
-							</div>
-						</Modal>
-					)}
-
-					{/* 모달 표시 */}
-					{startModal && (
-						<Modal
-							isOpen={startModal}
-							close={closeModal}
-							style={waitingCancelingModalStyle}
-						>
-							{/* 모달에 children으로 전달할 내용 */}
-							<div className="flex flex-col items-center">
-								<FireTruck
-									size={96}
-									className="m-10 text-user"
-								/>
-								<p className="my-4 text-2xl font-bold text-center">장사를 시작하시겠습니까?</p>
-								<button
-									className="px-6 py-3 my-5 font-bold text-white rounded text-md bg-gradient-to-r from-main to-user"
-									onClick={openTruck}
-								>
-									시작하겠습니다
-								</button>
-							</div>
-						</Modal>
+									{/* 모달에 children으로 전달할 내용 */}
+									<div className="flex flex-col items-center">
+										<FireTruck
+											size={96}
+											className="m-10 text-user"
+										/>
+										<p className="my-4 text-2xl font-bold text-center">장사를 시작하시겠습니까?</p>
+										<button
+											className="px-6 py-3 my-5 font-bold text-white rounded text-md bg-gradient-to-r from-main to-user"
+											onClick={openTruck}
+										>
+											시작하겠습니다
+										</button>
+									</div>
+								</Modal>
+							)}
+						</>
 					)}
 				</>
 			</Main>

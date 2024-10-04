@@ -10,15 +10,20 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import com.fooding.api.announcement.service.dto.AnnouncementDto;
+import com.fooding.api.announcement.domain.Announcement;
+import com.fooding.api.announcement.repository.AnnouncementRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class AnnouncementCrawler {
 
 	private static final String BASE_URL = "https://www.koreafoodtruck.org";
+	private final AnnouncementRepository announcementRepository;
 
-	public List<AnnouncementDto> crawlAnnouncements() throws IOException {
-		List<AnnouncementDto> announcementList = new ArrayList<>();
+	public void crawlAnnouncements() throws IOException {
+		List<Announcement> announcementList = new ArrayList<>();
 
 		Document doc = Jsoup.connect(BASE_URL + "/blank-6")
 			.header("Accept-Language", "ko-KR,ko;q=0.9")
@@ -31,6 +36,12 @@ public class AnnouncementCrawler {
 
 		for (Element link : postLinks) {
 			String postLink = link.attr("href");
+
+			boolean exists = announcementRepository.existsByUrl(postLink);
+			if (exists) {
+				continue;
+			}
+
 			Document postDoc = Jsoup.connect(postLink).get();
 			String title = postDoc.select("h1").text();
 
@@ -47,18 +58,19 @@ public class AnnouncementCrawler {
 			String operatingTime = postDoc.select("p:contains(운영시간)").text().split(":")[1].trim();
 			String location = postDoc.select("p:contains(장소)").text().split(":")[1].trim();
 
-			AnnouncementDto announcementDto = AnnouncementDto.builder()
+			Announcement announcement = Announcement.builder()
 				.url(postLink)
 				.title(title)
 				.date(eventDate)
 				.time(operatingTime)
 				.place(location)
-				.opened(false)
 				.build();
 
-			announcementList.add(announcementDto);
+			announcementList.add(announcement);
 		}
 
-		return announcementList;
+		if (!announcementList.isEmpty()) {
+			announcementRepository.saveAll(announcementList);
+		}
 	}
 }

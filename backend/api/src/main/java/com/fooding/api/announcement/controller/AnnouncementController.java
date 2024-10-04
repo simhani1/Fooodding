@@ -29,12 +29,6 @@ public class AnnouncementController {
 	private final AnnouncementQueryService announcementQueryService;
 	private final AnnouncementCommandService announcementCommandService;
 
-	@PostMapping("")
-	public ResponseEntity<BaseResponse<AnnouncementDto>> registerAnnouncement() {
-		announcementQueryService.registerAnnouncement();
-		return ResponseEntity.ok(BaseResponse.ofSuccess());
-	}
-
 	@RequireJwtToken
 	@PostMapping("/{announcement_id}/open")
 	public ResponseEntity<BaseResponse<?>> openAnnouncement(

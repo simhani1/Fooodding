@@ -6,4 +6,6 @@ import com.fooding.api.announcement.domain.Announcement;
 
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long> {
 
+	boolean existsByUrl(String url);
+
 }

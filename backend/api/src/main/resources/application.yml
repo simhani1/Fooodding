@@ -56,6 +56,14 @@ cloud:
       bucket: ${AWS_S3_BUCKET_NAME}
 
 fcm:
+  type: ${FCM_TYPE}
+  project-id: ${FCM_PROJECT_ID}
+  private-key-id: ${FCM_PRIVATE_KEY_ID}
   private-key: ${FCM_PRIVATE_KEY}
   client-email: ${FCM_CLIENT_EMAIL}
-  project-id: ${FCM_PROJECT_ID}
+  clinet-id: ${FCM_CLIENT_ID}
+  auth-uri: ${FCM_AUTH_URI}
+  token-uri: ${FCM_TOKEN_URI}
+  auth_provider_x509_cert_url: ${FCM_AUTH_PROVIDER_CERT_URL}
+  client_x509_cert_url: ${FCM_CLIENT_CERT_URL}
+  universe_domain: ${FCM_UNIVERSE_DOMAIN}

@@ -28,4 +28,9 @@ public class EmitterRepositoryImpl implements EmitterRepository {
 		return emitters.get(foodTruckId);
 	}
 
+	@Override
+	public Map<Long, SseEmitter> findAll() {
+		return emitters;
+	}
+
 }

@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,6 +74,14 @@ public class WaitingController {
 			.build();
 		SseEmitter emitter = notificationService.send(foodTruckId, "connected", res);
 		return ResponseEntity.ok(emitter);
+	}
+
+	@RequireJwtToken
+	@PatchMapping("/{waiting-id}")
+	public ResponseEntity<BaseResponse<WaitingInfoDto>> changeToOrderLine(@PathVariable("waiting-id") Long waitingId) {
+		Long ownerId = MemberContext.getMemberId();
+		WaitingInfoDto res = waitingQueryService.changeToOrderLine(ownerId, waitingId);
+		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 
 }

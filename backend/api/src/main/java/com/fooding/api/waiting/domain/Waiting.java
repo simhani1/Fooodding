@@ -63,7 +63,7 @@ public class Waiting {
 	}
 
 	public void changeToOrderLine() {
-		this.cancellable = false;
+		this.cancellable = Boolean.FALSE;
 	}
 
 }

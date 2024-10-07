@@ -1,5 +1,7 @@
 package com.fooding.api.waiting.service.impl;
 
+import java.time.ZoneOffset;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import com.fooding.api.waiting.exception.NoWaitingInfoException;
 import com.fooding.api.waiting.repository.EmitterRepository;
 import com.fooding.api.waiting.repository.WaitingRepository;
 import com.fooding.api.waiting.service.WaitingQueryService;
+import com.fooding.api.waiting.service.dto.WaitingInfoDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +62,21 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			throw new CannotCancelWaitingException("Cannot cancel waiting");
 		}
 		waitingRepository.deleteById(waitingId);
+	}
+
+	@Override
+	public WaitingInfoDto changeToOrderLine(Long ownerId, Long waitingId) {
+		Member owner = memberRepository.findById(ownerId)
+			.orElseThrow(() -> new NoMemberException("Owner not found with ID: " + ownerId));
+		Waiting waiting = waitingRepository.findById(waitingId)
+			.orElseThrow(() -> new NoWaitingInfoException("Waiting not found with ID: " + waitingId));
+		waiting.changeToOrderLine();
+		return WaitingInfoDto.builder()
+			.waitingId(waiting.getId())
+			.changedAt(waiting.getChangedAt().toInstant(ZoneOffset.UTC).toEpochMilli())
+			.cancelable(waiting.getCancellable())
+			.number(waiting.getNumber())
+			.build();
 	}
 
 }

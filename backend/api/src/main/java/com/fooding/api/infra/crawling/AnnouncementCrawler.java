@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import com.fooding.api.announcement.domain.Announcement;
 import com.fooding.api.announcement.repository.AnnouncementRepository;
+import com.fooding.api.fcm.service.FcmMessageService;
+import com.fooding.api.fcm.service.dto.FcmMessageDto;
+import com.google.firebase.messaging.FirebaseMessagingException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,8 +23,9 @@ public class AnnouncementCrawler {
 
 	private static final String BASE_URL = "https://www.koreafoodtruck.org";
 	private final AnnouncementRepository announcementRepository;
+	private final FcmMessageService fcmMessageService;
 
-	public void crawlAnnouncements() throws IOException {
+	public void crawlAnnouncements() throws IOException, FirebaseMessagingException {
 		List<Announcement> announcementList = announcementRepository.findAll();
 
 		Document doc = Jsoup.connect(BASE_URL + "/blank-6")
@@ -32,7 +36,7 @@ public class AnnouncementCrawler {
 		// 게시물 링크 크롤링
 		Elements postLinks = doc.select(
 			"a[href^=https://www.koreafoodtruck.org/blank-6/sa-hangugpudeuteureoghyeobhoe/]");
-		
+
 		for (Element link : postLinks) {
 			String postLink = link.attr("href");
 
@@ -92,6 +96,12 @@ public class AnnouncementCrawler {
 					.build();
 
 				announcementList.add(announcement);
+
+				FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
+					.title("새로운 공고가 등록됐어요!📢")
+					.message(title)
+					.build();
+				fcmMessageService.sendMessagesToOwners(fcmMessageDto);
 			}
 
 			if (!announcementList.isEmpty()) {

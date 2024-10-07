@@ -50,7 +50,7 @@ public class AnnouncementCrawler {
 
 			title = title.replaceAll("\\[.*?\\]", "").trim();
 
-			if (announcementList != null) {
+			if (existingAnnouncement != null) {
 				if (!existingAnnouncement.getTitle().equals(title)) {
 					existingAnnouncement.changeTitle(title);
 				}

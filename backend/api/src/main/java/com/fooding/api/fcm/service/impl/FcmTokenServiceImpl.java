@@ -21,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 class FcmTokenServiceImpl implements FcmTokenService {
 
-	MemberRepository memberRepository;
-	FcmTokenRepository fcmTokenRepository;
+	private final MemberRepository memberRepository;
+	private final FcmTokenRepository fcmTokenRepository;
 
 	@Override
 	public void saveToken(FcmTokenDto fcmTokenDto) {

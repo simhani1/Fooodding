@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 class FcmMessageServiceImpl implements FcmMessageService {
 
-	FcmTokenRepository fcmTokenRepository;
+	private final FcmTokenRepository fcmTokenRepository;
 
 	@Override
 	public void sendMessages(Long memberId, FcmMessageDto fcmMessageDto) throws FirebaseMessagingException {
@@ -69,5 +69,5 @@ class FcmMessageServiceImpl implements FcmMessageService {
 			BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
 		}
 	}
-	
+
 }

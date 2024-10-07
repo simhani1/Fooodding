@@ -14,6 +14,7 @@ import com.fooding.api.core.aop.annotation.RequireJwtToken;
 import com.fooding.api.core.aop.member.MemberContext;
 import com.fooding.api.core.template.response.BaseResponse;
 import com.fooding.api.member.controller.request.NaverLoginReq;
+import com.fooding.api.member.controller.request.NaverUpdateReq;
 import com.fooding.api.member.controller.request.ReissueReq;
 import com.fooding.api.member.exception.NoRefreshTokenException;
 import com.fooding.api.member.service.AuthService;
@@ -73,6 +74,15 @@ public class UserAuthController {
 		refreshTokenCookie.setPath("/");
 		response.addCookie(refreshTokenCookie);
 
+		return ResponseEntity.ok(BaseResponse.ofSuccess());
+	}
+
+	/* 회원 정보 입력*/
+	@RequireJwtToken
+	@PatchMapping("")
+	public ResponseEntity<BaseResponse<?>> update(@RequestBody NaverUpdateReq req) {
+		Long userId = MemberContext.getMemberId();
+		authService.updateId(userId, req.gender(), req.ages());
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 

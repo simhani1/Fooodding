@@ -87,4 +87,13 @@ public class Member {
 		return this.status.equals(MemberStatus.INACTIVE);
 	}
 
+	public void update(String gender, String ages) {
+		this.gender = gender;
+		this.ages = ages;
+	}
+	
+	public boolean isNewMember() {
+		return this.gender == null && this.ages == null;
+	}
+
 }

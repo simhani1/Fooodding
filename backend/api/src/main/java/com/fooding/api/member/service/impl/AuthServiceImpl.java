@@ -43,6 +43,7 @@ class AuthServiceImpl implements AuthService {
 					.role(MemberRole.valueOf(role))
 					.build())
 			);
+
 		/* 로그인 */
 		JwtToken jwtToken = jwtTokenProvider.createToken(member.getId(), MemberRole.valueOf(role));
 
@@ -52,12 +53,14 @@ class AuthServiceImpl implements AuthService {
 				.accessToken(jwtToken.accessToken())
 				.refreshToken(jwtToken.refreshToken())
 				.foodTruckId(foodTruck.getId())
+				.isNewMember(member.isNewMember())
 				.build())
 			.orElseGet(() -> LoginDto.builder()
 				.nickname(member.getNickname())
 				.accessToken(jwtToken.accessToken())
 				.refreshToken(jwtToken.refreshToken())
 				.foodTruckId(null)
+				.isNewMember(member.isNewMember())
 				.build());
 		return dto;
 	}
@@ -67,6 +70,13 @@ class AuthServiceImpl implements AuthService {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + memberId));
 		jwtTokenProvider.deleteRefreshToken(refreshToken);
+	}
+
+	@Override
+	public void updateId(Long memberId, String gender, String ages) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + memberId));
+		member.update(gender, ages);
 	}
 
 	@Override

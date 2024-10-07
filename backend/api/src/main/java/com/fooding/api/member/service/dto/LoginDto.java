@@ -7,6 +7,7 @@ public record LoginDto(
 	String nickname,
 	String accessToken,
 	String refreshToken,
-	Long foodTruckId
+	Long foodTruckId,
+	boolean isNewMember
 ) {
 }

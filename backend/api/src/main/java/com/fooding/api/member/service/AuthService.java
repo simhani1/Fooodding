@@ -8,6 +8,8 @@ public interface AuthService {
 
 	void logout(Long memberId, String refreshToken);
 
+	void updateId(Long memberId, String gender, String ages);
+
 	void withdraw(Long memberId);
 
 }

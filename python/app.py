@@ -94,13 +94,13 @@ def create_connection():
 
     return connection
 
-def save_prediction_to_db(connection, 행정동코드, date, predictions):
+def save_prediction_to_db(connection, location_code, date, predictions):
     cursor = connection.cursor()
     for pred in predictions:
-        시간 = pred['시간']
-        예측유동인구 = pred['예측 유동인구']
-        query = "INSERT INTO predictions (행정동코드, 조회날짜, 시간, 예측유동인구) VALUES (%s, %s, %s, %s)"
-        values = (행정동코드, date, 시간, 예측유동인구)
+        time = pred['시간']
+        predict_people = pred['예측 유동인구']
+        query = "INSERT INTO predictions (location_code, date, time, predict_people) VALUES (%s, %s, %s, %s)"
+        values = (location_code, date, time, predict_people)
         cursor.execute(query, values)
     connection.commit()
     cursor.close()
@@ -119,7 +119,7 @@ def predict():
     connection = create_connection()
     if connection:
         cursor = connection.cursor(dictionary=True)
-        query = "SELECT 시간, 예측유동인구 FROM predictions WHERE 행정동코드 = %s AND 조회날짜 = %s"
+        query = "SELECT time, predict_people FROM predictions WHERE location_code = %s AND date = %s"
         cursor.execute(query, (행정동코드, today))
         existing_predictions = cursor.fetchall()
 

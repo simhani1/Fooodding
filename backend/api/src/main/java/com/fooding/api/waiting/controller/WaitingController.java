@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -45,7 +46,7 @@ public class WaitingController {
 	}
 
 	@RequireJwtToken
-	@DeleteMapping("/{waiting-id}")
+	@DeleteMapping("/{waiting-id}/users")
 	public ResponseEntity<BaseResponse<?>> cancel(@PathVariable("waiting-id") Long waitingId) {
 		Long userId = MemberContext.getMemberId();
 		waitingQueryService.cancel(userId, waitingId);
@@ -82,6 +83,17 @@ public class WaitingController {
 		Long ownerId = MemberContext.getMemberId();
 		WaitingInfoDto res = waitingQueryService.changeToOrderLine(ownerId, waitingId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
+	}
+
+	@RequireJwtToken
+	@DeleteMapping("/{waiting-id}/owners")
+	public ResponseEntity<BaseResponse<?>> callUser(
+		@RequestParam("is-completed") boolean isCompleted,
+		@PathVariable("waiting-id") Long waitingId
+	) {
+		Long ownerId = MemberContext.getMemberId();
+		waitingQueryService.callUesr(ownerId, waitingId, isCompleted);
+		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
 }

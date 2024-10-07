@@ -9,5 +9,7 @@ public interface WaitingQueryService {
 	void cancel(Long userId, Long waitingId);
 
 	WaitingInfoDto changeToOrderLine(Long ownerId, Long waitingId);
-	
+
+	void callUesr(Long ownerId, Long waitingId, boolean completed);
+
 }

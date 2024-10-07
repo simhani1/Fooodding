@@ -9,6 +9,7 @@ import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.exception.FoodTruckAlreadyClosedException;
 import com.fooding.api.foodtruck.exception.NoFoodTruckException;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
+import com.fooding.api.foodtruck.repository.custom.FoodTruckRepositoryCustom;
 import com.fooding.api.member.domain.Member;
 import com.fooding.api.member.exception.NoMemberException;
 import com.fooding.api.member.repository.MemberRepository;
@@ -31,6 +32,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 
 	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
+	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
 	private final WaitingRepository waitingRepository;
 	private final EmitterRepository emitterRepository;
 
@@ -77,6 +79,23 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			.cancelable(waiting.getCancellable())
 			.number(waiting.getNumber())
 			.build();
+	}
+
+	@Override
+	public void callUesr(Long ownerId, Long waitingId, boolean isCompleted) {
+		Member owner = memberRepository.findById(ownerId)
+			.orElseThrow(() -> new NoMemberException("Owner not found with ID: " + ownerId));
+		Waiting waiting = waitingRepository.findById(waitingId)
+			.orElseThrow(() -> new NoWaitingInfoException("Waiting not found with ID: " + waitingId));
+		FoodTruck foodTruck = foodTruckRepositoryCustom.findByOwner(owner)
+			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found by ownerID: " + ownerId));
+		if (foodTruck.isClosed()) {
+			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
+		}
+		if (isCompleted) {
+			// TODO: 로그 기록하기
+		}
+		waitingRepository.deleteById(waitingId);
 	}
 
 }

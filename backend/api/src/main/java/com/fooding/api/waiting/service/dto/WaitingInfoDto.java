@@ -11,6 +11,7 @@ public record WaitingInfoDto(
 	Long rank,
 	Long changedAt,
 	@JsonProperty("isCancelable")
-	boolean cancelable
+	boolean cancelable,
+	String userName
 ) {
 }

@@ -97,7 +97,7 @@ public class FoodTruckController {
 		commerceQueryService.closeFoodTruck(foodTruckId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
-	
+
 	@GetMapping("/list")
 	public ResponseEntity<BaseResponse<List<FoodTruckDto>>> getFoodTrucks(
 		@RequestParam("lat") Double latitude,

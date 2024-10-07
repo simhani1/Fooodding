@@ -13,6 +13,7 @@ import com.fooding.api.member.repository.MemberRepository;
 import com.fooding.api.waiting.domain.Waiting;
 import com.fooding.api.waiting.exception.CannotCancelWaitingException;
 import com.fooding.api.waiting.exception.NoWaitingInfoException;
+import com.fooding.api.waiting.repository.EmitterRepository;
 import com.fooding.api.waiting.repository.WaitingRepository;
 import com.fooding.api.waiting.service.WaitingQueryService;
 
@@ -28,6 +29,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
 	private final WaitingRepository waitingRepository;
+	private final EmitterRepository emitterRepository;
 
 	@Override
 	public void reserve(Long userId, Long foodTruckId) {

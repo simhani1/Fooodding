@@ -1,5 +1,5 @@
 import { ApiResponse, IOwnerAnnouncementResponseDTO } from "@interface/api";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "@api/axiosInstance";
 
 const path = "/announcement";
 

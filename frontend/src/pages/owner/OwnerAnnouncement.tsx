@@ -6,6 +6,7 @@ import Title from "@components/common/Title";
 import BackButton from "@components/owner/BackButton";
 import AnnouncementButton from "@components/common/AnnouncementButton";
 import { IOwnerAnnouncementDTO } from "@interface/api";
+import { useNotificiationToken } from "@hooks/useNotificationToken";
 import { createAnnounementLog, getAunnouncementInfo } from "@api/owner-api";
 
 const OwnerAnnouncement = () => {
@@ -13,6 +14,7 @@ const OwnerAnnouncement = () => {
 	const [isToggled, setIsToggled] = useState(false);
 	const [visibleCount, setVisibleCount] = useState(10);
 	const [announcements, setAnnounements] = useState<IOwnerAnnouncementDTO[]>([]);
+	const { saveToken, deleteToken } = useNotificiationToken();
 
 	// 공고 데이터 가져오기
 	const loadAnnounements = async () => {
@@ -25,9 +27,12 @@ const OwnerAnnouncement = () => {
 		}
 	};
 
-	// 토글 버튼 클릭 시 그래프 전환
+	// 토글 버튼 클릭 토큰 발급 & 삭제
 	const handleToggle = () => {
 		setIsToggled(!isToggled);
+
+		if (isToggled) saveToken();
+		else deleteToken();
 	};
 
 	// 버튼 클릭 시 색 전환

@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 
 const Login = lazy(() => import("@pages/Login"));
@@ -19,12 +19,31 @@ const UserFoodTruck = lazy(() => import("@pages/user/UserFoodTruck"));
 const UserWaitingList = lazy(() => import("@pages/user/UserWaitingList"));
 const Loading = lazy(() => import("@components/common/Loading"));
 
+import { requestForToken, registerServiceWorker } from "firebase";
 import { LoadingProvider, useLoading } from "@utils/LoadingContext";
 
 import "./App.css";
 
 function App() {
+	const [token, setToken] = useState("");
 	const { isLoading } = useLoading();
+
+	useEffect(() => {
+		const initializeFirebase = async () => {
+			registerServiceWorker();
+
+			const permission = await Notification.requestPermission();
+			if (permission === "granted") {
+				const response = await requestForToken();
+				if (response) {
+					setToken(response);
+					console.log(token);
+				}
+			}
+		};
+
+		initializeFirebase();
+	}, []);
 
 	return (
 		<LoadingProvider>

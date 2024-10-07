@@ -38,10 +38,10 @@ public class Member {
 	@Column(name = "nickname", nullable = false)
 	private String nickname;
 
-	@Column(name = "gender", nullable = false)
+	@Column(name = "gender")
 	private String gender;
 
-	@Column(name = "ages", nullable = false)
+	@Column(name = "ages")
 	private String ages;
 
 	@Enumerated(value = EnumType.STRING)
@@ -61,8 +61,8 @@ public class Member {
 	private LocalDateTime createdAt;
 
 	@Builder
-	public Member(String nickname, String email, String gender, String ages, Provider provider, MemberRole role) {
-		this(nickname, email, gender, ages, provider, MemberStatus.ACTIVE, role);
+	public Member(String nickname, String email, Provider provider, MemberRole role) {
+		this(nickname, email, null, null, provider, MemberStatus.ACTIVE, role);
 	}
 
 	private Member(String nickname, String email, String gender, String ages, Provider provider, MemberStatus status,

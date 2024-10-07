@@ -39,8 +39,6 @@ class RegisterFoodTruckServiceImplTest {
 		Long memberId = 1L;
 
 		Member member = Member.builder()
-			.ages("20-30")
-			.gender("MALE")
 			.nickname("nickname")
 			.provider(Provider.NAVER)
 			.build();

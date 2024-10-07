@@ -39,8 +39,6 @@ class AuthServiceImpl implements AuthService {
 				memberRepository.save(Member.builder()
 					.email(email)
 					.nickname(naverMemberInfo.getNaverAccount().getNickname())
-					.gender(naverMemberInfo.getNaverAccount().getGender())
-					.ages(naverMemberInfo.getNaverAccount().getAge())
 					.provider(Provider.NAVER)
 					.role(MemberRole.valueOf(role))
 					.build())

@@ -60,3 +60,9 @@ export interface IFeatureCollection {
 	};
 	features: IFeature[];
 }
+
+//내 위치 좌표
+export interface IMyPosition {
+	lat: number;
+	long: number;
+}

@@ -1,24 +1,14 @@
 import { IWaitingInfo } from "./waiting";
 
 //트럭 리스트 정보
-export interface ITruckInfo {
-	foodTruckId: number;
-	name: string;
-	content: string;
-	menu: string[];
-	img?: string;
-	lat: number;
-	lng: number;
-}
-
 export interface UserTruckListProps {
 	onExpandChange: (expanded: boolean) => void;
-	trucks: ITruckInfo[];
-	selectedTruck: ITruckInfo | null;
+	trucks: ITruckListInfo[];
+	selectedTruck: ITruckListInfo | null;
 }
 
 export interface UserTruckProps {
-	truck: ITruckInfo | null;
+	truck: ITruckListInfo | null;
 }
 
 //트럭 상세 정보
@@ -36,6 +26,13 @@ export interface ITruckInfoDetail {
 export interface ITruckInfoProps {
 	truck: ITruckInfoDetail;
 	setTruck: React.Dispatch<React.SetStateAction<ITruckInfoDetail>>;
+}
+
+export interface ITruckListInfo extends ITruckInfoDetail {
+	mainMenuImg: string;
+	menus: string;
+	lat: number;
+	long: number;
 }
 
 export interface IMenuInfo {

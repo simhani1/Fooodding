@@ -19,92 +19,99 @@ const UserFoodTruck = lazy(() => import("@pages/user/UserFoodTruck"));
 const UserWaitingList = lazy(() => import("@pages/user/UserWaitingList"));
 const Loading = lazy(() => import("@components/common/Loading"));
 
+import { LoadingProvider, useLoading } from "@utils/LoadingContext";
+
 import "./App.css";
 
 function App() {
+	const { isLoading } = useLoading();
+
 	return (
-		<Suspense fallback={<Loading />}>
-			<Routes>
-				<Route
-					path="/"
-					element={<Login />}
-				/>
-				<Route path="/auth">
-					<Route path=":role">
-						<Route
-							path=""
-							element={<LoginSelect />}
-						/>
-						<Route
-							path="naver"
-							element={<NaverLoginHandler />}
-						/>
+		<LoadingProvider>
+			<Suspense fallback={<Loading />}>
+				{isLoading && <Loading />} {/* 전역 로딩 상태에 따라 로딩 표시 */}
+				<Routes>
+					<Route
+						path="/"
+						element={<Login />}
+					/>
+					<Route path="/auth">
+						<Route path=":role">
+							<Route
+								path=""
+								element={<LoginSelect />}
+							/>
+							<Route
+								path="naver"
+								element={<NaverLoginHandler />}
+							/>
+						</Route>
 					</Route>
-				</Route>
-				<Route path="/owners">
-					<Route
-						path=""
-						element={<OwnerMain />}
-					/>
-					<Route
-						path="mypage"
-						element={<OwnerPage />}
-					/>
-					<Route
-						path="map"
-						element={<OwnerMap />}
-					/>
-					<Route
-						path="foodtruck"
-						element={<OwnerFoodTruck />}
-					/>
-					<Route path="foodtruck">
+					<Route path="/owners">
 						<Route
 							path=""
+							element={<OwnerMain />}
+						/>
+						<Route
+							path="mypage"
+							element={<OwnerPage />}
+						/>
+						<Route
+							path="map"
+							element={<OwnerMap />}
+						/>
+						<Route
+							path="foodtruck"
 							element={<OwnerFoodTruck />}
 						/>
+						<Route path="foodtruck">
+							<Route
+								path=""
+								element={<OwnerFoodTruck />}
+							/>
+							<Route
+								path="create"
+								element={<FoodTruckCreate />}
+							/>
+							<Route
+								path="edit"
+								element={<FoodTruckEdit />}
+							/>
+							<Route
+								path="menu"
+								element={<OwnerMenu />}
+							/>
+						</Route>
 						<Route
-							path="create"
-							element={<FoodTruckCreate />}
+							path="announcement"
+							element={<OwnerAnnouncement />}
 						/>
 						<Route
-							path="edit"
-							element={<FoodTruckEdit />}
+							path="open"
+							element={<OwnerOpening />}
 						/>
 						<Route
-							path="menu"
-							element={<OwnerMenu />}
+							path="close"
+							element={<OwnerWaiting />}
 						/>
 					</Route>
-					<Route
-						path="announcement"
-						element={<OwnerAnnouncement />}
-					/>
-					<Route
-						path="open"
-						element={<OwnerOpening />}
-					/>
-					<Route
-						path="close"
-						element={<OwnerWaiting />}
-					/>
-				</Route>
-				<Route path="/users">
-					<Route
-						path=""
-						element={<UserMap />}
-					/>
-					<Route
-						path="foodtruck"
-						element={<UserFoodTruck />}
-					/>
-					<Route
-						path="list"
-						element={<UserWaitingList />}
-					/>
-				</Route>
-			</Routes>
-		</Suspense>
+					<Route path="/users">
+						<Route
+							path=""
+							element={<UserMap />}
+						/>
+						<Route
+							path="foodtruck"
+							element={<UserFoodTruck />}
+						/>
+						<Route
+							path="list"
+							element={<UserWaitingList />}
+						/>
+					</Route>
+				</Routes>
+			</Suspense>
+		</LoadingProvider>
 	);
 }
 

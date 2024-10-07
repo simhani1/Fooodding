@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { Category } from "@interface/owner";
 import { IWaitingInfo } from "./waiting";
-import { IMenuInfo } from "./foodTruck";
+import { IMenuInfo, ITruckListInfo } from "./foodTruck";
 
 export enum ContentType {
 	Json = "application/json",
@@ -119,6 +119,11 @@ export interface IFoodTruckInfo {
 	name: string;
 	introduction: string;
 	category: Category;
+}
+
+//foodTruckList에서의 info
+export interface IFoodTruckListInfoResponseDTO extends IBaseResponseDTO {
+	data: ITruckListInfo[];
 }
 
 // owner-api

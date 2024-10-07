@@ -25,7 +25,7 @@ const UserTruckList: React.FC<UserTruckListProps> = ({ onExpandChange, trucks, s
 	return (
 		<div
 			className={`fixed bottom-0 left-0 right-0 transition-all duration-300 ${
-				expanded ? "h-5/6" : "h-80"
+				expanded ? "h-5/6 overflow-y-auto" : "h-80"
 			} bg-white z-10 rounded-lg`}
 		>
 			<div className="flex flex-col items-center justify-between pt-2">

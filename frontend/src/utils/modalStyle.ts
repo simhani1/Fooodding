@@ -41,3 +41,20 @@ export const waitingCancelingModalStyle = {
 	justifyContent: "center",
 	justifyItems: "space-between",
 };
+
+export const logOutModalStyle = {
+	position: "fixed", // 화면에 고정
+	top: "50%", // 수직 중앙
+	left: "50%", // 수평 중앙
+	transform: "translate(-50%, -50%)", // 중앙 정렬 보정
+	display: "flex",
+	padding: "2rem",
+	backgroundColor: "#ffffff",
+	border: "4px solid #CF69A3",
+	borderRadius: "12px", // 모서리를 둥글게
+	width: "20rem",
+	height: "25rem",
+	alignItems: "center",
+	justifyContent: "center",
+	justifyItems: "space-between",
+};

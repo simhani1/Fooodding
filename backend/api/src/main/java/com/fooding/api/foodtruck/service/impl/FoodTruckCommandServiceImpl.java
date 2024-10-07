@@ -13,6 +13,7 @@ import com.fooding.api.foodtruck.exception.FoodTruckAlreadyOpenedException;
 import com.fooding.api.foodtruck.exception.NoFoodTruckException;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.repository.custom.FoodTruckRepositoryCustom;
+import com.fooding.api.foodtruck.repository.jdbc.FoodTruckRepositoryJdbc;
 import com.fooding.api.foodtruck.service.FoodTruckCommandService;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
 import com.fooding.api.foodtruck.service.dto.MenuDto;
@@ -34,6 +35,7 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
 	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
+	private final FoodTruckRepositoryJdbc foodTruckRepositoryJdbc;
 	private final WaitingRepositoryCustom waitingRepositoryCustom;
 
 	@Override
@@ -101,26 +103,7 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 
 	@Override
 	public List<FoodTruckDto> getFoodTrucks(Double latitude, Double longitude) {
-		// TODO: 반경 1km 이내로 조회하도록 수정할 것
-		List<FoodTruck> foodTruckList = foodTruckRepository.findAllByOpened();
-		return foodTruckList.stream().map(
-				foodTruck ->
-					FoodTruckDto.builder()
-						.foodTruckId(foodTruck.getId())
-						.name(foodTruck.getInfo().getName())
-						.introduction(foodTruck.getInfo().getIntroduction())
-						.licenseNumber(foodTruck.getInfo().getLicenseNumber())
-						.category(foodTruck.getInfo().getCategory().toString())
-						.menuList(foodTruck.getMenuList()
-							.stream()
-							.map(menu -> MenuDto.builder()
-								.img(menu.getImg())
-								.name(menu.getName())
-								.build())
-							.collect(Collectors.toList()))
-						.build()
-			)
-			.collect(Collectors.toList());
+		return foodTruckRepositoryJdbc.findAllIsOpened(latitude, longitude);
 	}
 
 }

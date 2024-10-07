@@ -14,6 +14,8 @@ public record FoodTruckDto(
 	String name,
 	String introduction,
 	String category,
+	String mainMenuImg,
+	String menus,
 	List<MenuDto> menuList,
 	@JsonProperty("isReserved")
 	boolean reserved,

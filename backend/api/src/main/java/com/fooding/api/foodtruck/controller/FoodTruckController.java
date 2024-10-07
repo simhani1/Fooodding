@@ -97,9 +97,8 @@ public class FoodTruckController {
 		commerceQueryService.closeFoodTruck(foodTruckId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
-
-	@RequireJwtToken
-	@GetMapping("")
+	
+	@GetMapping("/list")
 	public ResponseEntity<BaseResponse<List<FoodTruckDto>>> getFoodTrucks(
 		@RequestParam("lat") Double latitude,
 		@RequestParam("long") Double longitude

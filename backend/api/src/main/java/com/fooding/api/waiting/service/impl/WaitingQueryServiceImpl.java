@@ -1,6 +1,6 @@
 package com.fooding.api.waiting.service.impl;
 
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,7 +75,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 		waiting.changeToOrderLine();
 		return WaitingInfoDto.builder()
 			.waitingId(waiting.getId())
-			.changedAt(waiting.getChangedAt().toInstant(ZoneOffset.UTC).toEpochMilli())
+			.changedAt(waiting.getChangedAt().atZone(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli())
 			.cancelable(waiting.getCancellable())
 			.number(waiting.getNumber())
 			.build();

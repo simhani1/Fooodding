@@ -29,10 +29,16 @@ class NotificationServiceImpl implements NotificationService {
 		SseEmitter emitter = new SseEmitter(DEFAULT_TIME_OUT);
 		emitter.onCompletion(() -> {
 			log.info("SSE 연결이 정상 종료되었습니다.");
+			emitter.complete();
 			emitterRepository.remove(foodTruckId);
 		});
 		emitter.onTimeout(() -> {
 			log.info("SSE 연결이 타임아웃되었습니다.");
+			emitter.complete();
+			emitterRepository.remove(foodTruckId);
+		});
+		emitter.onError((e) -> {
+			log.info("SSE 연결중 오류가 발생했습니다.");
 			emitter.complete();
 			emitterRepository.remove(foodTruckId);
 		});
@@ -61,7 +67,6 @@ class NotificationServiceImpl implements NotificationService {
 					"Heartbeat for food truck " + foodTruckId + " at " + System.currentTimeMillis());
 			} catch (IOException e) {
 				emitter.completeWithError(e);
-				emitters.remove(foodTruckId);
 			}
 		}
 	}

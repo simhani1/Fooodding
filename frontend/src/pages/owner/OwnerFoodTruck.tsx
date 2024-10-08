@@ -10,6 +10,7 @@ import OwnerException from "@components/owner/OwnerException";
 import { getOwnerFoodTruck } from "@api/food-truck-api";
 import { categories } from "@utils/foodTruckData";
 import { IFoodTruckInfo } from "@interface/api";
+import { isCustomAxiosError } from "@api/error";
 
 const OwnerFoodTruck = () => {
 	const nav = useNavigate();
@@ -29,7 +30,13 @@ const OwnerFoodTruck = () => {
 					return;
 				}
 			} catch (error) {
-				setIsOpen(true);
+				if (isCustomAxiosError(error) && error.response && error.response.data) {
+					const { code } = error.response?.data;
+					if (code === "6001") {
+						setIsOpen(true);
+						return;
+					}
+				}
 			} finally {
 				setIsLoading(false);
 			}

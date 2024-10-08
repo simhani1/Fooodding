@@ -14,6 +14,7 @@ import { menuModalStyle } from "@utils/modalStyle";
 import useMenuModal from "@hooks/useMenuModal";
 import { getMenuList, registerMenu } from "@api/food-truck-api";
 import { IMenuResponseDTO } from "@interface/api";
+import { isCustomAxiosError } from "@api/error";
 
 const OwnerMenu = () => {
 	const nav = useNavigate();
@@ -40,7 +41,13 @@ const OwnerMenu = () => {
 					setFoodTruckId(data.data.foodTruckId);
 				}
 			} catch (error) {
-				setIsOpen(true);
+				if (isCustomAxiosError(error) && error.response && error.response.data) {
+					const { code } = error.response?.data;
+					if (code === "6001") {
+						setIsOpen(true);
+						return;
+					}
+				}
 			} finally {
 				setIsLoading(false);
 			}

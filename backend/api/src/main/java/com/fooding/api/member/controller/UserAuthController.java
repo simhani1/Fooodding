@@ -71,6 +71,7 @@ public class UserAuthController {
 		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, null);
 		refreshTokenCookie.setMaxAge(0);
 		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
 		response.addCookie(refreshTokenCookie);
 
@@ -108,6 +109,7 @@ public class UserAuthController {
 
 		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, newToken.refreshToken());
 		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
 		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
 		response.addCookie(refreshTokenCookie);

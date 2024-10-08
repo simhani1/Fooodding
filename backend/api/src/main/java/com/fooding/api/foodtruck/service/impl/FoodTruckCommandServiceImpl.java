@@ -50,9 +50,9 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 		WaitingInfoDto waitingInfoDto = waitingRepositoryCustom.findWaitingInfoByFoodTruck(foodTruck, user);
 		return FoodTruckDto.builder()
 			.foodTruckId(foodTruck.getId())
+			.licenseNumber(foodTruck.getInfo().getLicenseNumber())
 			.name(foodTruck.getInfo().getName())
 			.introduction(foodTruck.getInfo().getIntroduction())
-			.licenseNumber(foodTruck.getInfo().getLicenseNumber())
 			.category(foodTruck.getInfo().getCategory().name())
 			.menuList(
 				foodTruck.getMenuList().stream()
@@ -82,9 +82,9 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 		}
 		return FoodTruckDto.builder()
 			.foodTruckId(foodTruck.getId())
+			.licenseNumber(foodTruck.getInfo().getLicenseNumber())
 			.name(foodTruck.getInfo().getName())
 			.introduction(foodTruck.getInfo().getIntroduction())
-			.licenseNumber(foodTruck.getInfo().getLicenseNumber())
 			.category(foodTruck.getInfo().getCategory().name())
 			.menuList(
 				foodTruck.getMenuList().stream()

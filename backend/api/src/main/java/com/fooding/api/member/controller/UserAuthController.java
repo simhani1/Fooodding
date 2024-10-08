@@ -47,6 +47,7 @@ public class UserAuthController {
 		Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, res.refreshToken());
 		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
 		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
 		refreshTokenCookie.setDomain("j11a608.p.ssafy.io");
 		response.addCookie(refreshTokenCookie);

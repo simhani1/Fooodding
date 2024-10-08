@@ -12,6 +12,7 @@ import com.fooding.api.foodtruck.exception.NoFoodTruckException;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.service.CommerceQueryService;
 import com.fooding.api.foodtruck.service.dto.CommerceDto;
+import com.fooding.api.foodtruck.util.PointFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ class CommerceQueryServiceImpl implements CommerceQueryService {
 		if (foodTruck.isOpened()) {
 			throw new FoodTruckAlreadyOpenedException("FoodTruck is already opened");
 		}
-		foodTruck.open(dto.latitude(), dto.longitude(), unsoldMenuId);
+		foodTruck.open(PointFactory.create(dto.latitude(), dto.longitude()), unsoldMenuId);
 	}
 
 	@Override

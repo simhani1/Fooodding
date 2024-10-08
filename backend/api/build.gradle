@@ -65,8 +65,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-admin:9.3.0'
 
     /* Point */
-    implementation 'org.hibernate:hibernate-spatial:5.6.10.Final'
-    implementation 'org.locationtech.jts:jts-core:1.18.0'
+    implementation 'org.hibernate:hibernate-spatial:6.2.5.Final'
 }
 
 tasks.named('test') {

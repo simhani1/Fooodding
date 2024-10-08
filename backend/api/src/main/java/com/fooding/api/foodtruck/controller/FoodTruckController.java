@@ -101,9 +101,12 @@ public class FoodTruckController {
 	@GetMapping("/list")
 	public ResponseEntity<BaseResponse<List<FoodTruckDto>>> getFoodTrucks(
 		@RequestParam("lat") Double latitude,
-		@RequestParam("long") Double longitude
+		@RequestParam("long") Double longitude,
+		@RequestParam("lft-id") Long lastFoodTruckId,
+		@RequestParam("size") int size
 	) {
-		List<FoodTruckDto> res = foodTruckCommandService.getFoodTrucks(latitude, longitude);
+		List<FoodTruckDto> res = foodTruckCommandService.getOpenedFoodTrucks(latitude, longitude, lastFoodTruckId,
+			size);
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 

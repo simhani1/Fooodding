@@ -19,6 +19,8 @@ public record FoodTruckDto(
 	List<MenuDto> menuList,
 	@JsonProperty("isReserved")
 	boolean reserved,
-	WaitingInfoDto waitingInfo
+	WaitingInfoDto waitingInfo,
+	double latitude,
+	double longitude
 ) {
 }

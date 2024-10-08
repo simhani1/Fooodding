@@ -43,8 +43,8 @@ public class CommerceInfo {
 		return new CommerceInfo(OpenStatus.CLOSED, LocalDateTime.now(), LocalDateTime.now(), null, null);
 	}
 
-	public static CommerceInfo getOpened(Double latitude, Double longitude) {
-		return new CommerceInfo(OpenStatus.OPENED, LocalDateTime.now(), LocalDateTime.now(), null,
+	public static CommerceInfo getOpened(Point location) {
+		return new CommerceInfo(OpenStatus.OPENED, LocalDateTime.now(), LocalDateTime.now(), location,
 			INITIAL_WAITING_NUMBER);
 	}
 

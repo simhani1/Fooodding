@@ -13,10 +13,10 @@ import com.fooding.api.foodtruck.exception.FoodTruckAlreadyOpenedException;
 import com.fooding.api.foodtruck.exception.NoFoodTruckException;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.repository.custom.FoodTruckRepositoryCustom;
-import com.fooding.api.foodtruck.repository.jdbc.FoodTruckRepositoryJdbc;
 import com.fooding.api.foodtruck.service.FoodTruckCommandService;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
 import com.fooding.api.foodtruck.service.dto.MenuDto;
+import com.fooding.api.foodtruck.util.PointFactory;
 import com.fooding.api.member.domain.Member;
 import com.fooding.api.member.exception.NoMemberException;
 import com.fooding.api.member.repository.MemberRepository;
@@ -35,7 +35,6 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
 	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
-	private final FoodTruckRepositoryJdbc foodTruckRepositoryJdbc;
 	private final WaitingRepositoryCustom waitingRepositoryCustom;
 
 	@Override
@@ -102,8 +101,36 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 	}
 
 	@Override
-	public List<FoodTruckDto> getFoodTrucks(Double latitude, Double longitude) {
-		return foodTruckRepositoryJdbc.findAllIsOpened(latitude, longitude);
+	public List<FoodTruckDto> getOpenedFoodTrucks(Double latitude, Double longitude, Long lastFoodTruckId, int size) {
+		List<FoodTruck> foodTruckList = foodTruckRepositoryCustom.findOpenedFoodTrucks(
+			PointFactory.create(latitude, longitude), lastFoodTruckId, size);
+		return foodTruckList.stream().map(
+				foodTruck -> FoodTruckDto.builder()
+					.foodTruckId(foodTruck.getId())
+					.name(foodTruck.getInfo().getName())
+					.introduction(foodTruck.getInfo().getIntroduction())
+					.menus(getMenuNames(foodTruck))
+					.mainMenuImg(getMainMenuImg(foodTruck))
+					.longitude(PointFactory.getLongitude(foodTruck.getCommerceInfo().getLocation()))
+					.latitude(PointFactory.getLatitude(foodTruck.getCommerceInfo().getLocation()))
+					.build()
+			)
+			.collect(Collectors.toList());
+	}
+
+	private String getMenuNames(FoodTruck foodTruck) {
+		List<String> menuNames = foodTruck.getMenuList().stream()
+			.map(Menu::getName)
+			.limit(2)
+			.collect(Collectors.toList());
+		return menuNames.size() == 2 ? String.join("/", menuNames) : menuNames.get(0);
+	}
+
+	private String getMainMenuImg(FoodTruck foodTruck) {
+		return foodTruck.getMenuList().stream()
+			.findFirst()
+			.map(Menu::getImg)
+			.orElse(null);
 	}
 
 }

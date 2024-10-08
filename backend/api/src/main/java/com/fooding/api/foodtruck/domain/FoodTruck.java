@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.locationtech.jts.geom.Point;
 
 import com.fooding.api.foodtruck.domain.commerce.CommerceInfo;
 import com.fooding.api.foodtruck.domain.commerce.OpenStatus;
 import com.fooding.api.foodtruck.domain.menu.Menu;
 import com.fooding.api.member.domain.Member;
 
-import io.jsonwebtoken.lang.Assert;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -39,9 +39,11 @@ public class FoodTruck {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "foodtruck_id")
 	private Long id;
+
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
+
 	@Embedded
 	@AttributeOverride(name = "licenseNumber", column = @Column(name = "license_number", nullable = false))
 	@AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
@@ -56,7 +58,7 @@ public class FoodTruck {
 	@AttributeOverride(name = "openStatus", column = @Column(name = "open_status", nullable = false))
 	@AttributeOverride(name = "openedAt", column = @Column(name = "opened_at", nullable = false))
 	@AttributeOverride(name = "closedAt", column = @Column(name = "closed_at", nullable = false))
-	@AttributeOverride(name = "location", column = @Column(name = "location", columnDefinition = "geometry(Point, 4326)"))
+	@AttributeOverride(name = "location", column = @Column(name = "location", columnDefinition = "POINT SRID 4326"))
 	@AttributeOverride(name = "waitingNumber", column = @Column(name = "waiting_number"))
 	private CommerceInfo commerceInfo;
 
@@ -66,22 +68,18 @@ public class FoodTruck {
 
 	@Builder
 	public FoodTruck(Member member, FoodTruckInfo info, CommerceInfo commerceInfo) {
-		Assert.notNull(member, "member must not be null");
-		Assert.notNull(info, "info must not be null");
-		Assert.notNull(commerceInfo, "commerceInfo must not be null");
-
 		this.member = member;
 		this.info = info;
 		this.commerceInfo = commerceInfo;
 	}
 
-	public void open(Double latitude, Double longitude, List<Long> unsoldMenuId) {
+	public void open(Point location, List<Long> unsoldMenuId) {
 		if (unsoldMenuId != null && !unsoldMenuId.isEmpty()) {
 			this.menuList.stream()
 				.filter(menu -> unsoldMenuId.contains(menu.getId()))
 				.forEach(Menu::disableSale);
 		}
-		this.commerceInfo = CommerceInfo.getOpened(latitude, longitude);
+		this.commerceInfo = CommerceInfo.getOpened(location);
 	}
 
 	public void close() {

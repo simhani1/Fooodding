@@ -43,7 +43,6 @@ class WaitingCommandServiceImpl implements WaitingCommandService {
 		if (foodTruck.isClosed()) {
 			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
 		}
-		notificationService.save(foodTruckId);
 		List<Waiting> waitingList = waitingRepository.findByFoodTruck(foodTruck);
 		return waitingList.stream()
 			.map(waiting -> WaitingInfoDto.builder()

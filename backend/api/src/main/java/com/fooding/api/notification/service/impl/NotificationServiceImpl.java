@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fooding.api.notification.service.NotificationService;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 @Service
 class NotificationServiceImpl implements NotificationService {
@@ -25,30 +23,12 @@ class NotificationServiceImpl implements NotificationService {
 	private final long HEARTBEAT_INTERVAL = 10000L;
 
 	@Override
-	public void save(Long foodTruckId) {
-		SseEmitter emitter = new SseEmitter(DEFAULT_TIME_OUT);
-		emitter.onCompletion(() -> {
-			log.info("SSE 연결이 정상 종료되었습니다.");
-			emitter.complete();
-			emitterRepository.remove(foodTruckId);
-		});
-		emitter.onTimeout(() -> {
-			log.info("SSE 연결이 타임아웃되었습니다.");
-			emitter.complete();
-			emitterRepository.remove(foodTruckId);
-		});
-		emitter.onError((e) -> {
-			log.info("SSE 연결중 오류가 발생했습니다.");
-			emitter.complete();
-			emitterRepository.remove(foodTruckId);
-		});
-		emitterRepository.save(foodTruckId, emitter);
-	}
-
-	@Override
 	public <T> SseEmitter send(Long foodTruckId, String name, T obj) {
-		SseEmitter emitter = emitterRepository.findByFoodTruckId(foodTruckId);
 		try {
+			SseEmitter emitter = emitterRepository.findByFoodTruckId(foodTruckId);
+			if (emitter == null) {
+				emitter = save(foodTruckId);
+			}
 			sendNotification(emitter, name, obj);
 			return emitter;
 		} catch (IOException e) {
@@ -56,8 +36,26 @@ class NotificationServiceImpl implements NotificationService {
 		}
 	}
 
+	private SseEmitter save(Long foodTruckId) {
+		SseEmitter emitter = new SseEmitter(DEFAULT_TIME_OUT);
+		emitter.onCompletion(() -> {
+			log.info("SSE 연결이 정상 종료되었습니다.");
+			emitterRepository.remove(foodTruckId);
+		});
+		emitter.onTimeout(() -> {
+			log.info("SSE 연결이 타임아웃되었습니다.");
+			emitter.complete();
+		});
+		emitter.onError((e) -> {
+			log.info("SSE 연결중 오류가 발생했습니다.");
+			emitter.complete();
+		});
+		emitterRepository.save(foodTruckId, emitter);
+		return emitter;
+	}
+
 	@Scheduled(fixedRate = HEARTBEAT_INTERVAL)
-	protected void sendHeartbeat() {
+	private void sendHeartbeat() {
 		Map<Long, SseEmitter> emitters = emitterRepository.findAll();
 		for (Map.Entry<Long, SseEmitter> entry : emitters.entrySet()) {
 			Long foodTruckId = entry.getKey();

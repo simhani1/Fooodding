@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getMessaging, getToken, MessagePayload, onMessage } from "firebase/messaging";
 
 export const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -35,7 +35,7 @@ export const requestForToken = () => {
 
 // 포그라운드에서 메시지 수신을 위한 함수
 // 메시지 수신 시 추가적인 로직(상태 업데이트 등)이 필요하다면 유용한 코드
-export const onMessageListener = () =>
+export const onMessageListener = (): Promise<MessagePayload> =>
 	new Promise((resolve) => {
 		onMessage(messaging, (payload) => {
 			console.log("Payload received in onMessageListener: ", payload);

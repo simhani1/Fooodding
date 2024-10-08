@@ -7,11 +7,13 @@ export function useNotificiationToken() {
 
 	const saveToken = useCallback(async () => {
 		try {
+			const permission = await Notification.requestPermission();
+			if (permission !== "granted") return;
 			const newToken = await requestForToken();
 
 			if (newToken) {
 				setToken(newToken);
-				await saveNotificationToken();
+				await saveNotificationToken(newToken);
 			}
 		} catch (error) {
 			console.error(error);

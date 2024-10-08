@@ -28,11 +28,11 @@ const OwnerAnnouncement = () => {
 	};
 
 	// 토글 버튼 클릭 토큰 발급 & 삭제
-	const handleToggle = () => {
+	const handleToggle = async () => {
 		setIsToggled(!isToggled);
 
-		if (isToggled) saveToken();
-		else deleteToken();
+		if (!isToggled) await saveToken();
+		else await deleteToken();
 	};
 
 	// 버튼 클릭 시 색 전환
@@ -115,12 +115,12 @@ const OwnerAnnouncement = () => {
 								<div
 									onClick={handleToggle}
 									className={`w-16 h-8 flex items-center bg-${
-										isToggled ? "gray" : "boss"
+										isToggled ? "boss" : "gray"
 									} rounded-full p-1 cursor-pointer transition-colors duration-300`}
 								>
 									<div
 										className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${
-											isToggled ? "translate-x-8" : "translate-x-0"
+											isToggled ? "translate-x-0" : "translate-x-8"
 										}`}
 									></div>
 								</div>

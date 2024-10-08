@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 
 const Login = lazy(() => import("@pages/Login"));
@@ -18,33 +18,59 @@ const UserMap = lazy(() => import("@pages/user/UserMap"));
 const UserFoodTruck = lazy(() => import("@pages/user/UserFoodTruck"));
 const UserWaitingList = lazy(() => import("@pages/user/UserWaitingList"));
 const Loading = lazy(() => import("@components/common/Loading"));
+import UserInputInfo from "@pages/user/UserInputInfo";
 
-import { requestForToken, registerServiceWorker } from "firebase";
+import { onMessageListener } from "firebase";
 import { LoadingProvider, useLoading } from "@utils/LoadingContext";
 
 import "./App.css";
-import UserInputInfo from "@pages/user/UserInputInfo";
+import { initializeApp } from "firebase/app";
+import { getMessaging } from "firebase/messaging";
+
+const firebaseConfig = {
+	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+	authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+	projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+	storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+	messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+	appId: import.meta.env.VITE_FIREBASE_APP_ID,
+	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+};
+
+const app = initializeApp(firebaseConfig);
+const messaging = getMessaging(app);
+console.log(messaging);
 
 function App() {
-	const [token, setToken] = useState("");
 	const { isLoading } = useLoading();
+	const [notification, setNotification] = useState({ title: "", body: "" });
+
+	const showNotification = useCallback((title: string, body: string) => {
+		console.log("Showing notification:", title, body);
+		if ("Notification" in window && Notification.permission === "granted") {
+			new Notification(title, {
+				body: body,
+				icon: "/firebase-logo.png",
+			});
+		}
+		setNotification({ title, body });
+		console.log(notification);
+	}, []);
 
 	useEffect(() => {
-		const initializeFirebase = async () => {
-			registerServiceWorker();
-
-			const permission = await Notification.requestPermission();
-			if (permission === "granted") {
-				const response = await requestForToken();
-				if (response) {
-					setToken(response);
-					console.log(token);
-				}
+		const messageListener = async () => {
+			try {
+				const payload = await onMessageListener();
+				const title = payload.notification?.title || "새로운 알림";
+				const body = payload.notification?.body || "알림 내용을 확인해주세요.";
+				showNotification(title, body);
+			} catch (error) {
+				console.error("Error in message listener:", error);
 			}
 		};
 
-		initializeFirebase();
-	}, []);
+		messageListener();
+	}, [showNotification]);
 
 	return (
 		<LoadingProvider>

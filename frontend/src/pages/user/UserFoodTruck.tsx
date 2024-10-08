@@ -41,22 +41,24 @@ const UserFoodTruck = () => {
 	};
 
 	useEffect(() => {
-		//여기에서 axios 연결
 		getTruckDetail();
 	}, [truck.isReserved]);
 
 	return (
 		<>
 			<TheHeader />
+
 			<UserTruckInfo
 				truck={truck}
 				setTruck={setTruck}
 			/>
+
 			{truck.isReserved ? (
 				<UserWaiting waitingInfo={truck.waitingInfo} />
 			) : (
 				<UserMenu menuList={truck.menuList} />
 			)}
+
 			<TheFooter />
 		</>
 	);

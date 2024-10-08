@@ -44,14 +44,23 @@ const TheFooter = () => {
 	};
 
 	//로그아웃
-	const handleLogOut = () => {
-		userLogout();
+	const handleLogOut = async () => {
+		try {
+			await userLogout();
+			nav("/");
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	//탈퇴
-	const handleWithDraw = () => {
-		userWithdraw();
-		nav("/");
+	const handleWithDraw = async () => {
+		try {
+			await userWithdraw();
+			nav("/");
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	return (

@@ -5,15 +5,19 @@ import { IWaitingProps } from "@interface/waiting";
 import { waitingCancelingModalStyle } from "@utils/modalStyle";
 import UserOrder from "@components/user/UserOrder";
 import Modal from "@components/common/Modal";
+import UserWaitingImg from "@components/user/UserWaitingImg";
+import { cancelWaiting } from "@api/waiting-api";
+import { isCustomAxiosError } from "@api/error";
 
 import Cooking from "@assets/cooking.gif";
 import { Ticket } from "@phosphor-icons/react";
-import UserWaitingImg from "@components/user/UserWaitingImg";
 
 const UserWaiting = ({ waitingInfo }: IWaitingProps) => {
 	const nav = useNavigate();
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const { waitingId } = waitingInfo;
 
 	// 줄서기 취소 버튼을 눌렀을 때 모달 열기
 	const openCancelModal = () => {
@@ -28,8 +32,25 @@ const UserWaiting = ({ waitingInfo }: IWaitingProps) => {
 	// 줄서기 취소 확인
 	const confirmCancellation = () => {
 		// 여기에서 줄서기 취소 로직 추가
-		nav("/users");
-		closeModal(); // 모달 닫기
+		cancelMyWaiting();
+	};
+
+	const cancelMyWaiting = async () => {
+		try {
+			await cancelWaiting(waitingId);
+
+			nav("/users"); //다시 처음화면으로
+			closeModal(); // 모달 닫기
+		} catch (error) {
+			if (isCustomAxiosError(error) && error.response && error.response.data) {
+				const { code } = error.response?.data;
+				if (code === "8002") {
+					alert("사장님이 호출한 번호입니다");
+					closeModal();
+					return;
+				}
+			}
+		}
 	};
 
 	return (

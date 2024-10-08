@@ -39,11 +39,9 @@ public class FoodTruck {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "foodtruck_id")
 	private Long id;
-
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
-
 	@Embedded
 	@AttributeOverride(name = "licenseNumber", column = @Column(name = "license_number", nullable = false))
 	@AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
@@ -52,14 +50,13 @@ public class FoodTruck {
 	private FoodTruckInfo info;
 
 	@OneToMany(mappedBy = "foodTruck")
-	private List<Menu> menuList = new ArrayList<>();
+	private final List<Menu> menuList = new ArrayList<>();
 
 	@Embedded
 	@AttributeOverride(name = "openStatus", column = @Column(name = "open_status", nullable = false))
 	@AttributeOverride(name = "openedAt", column = @Column(name = "opened_at", nullable = false))
 	@AttributeOverride(name = "closedAt", column = @Column(name = "closed_at", nullable = false))
-	@AttributeOverride(name = "latitude", column = @Column(name = "latitude"))
-	@AttributeOverride(name = "longitude", column = @Column(name = "longitude"))
+	@AttributeOverride(name = "location", column = @Column(name = "location", columnDefinition = "geometry(Point, 4326)"))
 	@AttributeOverride(name = "waitingNumber", column = @Column(name = "waiting_number"))
 	private CommerceInfo commerceInfo;
 

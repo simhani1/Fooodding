@@ -2,6 +2,8 @@ package com.fooding.api.foodtruck.domain.commerce;
 
 import java.time.LocalDateTime;
 
+import org.locationtech.jts.geom.Point;
+
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,40 +25,32 @@ public class CommerceInfo {
 
 	@Enumerated(EnumType.STRING)
 	private OpenStatus openStatus;
-
 	private LocalDateTime openedAt;
-
 	private LocalDateTime closedAt;
-
-	private Double latitude;
-
-	private Double longitude;
-
+	private Point location;
 	private Integer waitingNumber;
 
-	private CommerceInfo(OpenStatus openStatus, LocalDateTime openedAt, LocalDateTime closedAt, Double latitude,
-		Double longitude, Integer waitingNumber) {
+	private CommerceInfo(OpenStatus openStatus, LocalDateTime openedAt, LocalDateTime closedAt, Point location,
+		Integer waitingNumber) {
 		this.openStatus = openStatus;
 		this.openedAt = openedAt;
 		this.closedAt = closedAt;
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.location = location;
 		this.waitingNumber = waitingNumber;
 	}
 
 	public static CommerceInfo ofNew() {
-		return new CommerceInfo(OpenStatus.CLOSED, LocalDateTime.now(), LocalDateTime.now(), null, null, null);
+		return new CommerceInfo(OpenStatus.CLOSED, LocalDateTime.now(), LocalDateTime.now(), null, null);
 	}
 
 	public static CommerceInfo getOpened(Double latitude, Double longitude) {
-		return new CommerceInfo(OpenStatus.OPENED, LocalDateTime.now(), LocalDateTime.now(), latitude, longitude,
+		return new CommerceInfo(OpenStatus.OPENED, LocalDateTime.now(), LocalDateTime.now(), null,
 			INITIAL_WAITING_NUMBER);
 	}
 
 	public static CommerceInfo getClosed(CommerceInfo commerceInfo) {
 		return new CommerceInfo(OpenStatus.CLOSED, commerceInfo.getOpenedAt(), LocalDateTime.now(),
-			commerceInfo.getLatitude(),
-			commerceInfo.getLongitude(),
+			commerceInfo.getLocation(),
 			null);
 	}
 

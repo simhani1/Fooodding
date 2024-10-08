@@ -21,6 +21,8 @@ public record FoodTruckDto(
 	boolean reserved,
 	WaitingInfoDto waitingInfo,
 	double latitude,
-	double longitude
+	double longitude,
+	@JsonProperty("isOpened")
+	boolean opened
 ) {
 }

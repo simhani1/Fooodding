@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.domain.menu.Menu;
 import com.fooding.api.foodtruck.exception.FoodTruckAlreadyClosedException;
-import com.fooding.api.foodtruck.exception.FoodTruckAlreadyOpenedException;
 import com.fooding.api.foodtruck.exception.NoFoodTruckException;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.repository.custom.FoodTruckRepositoryCustom;
@@ -76,11 +75,9 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + ownerId));
 		FoodTruck foodTruck = foodTruckRepositoryCustom.findByOwner(owner)
 			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found by ownerID: " + ownerId));
-		if (foodTruck.isOpened()) {
-			throw new FoodTruckAlreadyOpenedException("FoodTruck is already opened");
-		}
 		return FoodTruckDto.builder()
 			.foodTruckId(foodTruck.getId())
+			.opened(foodTruck.isOpened())
 			.licenseNumber(foodTruck.getInfo().getLicenseNumber())
 			.name(foodTruck.getInfo().getName())
 			.introduction(foodTruck.getInfo().getIntroduction())

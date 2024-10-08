@@ -34,7 +34,7 @@ public class WaitingRepositoryCustom {
 							.and(subWaiting.cancellable.isFalse())),
 					Expressions.numberTemplate(Long.class, "UNIX_TIMESTAMP({0})", waiting.changedAt),
 					waiting.cancellable,
-					null
+					waiting.member.nickname
 				)
 			)
 			.from(waiting)

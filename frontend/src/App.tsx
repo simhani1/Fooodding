@@ -20,12 +20,11 @@ const UserWaitingList = lazy(() => import("@pages/user/UserWaitingList"));
 const Loading = lazy(() => import("@components/common/Loading"));
 import UserInputInfo from "@pages/user/UserInputInfo";
 
-import { onMessageListener } from "firebase";
-import { LoadingProvider, useLoading } from "@utils/LoadingContext";
-
 import "./App.css";
+import { onMessageListener } from "firebase";
 import { initializeApp } from "firebase/app";
 import { getMessaging } from "firebase/messaging";
+import { LoadingProvider, useLoading } from "@utils/LoadingContext";
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,

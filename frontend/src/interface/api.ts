@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { Category } from "@interface/owner";
-import { IWaitingInfo } from "./waiting";
-import { IMenuInfo, ITruckListInfo } from "./foodTruck";
+import { IMenuInfo, ITruckListInfo } from "@interface/foodTruck";
+import { IWaitingInfo } from "@interface/waiting";
 
 export enum ContentType {
 	Json = "application/json",
@@ -49,6 +49,8 @@ export interface IFoodTruckCreateResponseDTO extends IBaseResponseDTO {
 	};
 }
 
+export type IFoodTruckApiResponse = IFoodTruckResponseDTO | IFoodTruckOwnerInfoDTO;
+
 //푸드트럭 정보 조회
 export interface IFoodTruckOwnerInfoDTO extends IBaseResponseDTO {
 	data: {
@@ -57,6 +59,7 @@ export interface IFoodTruckOwnerInfoDTO extends IBaseResponseDTO {
 		name: string;
 		introduction: string;
 		category: string;
+		isOpened: boolean;
 		menuList: IMenuResponseDTO[];
 	};
 }

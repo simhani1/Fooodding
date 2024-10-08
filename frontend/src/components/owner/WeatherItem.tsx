@@ -5,7 +5,7 @@ const WeatherItem = ({ weather }: IWeatherProps) => {
 	const hour = new Date(weather.dt * 1000).getHours();
 	const temperature = Math.round(weather.main.temp);
 	const weatherDetail = weather.weather[0].main;
-	const pop = weather.pop;
+	const pop = Math.round(weather.pop);
 
 	let weatherIcon = <></>;
 	switch (weatherDetail) {

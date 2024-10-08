@@ -14,7 +14,7 @@ export interface IMenuRequired {
 }
 
 export interface IMenuFormData extends IMenuRequired {
-	image?: string;
+	img?: string;
 }
 
 export interface IMenuProps extends IMenuFormData {

@@ -9,13 +9,13 @@ import useMenuModal from "@hooks/useMenuModal";
 import { deleteMenu, updateMenu } from "@api/food-truck-api";
 import { IMenuProps } from "@interface/owner";
 
-const Menu = ({ foodTruckId, menuId, image, name, price }: IMenuProps) => {
+const Menu = ({ foodTruckId, menuId, img, name, price }: IMenuProps) => {
 	const nav = useNavigate();
 
 	const { isModalOpen, imageFile, formData, setImageFile, setFormData, closeModal, openModal } = useMenuModal({
 		name,
 		price,
-		image,
+		img,
 	});
 
 	const handleUpdate = async () => {
@@ -60,7 +60,7 @@ const Menu = ({ foodTruckId, menuId, image, name, price }: IMenuProps) => {
 	return (
 		<div className="flex flex-col justify-around w-56 rounded-md shadow-md h-72">
 			<img
-				src={image || defaultImage}
+				src={img || defaultImage}
 				alt="no image"
 				className="mx-auto border-2 border-black rounded-md w-36 h-36"
 			/>

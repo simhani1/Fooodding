@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Title from "@components/common/Title";
@@ -9,41 +8,15 @@ import OwnerException from "@components/owner/OwnerException";
 
 import { getOwnerFoodTruck } from "@api/food-truck-api";
 import { categories } from "@utils/foodTruckData";
-import { IFoodTruckInfo } from "@interface/api";
-import { isCustomAxiosError } from "@api/error";
+import useFoodTruckApi from "@hooks/useFoodTruckApi";
 
 const OwnerFoodTruck = () => {
 	const nav = useNavigate();
-	const [foodTruckInfo, setFoodTruckInfo] = useState<IFoodTruckInfo>();
-	const [isOpen, setIsOpen] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
+
+	const { isOpen, isLoading, isError, data } = useFoodTruckApi(getOwnerFoodTruck);
+	const foodTruckInfo = data?.data;
 
 	const title = "푸드트럭 정보 관리";
-
-	useEffect(() => {
-		const load = async () => {
-			try {
-				const { data } = await getOwnerFoodTruck();
-				if (data.isSuccess) {
-					const { foodTruckId, name, licenseNumber, introduction, category } = data.data;
-					setFoodTruckInfo({ foodTruckId, name, licenseNumber, introduction, category });
-					return;
-				}
-			} catch (error) {
-				if (isCustomAxiosError(error) && error.response && error.response.data) {
-					const { code } = error.response?.data;
-					if (code === "6001") {
-						setIsOpen(true);
-						return;
-					}
-				}
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		load();
-	}, []);
 
 	if (isLoading) {
 		return (
@@ -59,6 +32,15 @@ const OwnerFoodTruck = () => {
 			<OwnerException
 				title={title}
 				content="장사중인 푸드트럭은 수정할 수 없습니다."
+			/>
+		);
+	}
+
+	if (isError) {
+		return (
+			<OwnerException
+				title={title}
+				content="데이터를 불러오는 데 실패하였습니다."
 			/>
 		);
 	}

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Modal from "@components/common/Modal";
@@ -13,8 +12,7 @@ import OwnerException from "@components/owner/OwnerException";
 import { menuModalStyle } from "@utils/modalStyle";
 import useMenuModal from "@hooks/useMenuModal";
 import { getMenuList, registerMenu } from "@api/food-truck-api";
-import { IMenuResponseDTO } from "@interface/api";
-import { isCustomAxiosError } from "@api/error";
+import useFoodTruckApi from "@hooks/useFoodTruckApi";
 
 const OwnerMenu = () => {
 	const nav = useNavigate();
@@ -22,59 +20,14 @@ const OwnerMenu = () => {
 	const { isModalOpen, imageFile, formData, setImageFile, setFormData, closeModal, openModal } = useMenuModal({
 		name: "",
 		price: 0,
-		image: "",
+		img: "",
 	});
 
-	const [menuList, setMenuList] = useState<IMenuResponseDTO[]>([]);
-	const [foodTruckId, setFoodTruckId] = useState<number>(0);
-	const [isOpen, setIsOpen] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const { isOpen, isLoading, isError, data } = useFoodTruckApi(getMenuList);
+	const menuList = data?.data.menuList;
+	const foodTruckId = data?.data.foodTruckId;
 
 	const title = "메뉴 관리";
-
-	useEffect(() => {
-		const loadMenuList = async () => {
-			try {
-				const { data } = await getMenuList();
-				if (data.isSuccess) {
-					setMenuList(data.data.menuList);
-					setFoodTruckId(data.data.foodTruckId);
-				}
-			} catch (error) {
-				if (isCustomAxiosError(error) && error.response && error.response.data) {
-					const { code } = error.response?.data;
-					if (code === "6001") {
-						setIsOpen(true);
-						return;
-					}
-				}
-			} finally {
-				setIsLoading(false);
-			}
-		};
-		loadMenuList();
-	}, []);
-
-	const handleCreate = async () => {
-		try {
-			const { data } = await registerMenu(foodTruckId, {
-				req: {
-					name: formData.name,
-					price: formData.price,
-				},
-				menuImg: imageFile,
-			});
-			if (data.isSuccess) {
-				alert("메뉴 등록 성공");
-				nav(0);
-				closeModal();
-			} else {
-				alert("메뉴 등록 실패");
-			}
-		} catch (error) {
-			alert("요청 실패");
-		}
-	};
 
 	if (isLoading) {
 		return (
@@ -94,6 +47,38 @@ const OwnerMenu = () => {
 		);
 	}
 
+	if (isError) {
+		return (
+			<OwnerException
+				title={title}
+				content="데이터를 불러오는 데 실패하였습니다."
+			/>
+		);
+	}
+
+	const handleCreate = async () => {
+		try {
+			if (foodTruckId) {
+				const { data } = await registerMenu(foodTruckId, {
+					req: {
+						name: formData.name,
+						price: formData.price,
+					},
+					menuImg: imageFile,
+				});
+				if (data.isSuccess) {
+					alert("메뉴 등록 성공");
+					nav(0);
+					closeModal();
+				} else {
+					alert("메뉴 등록 실패");
+				}
+			}
+		} catch (error) {
+			alert("요청 실패");
+		}
+	};
+
 	return (
 		<Container>
 			<Main>
@@ -112,13 +97,15 @@ const OwnerMenu = () => {
 					</div>
 					<div>
 						<div className="flex flex-wrap gap-6">
-							{menuList.map((item) => (
-								<Menu
-									foodTruckId={foodTruckId}
-									{...item}
-									key={item.menuId}
-								/>
-							))}
+							{menuList &&
+								foodTruckId &&
+								menuList.map((item) => (
+									<Menu
+										foodTruckId={foodTruckId}
+										{...item}
+										key={item.menuId}
+									/>
+								))}
 						</div>
 					</div>
 					<Modal

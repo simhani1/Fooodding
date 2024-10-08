@@ -44,7 +44,7 @@ const MenuForm = ({ title, buttonText, formData, setFormData, setImageFile, onSu
 		<form className="flex flex-col justify-between h-full p-3">
 			<h1 className="text-5xl font-bold text-center">{title}</h1>
 			<MenuImage
-				image={formData.image}
+				image={formData.img}
 				setImage={setImageFile}
 			/>
 			<div className="flex flex-col gap-5">

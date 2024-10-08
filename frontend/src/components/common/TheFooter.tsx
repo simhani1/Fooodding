@@ -51,6 +51,7 @@ const TheFooter = () => {
 	//탈퇴
 	const handleWithDraw = () => {
 		userWithdraw();
+		nav("/");
 	};
 
 	return (

@@ -35,6 +35,7 @@ export interface INaverLoginResponseDTO extends IBaseResponseDTO {
 		nickname: string;
 		accessToken: string;
 		foodTruckId: number;
+		isNewMember: boolean;
 	};
 }
 
@@ -94,6 +95,11 @@ export type RoleParam = "owners" | "users";
 export enum Role {
 	owners = "OWNER",
 	users = "USER",
+}
+
+export interface IUserInfo {
+	gender: string;
+	ages: string;
 }
 
 // menu

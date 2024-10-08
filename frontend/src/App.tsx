@@ -23,6 +23,7 @@ import { requestForToken, registerServiceWorker } from "firebase";
 import { LoadingProvider, useLoading } from "@utils/LoadingContext";
 
 import "./App.css";
+import UserInputInfo from "@pages/user/UserInputInfo";
 
 function App() {
 	const [token, setToken] = useState("");
@@ -118,6 +119,10 @@ function App() {
 						<Route
 							path=""
 							element={<UserMap />}
+						/>
+						<Route
+							path="info"
+							element={<UserInputInfo />}
 						/>
 						<Route
 							path="foodtruck"

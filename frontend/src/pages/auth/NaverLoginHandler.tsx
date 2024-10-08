@@ -16,8 +16,14 @@ const NaverLoginHandler = () => {
 		try {
 			const { data } = await loginFn(params);
 			if (data.isSuccess) {
-				const { accessToken } = data.data;
+				const { accessToken, isNewMember } = data.data;
 				localStorage.setItem("token", accessToken);
+
+				if (role === "users" && isNewMember) {
+					nav(`/${role}/info`);
+					return;
+				}
+
 				nav(`/${role}`);
 				return;
 			}

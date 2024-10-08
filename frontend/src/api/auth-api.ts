@@ -1,4 +1,12 @@
-import { ApiResponse, INaverLoginDTO, INaverLoginResponseDTO, IReissueResponseDTO, RoleParam } from "@interface/api";
+import {
+	ApiResponse,
+	INaverLoginDTO,
+	INaverLoginResponseDTO,
+	INoResponseDTO,
+	IReissueResponseDTO,
+	IUserInfo,
+	RoleParam,
+} from "@interface/api";
 import axiosInstance from "@api/axiosInstance";
 
 const basePath = `/members/auth`;
@@ -54,4 +62,9 @@ export const userLoginNaver = (dto: INaverLoginDTO): ApiResponse<INaverLoginResp
 
 export const userWithdraw = () => {
 	return withdraw(USER);
+};
+
+//성별연령대
+export const userInputInfo = (dto: IUserInfo): ApiResponse<INoResponseDTO> => {
+	return axiosInstance.patch(`${basePath}/${USER}`, dto);
 };

@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, Response
 <<<<<<< HEAD
+<<<<<<< HEAD
 from app.models.model import preprocess, aggregate_data, train_model
 =======
 <<<<<<< HEAD
@@ -8,6 +9,10 @@ from app.models.predict_model import preprocess, aggregate_data, train_model
 from app.models.model import preprocess, aggregate_data, train_model
 >>>>>>> ac59f34a409f086a308e10ad5dac158ca0830a67
 >>>>>>> 4c59f8d (feat: 혼잡도 api 설계)
+=======
+from app.models.predict_model import preprocess, aggregate_data, train_model
+
+>>>>>>> a11ace3 (feat: 성별, 연령대 별 행정동 추천 알고리즘 api 설계)
 from app.utils.db import create_connection, save_prediction_to_db
 import datetime
 import json

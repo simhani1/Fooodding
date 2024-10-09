@@ -31,6 +31,5 @@ def get_congestion():
     result = filtered_data.where(pd.notnull(filtered_data), None).to_dict(orient='records')
     json_response = json.dumps(result, ensure_ascii=False)
     
-    # 응답을 생성합니다.
     response = Response(json_response, content_type="application/json; charset=utf-8", status=200)
     return response

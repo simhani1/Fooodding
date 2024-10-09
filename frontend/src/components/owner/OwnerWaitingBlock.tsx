@@ -2,7 +2,6 @@ import { IWaitingOwnerProps } from "@interface/waiting";
 import { useEffect, useState } from "react";
 
 const MILLISECONDS_IN_TEN_MINUTE = 1000 * 60 * 10;
-const MILLISECONDS_IN_EIGHTEEN_HOURS = 18 * 60 * 60 * 1000;
 
 const convertTimeString = (minutes: number, seconds: number) => {
 	const minutesString = String(minutes).padStart(2, "0");
@@ -11,28 +10,38 @@ const convertTimeString = (minutes: number, seconds: number) => {
 };
 
 const OwnerWaitingBlock = ({ waiting, children, isOrder, onCancel }: IWaitingOwnerProps) => {
-	const waitingTime = Number(waiting.changedAt) - MILLISECONDS_IN_EIGHTEEN_HOURS;
 	const [restMinutes, setRestMinutes] = useState<number>(0);
 	const [restSeconds, setRestSeconds] = useState<number>(0);
 
-	// 10분 카운트 하기 위해 1초마다 현재 시간 - 호출한 시간을 계산하고 있습니다. 10분 카운트를 하려면 10분에서 위 값을 빼주어야 합니다. 그런데 서버에서 넘어온 값이 이상하게 18시간 앞서 있어서 빼주고 있습니다.
+	// 10분 타이머 설정
 	useEffect(() => {
 		if (isOrder) {
+			const startTime = Date.now();
+			const waitingTime = Number(waiting.changedAt); // 서버에서 받은 시간을 그대로 사용
+			const timeDifference = waitingTime - startTime; // 서버와 현재 시간의 차이
+
+			console.log("서버 시간과의 차이 (ms):", timeDifference);
+
 			const interval = setInterval(() => {
-				const diffMilliseconds = Date.now() - waitingTime;
+				const currentTime = Date.now();
+				const diffMilliseconds = currentTime - startTime + timeDifference; // 서버 시간 차이를 더해서 경과 시간 계산
 				const restMilliseconds = MILLISECONDS_IN_TEN_MINUTE - diffMilliseconds;
+
+				console.log(restMilliseconds);
+
 				if (restMilliseconds > 0 && restMilliseconds <= MILLISECONDS_IN_TEN_MINUTE) {
 					setRestMinutes(Math.floor(restMilliseconds / 60000));
 					setRestSeconds(Math.floor((restMilliseconds % 60000) / 1000));
 				} else {
-					onCancel(waiting.waitingId);
+					// 10분이 지나면 타이머 종료 및 예약 취소
+					// onCancel(waiting.waitingId);
 					clearInterval(interval);
 				}
 			}, 1000);
 
 			return () => clearInterval(interval);
 		}
-	});
+	}, [isOrder, waiting.changedAt, waiting.waitingId, onCancel]);
 
 	return (
 		<div className="flex items-center justify-between px-6 py-4 mx-2 my-8 rounded-lg shadow-sm">

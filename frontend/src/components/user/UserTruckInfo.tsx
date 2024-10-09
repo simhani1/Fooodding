@@ -5,7 +5,7 @@ import { Ticket } from "@phosphor-icons/react";
 
 const UserTruckInfo = ({ truck, setTruck }: ITruckInfoProps) => {
 	// const foodTruckId = truck.foodTruckId;
-	const foodTruckId = 1;
+	const foodTruckId = 4;
 
 	//예약하기 눌렀을 떄
 	const reserveTruck = async () => {

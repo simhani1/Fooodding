@@ -12,8 +12,10 @@ import { isCustomAxiosError } from "@api/error";
 import Cooking from "@assets/cooking.gif";
 import { Ticket } from "@phosphor-icons/react";
 
-const UserWaiting = ({ waitingInfo }: IWaitingProps) => {
+const UserWaiting = ({ waitingInfo, foodTruckId }: IWaitingProps) => {
 	const nav = useNavigate();
+
+	console.log(waitingInfo);
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -29,15 +31,9 @@ const UserWaiting = ({ waitingInfo }: IWaitingProps) => {
 		setIsModalOpen(false);
 	};
 
-	// 줄서기 취소 확인
-	const confirmCancellation = () => {
-		// 여기에서 줄서기 취소 로직 추가
-		cancelMyWaiting();
-	};
-
-	const cancelMyWaiting = async () => {
+	const confirmCancellation = async () => {
 		try {
-			await cancelWaiting(waitingId);
+			await cancelWaiting(foodTruckId, waitingId);
 
 			nav("/users"); //다시 처음화면으로
 			closeModal(); // 모달 닫기
@@ -81,13 +77,11 @@ const UserWaiting = ({ waitingInfo }: IWaitingProps) => {
 							줄서기 취소
 						</button>
 
-						{/* 모달 */}
 						<Modal
 							isOpen={isModalOpen}
 							close={closeModal}
 							style={waitingCancelingModalStyle}
 						>
-							{/* 모달에 children으로 전달할 내용 */}
 							<div className="flex flex-col items-center">
 								<Ticket
 									size={96}

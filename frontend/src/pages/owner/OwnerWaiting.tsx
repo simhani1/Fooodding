@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Main from "@components/owner/Main";
 import Container from "@components/owner/Container";
@@ -11,12 +11,14 @@ import { Bell, Check, X } from "@phosphor-icons/react";
 import { acceptReservation, cancelReservation, completeReservation, connectSse } from "@api/waiting-api";
 
 const OwnerWaiting = () => {
-	// const nav = useNavigate();
+	const nav = useNavigate();
+
 	const [waitingLine, setWaitingLine] = useState<IWaiting[]>([]); //줄서는 중
 	const [waitingOrder, setWaitingOrder] = useState<IWaiting[]>([]); //음식 기다리는 중
 
 	const location = useLocation();
 	const foodTruckId = location.state?.foodTruckId;
+	const ownerNickName = location.state?.ownerNickName;
 
 	useEffect(() => {
 		let eventSource = connectSse(foodTruckId);
@@ -70,6 +72,7 @@ const OwnerWaiting = () => {
 	const callCustomer = async (id: number) => {
 		try {
 			const { data } = await acceptReservation(id);
+
 			if (data.isSuccess) {
 				// 선택한 손님을 waitingLine에서 찾음
 				const customer = waitingLine.find((line) => line.waitingId === id);
@@ -103,9 +106,11 @@ const OwnerWaiting = () => {
 	//장사종료하기
 	const closeToday = async () => {
 		const check = confirm("장사를 종료하시겠습니까?");
+
 		if (check) {
 			try {
 				await closeMarket(foodTruckId);
+				nav("/owners/open");
 			} catch (error) {
 				alert("장사 종료에 실패하였습니다.");
 			}
@@ -117,7 +122,7 @@ const OwnerWaiting = () => {
 			<Main>
 				<>
 					<div className="flex items-center justify-between">
-						<h1 className="text-3xl font-extrabold">멋지다 붕어빵 가게 사장님</h1>
+						<h1 className="text-3xl font-extrabold">{ownerNickName} 사장님</h1>
 						<button
 							className="px-8 py-2 text-lg font-bold text-white rounded-md bg-gradient-to-r from-main to-boss"
 							onClick={closeToday}
@@ -146,7 +151,7 @@ const OwnerWaiting = () => {
 												key={line.waitingId}
 												waiting={line}
 												isOrder={false}
-												onCancel={cancelCustomer}
+												onCancel={() => callCustomer(line.waitingId)}
 											>
 												<button
 													className="p-4 text-white rounded-full bg-boss"
@@ -174,7 +179,7 @@ const OwnerWaiting = () => {
 												key={order.waitingId}
 												waiting={order}
 												isOrder={true}
-												onCancel={cancelCustomer}
+												onCancel={() => cancelCustomer(order.waitingId)}
 											>
 												<div className="flex gap-2">
 													<button

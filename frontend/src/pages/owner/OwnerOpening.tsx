@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 
-import { IMenuNotOnSale, ITodayMenu } from "@interface/owner";
+import { ITodayMenu } from "@interface/owner";
 import Container from "@components/owner/Container";
 import Main from "@components/owner/Main";
 import TodayMenu from "@components/owner/TodayMenu";
@@ -14,7 +14,7 @@ import { waitingCancelingModalStyle } from "@utils/modalStyle";
 import { getMenuList, openMarket } from "@api/food-truck-api";
 
 import { FireTruck } from "@phosphor-icons/react";
-import { isCustomAxiosError } from "@api/error";
+// import { isCustomAxiosError } from "@api/error";
 
 const OwnerOpening = () => {
 	const nav = useNavigate();
@@ -40,6 +40,7 @@ const OwnerOpening = () => {
 	const [todayMenuList, setTodayMenuList] = useState<ITodayMenu[]>([]);
 	const [foodTruckId, setFoodTruckId] = useState<number>(0);
 	const [ownerNickName, setOwnerNickName] = useState<string>("");
+	const [isOpen, setIsOpen] = useState(false);
 
 	//모달
 	const [errorModal, setErrorModal] = useState(false); //유효성검사
@@ -69,7 +70,7 @@ const OwnerOpening = () => {
 		);
 	};
 
-	const [disselected, setDisselected] = useState<IMenuNotOnSale[]>([]);
+	const [disselected, setDisselected] = useState<number[]>([]);
 
 	//개별선택 감지 후 토글변경
 	useEffect(() => {
@@ -77,11 +78,7 @@ const OwnerOpening = () => {
 		setIsToggled(allSelected);
 
 		// 선택되지 않은 메뉴의 menuId만 추출하여 배열 생성
-		const notSelectedMenuIds = todayMenuList
-			.filter((menu) => menu.onSale)
-			.map((menu) => ({
-				menuId: menu.menuId,
-			}));
+		const notSelectedMenuIds = todayMenuList.filter((menu) => !menu.onSale).map((menu) => menu.menuId);
 
 		setDisselected(notSelectedMenuIds);
 	}, [todayMenuList]);
@@ -126,20 +123,9 @@ const OwnerOpening = () => {
 				setTodayMenuList(data.menuList);
 				setFoodTruckId(data.foodTruckId);
 				setOwnerNickName(data.name);
+				setIsOpen(data.isOpened);
 			} catch (err) {
-				if (isCustomAxiosError(err) && err.response && err.response.data) {
-					const { code } = err.response?.data;
-
-					if (code === "6001") {
-						// 이미 장사 중인 푸드트럭
-						setTimeout(() => {
-							nav("/owners/close");
-						}, 500);
-						return; // 리다이렉트 후에 더 이상의 처리를 방지
-					}
-				} else {
-					console.error(err);
-				}
+				console.error(err);
 			} finally {
 				// 최소 0.5초 대기 후 로딩 상태 해제
 				setTimeout(() => {
@@ -151,6 +137,18 @@ const OwnerOpening = () => {
 		setMyLocation();
 		fetchMenuList();
 	}, [nav, setLoading]);
+
+	useEffect(() => {
+		// 상태가 변경된 후에 특정 동작을 처리할 수 있습니다.
+		if (isOpen) {
+			if (foodTruckId && ownerNickName) {
+				// 상태가 준비된 후에만 이동
+				setTimeout(() => {
+					nav("/owners/close", { state: { foodTruckId: foodTruckId, ownerNickName: ownerNickName } });
+				}, 500);
+			}
+		}
+	}, [isOpen]); // 상태가 변경될 때 실행됩니다.
 
 	// 로딩 중일 때는 화면을 렌더링하지 않음
 	if (isLoading) {
@@ -190,6 +188,8 @@ const OwnerOpening = () => {
 			longitude: currentPosition.lng,
 			menuList: disselected,
 		};
+
+		console.log(request);
 
 		try {
 			await openMarket(foodTruckId, request);
@@ -266,7 +266,7 @@ const OwnerOpening = () => {
 							</div>
 						</div>
 
-						<div className="flex flex-wrap justify-between gap-4 mb-12">
+						<div className="flex flex-wrap gap-10 mb-12">
 							{todayMenuList.length === 0 ? (
 								<div className="flex flex-col items-center justify-center w-full">
 									<p className="my-20 text-2xl font-bold text-center"> 메뉴를 먼저 등록해주세요. </p>

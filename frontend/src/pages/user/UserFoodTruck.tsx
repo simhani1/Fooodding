@@ -12,7 +12,8 @@ import UserWaiting from "../../components/user/UserWaiting";
 
 const UserFoodTruck = () => {
 	const location = useLocation();
-	const truckId = location.state;
+	// const truckId = location.state;
+	const truckId = 4;
 
 	const [truck, setTruck] = useState<ITruckInfoDetail>({
 		foodTruckId: 0,
@@ -42,6 +43,7 @@ const UserFoodTruck = () => {
 
 	useEffect(() => {
 		getTruckDetail();
+		console.log(truck);
 	}, [truck.isReserved]);
 
 	return (
@@ -53,8 +55,11 @@ const UserFoodTruck = () => {
 				setTruck={setTruck}
 			/>
 
-			{truck.isReserved ? (
-				<UserWaiting waitingInfo={truck.waitingInfo} />
+			{truck.isReserved && truck.waitingInfo ? (
+				<UserWaiting
+					waitingInfo={truck.waitingInfo}
+					foodTruckId={truck.foodTruckId}
+				/>
 			) : (
 				<UserMenu menuList={truck.menuList} />
 			)}

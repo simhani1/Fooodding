@@ -71,12 +71,7 @@ export interface ITodayMenuProps {
 export interface ITodayMarketOpen {
 	latitude: number;
 	longitude: number;
-	menuList: IMenuNotOnSale[];
-}
-
-//팔지 않는 메뉴
-export interface IMenuNotOnSale {
-	menuId: number;
+	menuList: number[];
 }
 
 export type Category =

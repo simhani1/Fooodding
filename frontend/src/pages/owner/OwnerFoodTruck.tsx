@@ -45,6 +45,8 @@ const OwnerFoodTruck = () => {
 		);
 	}
 
+	console.log(foodTruckInfo);
+
 	if (!foodTruckInfo) {
 		return (
 			<Container>

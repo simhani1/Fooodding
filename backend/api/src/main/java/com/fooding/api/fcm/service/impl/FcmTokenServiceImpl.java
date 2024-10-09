@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fooding.api.fcm.domain.FcmToken;
+import com.fooding.api.fcm.domain.TokenStatus;
 import com.fooding.api.fcm.exception.NoFcmTokenException;
 import com.fooding.api.fcm.repository.FcmTokenRepository;
 import com.fooding.api.fcm.service.FcmTokenService;
@@ -35,15 +36,26 @@ class FcmTokenServiceImpl implements FcmTokenService {
 	}
 
 	@Override
-	public void deleteToken(Long memberId) {
+	public void changeToken(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + memberId));
 		List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(memberId);
 		if (!fcmTokens.isEmpty()) {
-			fcmTokenRepository.deleteAll(fcmTokens);
+			fcmTokens.forEach(FcmToken::changeStatus);
 		} else {
 			throw new NoFcmTokenException("FCM Token not found with ID: " + memberId);
 		}
+	}
+
+	@Override
+	public TokenStatus getTokenStatus(Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + memberId));
+		List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(memberId);
+		if (!fcmTokens.isEmpty()) {
+			return fcmTokens.get(0).getStatus();
+		}
+		return TokenStatus.INACTIVE;
 	}
 
 }

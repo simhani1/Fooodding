@@ -1,7 +1,7 @@
 package com.fooding.api.fcm.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,10 +39,10 @@ public class FcmController {
 	}
 
 	@RequireJwtToken
-	@DeleteMapping("/token")
-	public ResponseEntity<BaseResponse<?>> deleteFcmToken() {
+	@PatchMapping("/token")
+	public ResponseEntity<BaseResponse<?>> changeFcmToken() {
 		Long memberId = MemberContext.getMemberId();
-		fcmTokenService.deleteToken(memberId);
+		fcmTokenService.changeToken(memberId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 

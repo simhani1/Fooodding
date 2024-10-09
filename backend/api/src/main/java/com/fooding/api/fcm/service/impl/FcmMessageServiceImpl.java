@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fooding.api.fcm.domain.FcmToken;
+import com.fooding.api.fcm.domain.TokenStatus;
 import com.fooding.api.fcm.repository.FcmTokenRepository;
 import com.fooding.api.fcm.service.FcmMessageService;
 import com.fooding.api.fcm.service.dto.FcmMessageDto;
@@ -31,6 +32,7 @@ class FcmMessageServiceImpl implements FcmMessageService {
 		List<FcmToken> tokens = fcmTokenRepository.findByMemberId(memberId);
 
 		List<String> tokenList = tokens.stream()
+			.filter(token -> token.getStatus() == TokenStatus.ACTIVE)
 			.map(FcmToken::getToken)
 			.collect(Collectors.toList());
 
@@ -46,14 +48,14 @@ class FcmMessageServiceImpl implements FcmMessageService {
 	}
 
 	@Override
-	public void sendMessagesToOwners(FcmMessageDto fcmMessageDto) throws FirebaseMessagingException {
+	public void sendMessagesToOwners(FcmMessageDto fcmMessageDto) {
 		List<FcmToken> ownerTokens = fcmTokenRepository.findByMemberRole(MemberRole.OWNER);
 
 		List<String> tokenList = ownerTokens.stream()
+			.filter(token -> token.getStatus() == TokenStatus.ACTIVE)
 			.map(FcmToken::getToken)
 			.collect(Collectors.toList());
 
-		// 한 번에 최대 500개의 토큰만 전송할 수 있기 때문에 500개씩 분할 전송
 		int tokenSize = 500;
 		for (int i = 0; i < tokenList.size(); i += tokenSize) {
 			List<String> batchTokens = tokenList.subList(i, Math.min(i + tokenSize, tokenList.size()));
@@ -66,7 +68,11 @@ class FcmMessageServiceImpl implements FcmMessageService {
 					.build())
 				.build();
 
-			BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
+			try {
+				BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
+			} catch (FirebaseMessagingException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -77,6 +77,7 @@ public class OwnerAuthController {
 		refreshTokenCookie.setHttpOnly(true);
 		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
+		refreshTokenCookie.setDomain("j11a608.p.ssafy.io");
 		response.addCookie(refreshTokenCookie);
 
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
@@ -115,6 +116,7 @@ public class OwnerAuthController {
 		refreshTokenCookie.setHttpOnly(true);
 		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
+		refreshTokenCookie.setDomain("j11a608.p.ssafy.io");
 		refreshTokenCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME / 1000);
 		response.addCookie(refreshTokenCookie);
 

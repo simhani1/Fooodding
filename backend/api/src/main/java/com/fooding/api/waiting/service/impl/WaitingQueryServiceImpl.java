@@ -37,7 +37,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 	private final EmitterRepository emitterRepository;
 
 	@Override
-	public void reserve(Long userId, Long foodTruckId) {
+	public WaitingInfoDto reserve(Long userId, Long foodTruckId) {
 		Member user = memberRepository.findById(userId)
 			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + userId));
 		FoodTruck foodTruck = foodTruckRepository.findById(foodTruckId)
@@ -52,6 +52,13 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			.number(waitingNumber)
 			.build();
 		waitingRepository.save(waiting);
+		return WaitingInfoDto.builder()
+			.waitingId(waiting.getId())
+			.changedAt(waiting.getChangedAt().atZone(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli())
+			.cancelable(waiting.isCancellable())
+			.userName(user.getNickname())
+			.number(waiting.getNumber())
+			.build();
 	}
 
 	@Override
@@ -60,7 +67,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + userId));
 		Waiting waiting = waitingRepository.findByIdAndMember(waitingId, user)
 			.orElseThrow(() -> new NoWaitingInfoException("Waiting not found with ID: " + waitingId));
-		if (!waiting.getCancellable()) {
+		if (!waiting.isCancellable()) {
 			throw new CannotCancelWaitingException("Cannot cancel waiting");
 		}
 		waitingRepository.deleteById(waitingId);
@@ -76,7 +83,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 		return WaitingInfoDto.builder()
 			.waitingId(waiting.getId())
 			.changedAt(waiting.getChangedAt().atZone(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli())
-			.cancelable(waiting.getCancellable())
+			.cancelable(waiting.isCancellable())
 			.number(waiting.getNumber())
 			.build();
 	}

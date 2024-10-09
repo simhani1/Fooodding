@@ -38,23 +38,27 @@ public class WaitingController {
 	private final NotificationService notificationService;
 
 	@RequireJwtToken
-	@PostMapping("/foodtrucks/{ft-id}")
-	public ResponseEntity<BaseResponse<?>> reserve(@PathVariable("ft-id") Long foodTruckId) {
+	@PostMapping("/users")
+	public ResponseEntity<BaseResponse<?>> reserve(@RequestParam("ft-id") Long foodTruckId) {
 		Long userId = MemberContext.getMemberId();
-		waitingQueryService.reserve(userId, foodTruckId);
+		WaitingInfoDto res = waitingQueryService.reserve(userId, foodTruckId);
+		notificationService.send(foodTruckId, "reserved", res);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
 	@RequireJwtToken
-	@DeleteMapping("/{waiting-id}/users")
-	public ResponseEntity<BaseResponse<?>> cancel(@PathVariable("waiting-id") Long waitingId) {
+	@DeleteMapping("/users/{ft-id}/{waiting-id}")
+	public ResponseEntity<BaseResponse<?>> cancel(
+		@PathVariable("ft-id") Long foodTruckId,
+		@PathVariable("waiting-id") Long waitingId) {
 		Long userId = MemberContext.getMemberId();
 		waitingQueryService.cancel(userId, waitingId);
+		notificationService.send(foodTruckId, "canceled", waitingId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
 	@RequireJwtToken
-	@GetMapping(value = "/foodtrucks/{ft-id}/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	@GetMapping(value = "/owners/{ft-id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public ResponseEntity<SseEmitter> getReservationList(
 		@PathVariable("ft-id") Long foodTruckId) {
 		Long ownerId = MemberContext.getMemberId();
@@ -86,10 +90,10 @@ public class WaitingController {
 	}
 
 	@RequireJwtToken
-	@DeleteMapping("/{waiting-id}/owners")
+	@DeleteMapping("owners/{waiting-id}")
 	public ResponseEntity<BaseResponse<?>> callUser(
-		@RequestParam("is-completed") boolean isCompleted,
-		@PathVariable("waiting-id") Long waitingId
+		@PathVariable("waiting-id") Long waitingId,
+		@RequestParam("is-completed") boolean isCompleted
 	) {
 		Long ownerId = MemberContext.getMemberId();
 		waitingQueryService.callUesr(ownerId, waitingId, isCompleted);

@@ -29,7 +29,7 @@ class NotificationServiceImpl implements NotificationService {
 			if (emitter == null) {
 				emitter = save(foodTruckId);
 			}
-			sendNotification(emitter, name, obj);
+			notify(emitter, name, obj);
 			return emitter;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -37,19 +37,7 @@ class NotificationServiceImpl implements NotificationService {
 	}
 
 	private SseEmitter save(Long foodTruckId) {
-		SseEmitter emitter = new SseEmitter(DEFAULT_TIME_OUT);
-		emitter.onCompletion(() -> {
-			log.info("SSE 연결이 정상 종료되었습니다.");
-			emitterRepository.remove(foodTruckId);
-		});
-		emitter.onTimeout(() -> {
-			log.info("SSE 연결이 타임아웃되었습니다.");
-			emitter.complete();
-		});
-		emitter.onError((e) -> {
-			log.info("SSE 연결중 오류가 발생했습니다.");
-			emitter.complete();
-		});
+		SseEmitter emitter = createEmitter(foodTruckId);
 		emitterRepository.save(foodTruckId, emitter);
 		return emitter;
 	}
@@ -61,7 +49,7 @@ class NotificationServiceImpl implements NotificationService {
 			Long foodTruckId = entry.getKey();
 			SseEmitter emitter = entry.getValue();
 			try {
-				sendNotification(emitter, "heartbeat",
+				notify(emitter, "heartbeat",
 					"Heartbeat for food truck " + foodTruckId + " at " + System.currentTimeMillis());
 			} catch (IOException e) {
 				emitter.completeWithError(e);
@@ -69,7 +57,24 @@ class NotificationServiceImpl implements NotificationService {
 		}
 	}
 
-	private <T> void sendNotification(SseEmitter emitter, String name, T data) throws IOException {
+	private SseEmitter createEmitter(Long foodTruckId) {
+		SseEmitter emitter = new SseEmitter(DEFAULT_TIME_OUT);
+		emitter.onCompletion(() -> {
+			log.info("SSE closed");
+			emitterRepository.remove(foodTruckId);
+		});
+		emitter.onTimeout(() -> {
+			log.info("SSE TimeOut");
+			emitter.complete();
+		});
+		emitter.onError((e) -> {
+			log.info("SSE error={}", e.getMessage());
+			emitter.complete();
+		});
+		return emitter;
+	}
+
+	private <T> void notify(SseEmitter emitter, String name, T data) throws IOException {
 		emitter.send(SseEmitter.event()
 			.name(name)
 			.data(data));

@@ -4,7 +4,7 @@ import com.fooding.api.waiting.service.dto.WaitingInfoDto;
 
 public interface WaitingQueryService {
 
-	void reserve(Long userId, Long foodTruckId);
+	WaitingInfoDto reserve(Long userId, Long foodTruckId);
 
 	void cancel(Long userId, Long waitingId);
 

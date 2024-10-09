@@ -44,13 +44,13 @@ public class Waiting {
 	private int number;
 
 	@Column(name = "is_cancellable", nullable = false)
-	private Boolean cancellable;
+	private boolean cancellable;
 
 	@UpdateTimestamp
 	@Column(name = "changed_at", nullable = false)
 	private LocalDateTime changedAt;
 
-	private Waiting(Member member, FoodTruck foodTruck, int number, Boolean cancellable) {
+	private Waiting(Member member, FoodTruck foodTruck, int number, boolean cancellable) {
 		this.member = member;
 		this.foodTruck = foodTruck;
 		this.number = number;
@@ -59,11 +59,11 @@ public class Waiting {
 
 	@Builder
 	public Waiting(Member member, FoodTruck foodTruck, int number) {
-		this(member, foodTruck, number, false);
+		this(member, foodTruck, number, true);
 	}
 
 	public void changeToOrderLine() {
-		this.cancellable = Boolean.FALSE;
+		this.cancellable = false;
 	}
 
 }

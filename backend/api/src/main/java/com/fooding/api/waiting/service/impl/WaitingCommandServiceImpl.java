@@ -48,7 +48,7 @@ class WaitingCommandServiceImpl implements WaitingCommandService {
 			.map(waiting -> WaitingInfoDto.builder()
 				.waitingId(waiting.getId())
 				.changedAt(waiting.getChangedAt().toInstant(ZoneOffset.UTC).toEpochMilli())
-				.cancelable(waiting.getCancellable())
+				.cancelable(waiting.isCancellable())
 				.number(waiting.getNumber())
 				.userName(waiting.getMember().getNickname())
 				.build())

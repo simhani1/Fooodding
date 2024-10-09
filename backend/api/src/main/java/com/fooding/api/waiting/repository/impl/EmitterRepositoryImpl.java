@@ -14,8 +14,8 @@ public class EmitterRepositoryImpl implements EmitterRepository {
 	private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
 	@Override
-	public void save(Long foodTruckId, SseEmitter sseEmitter) {
-		emitters.put(foodTruckId, sseEmitter);
+	public void save(Long foodTruckId, SseEmitter emitter) {
+		emitters.put(foodTruckId, emitter);
 	}
 
 	@Override

@@ -21,24 +21,16 @@ export interface IOrderingProps {
 }
 
 //owner
-export interface IWaitingLine {
-	id: number;
-	nickname: string;
-	waitingNumber: number;
-	time: string;
-}
-
-export interface IWaitingOrder {
-	id: number;
-	nickname: string;
-	waitingNumber: number;
-	time: string;
+export interface IWaiting {
+	waitingId: number;
+	userName: string;
+	number: number;
+	changedAt: string;
 }
 
 export interface IWaitingOwnerProps {
-	id: number;
-	nickname: string;
-	waitingNumber: number;
-	time: string;
+	waiting: IWaiting;
 	children: JSX.Element;
+	isOrder: boolean;
+	onCancel: (waitingId: number) => void;
 }

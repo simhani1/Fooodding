@@ -72,3 +72,7 @@ export const deleteMenu = (menuId: number): ApiResponse<INoResponseDTO> => {
 export const openMarket = (foodTruckId: number, req: ITodayMarketOpen) => {
 	return axiosInstance.patch(`${path}/${foodTruckId}/open`, req);
 };
+
+export const closeMarket = (foodTruckId: number) => {
+	return axiosInstance.patch(`${path}/${foodTruckId}/close`);
+};

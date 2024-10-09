@@ -12,9 +12,9 @@ import Modal from "@components/common/Modal";
 import { useLoading } from "@utils/LoadingContext";
 import { waitingCancelingModalStyle } from "@utils/modalStyle";
 import { getMenuList, openMarket } from "@api/food-truck-api";
-import { isCustomAxiosError } from "@api/error";
 
 import { FireTruck } from "@phosphor-icons/react";
+import { isCustomAxiosError } from "@api/error";
 
 const OwnerOpening = () => {
 	const nav = useNavigate();

@@ -1,46 +1,116 @@
-import Container from "@components/owner/Container";
-import Main from "@components/owner/Main";
-import OwnerWaitingBlock from "@components/owner/OwnerWaitingBlock";
-import { IWaitingLine, IWaitingOrder } from "@interface/waiting";
-import { Bell, Check, X } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
+import Main from "@components/owner/Main";
+import Container from "@components/owner/Container";
+import OwnerWaitingBlock from "@components/owner/OwnerWaitingBlock";
+
+import { closeMarket } from "@api/food-truck-api";
+import { IWaiting } from "@interface/waiting";
+import { Bell, Check, X } from "@phosphor-icons/react";
+import { acceptReservation, cancelReservation, completeReservation, connectSse } from "@api/waiting-api";
 
 const OwnerWaiting = () => {
-	const [waitingLine, setWaitingLine] = useState<IWaitingLine[]>([]); //줄서는 중
-	const [waitingOrder, setWaitingOrder] = useState<IWaitingOrder[]>([]); //음식 기다리는 중
+	// const nav = useNavigate();
+	const [waitingLine, setWaitingLine] = useState<IWaiting[]>([]); //줄서는 중
+	const [waitingOrder, setWaitingOrder] = useState<IWaiting[]>([]); //음식 기다리는 중
+
+	const location = useLocation();
+	const foodTruckId = location.state?.foodTruckId;
 
 	useEffect(() => {
-		setWaitingLine(exampleLineList);
-		setWaitingOrder(exampleOrderList);
+		let eventSource = connectSse(foodTruckId);
+		// 서버에서 connected 이벤트를 발생시킬 때 동작합니다.
+		eventSource.addEventListener("connected", (event: MessageEvent[keyof MessageEvent]) => {
+			console.log("connected");
+			const data = JSON.parse(event.data);
+			setWaitingLine(data.waitingLine);
+			setWaitingOrder(data.orderLine);
+		});
+
+		// 서버에서 연결 상태 확인을 위해 heartbeat 이벤트를 발생시킵니다.
+		eventSource.addEventListener("heartbeat", () => {
+			console.log("heartbeat");
+		});
+
+		// 손님이 예약할 때 발생하는 이벤트 (서버에서 userId가 아닌 웨이팅 정보를 넘겨주도록 수정해야 합니다.)
+		eventSource.addEventListener("reserved", (event: MessageEvent[keyof MessageEvent]) => {
+			console.log("reserved", event);
+		});
+
+		// 손님이 예약 취소할 때 발생하는 이벤트 (서버에서 userId가 아닌 waitingId를 넘겨주도록 수정해야 합니다.)
+		eventSource.addEventListener("canceled", (event: MessageEvent[keyof MessageEvent]) => {
+			console.log("canceled", event);
+		});
+
+		const handleBeforeUnload = () => {
+			eventSource.close();
+		};
+
+		window.addEventListener("beforeunload", handleBeforeUnload);
+
+		eventSource.onerror = () => {
+			if (eventSource.readyState === EventSource.CLOSED) {
+				// 연결에 실패했을 때 새로고침해서 재연결할지 밖으로 나거게 할지 정해야 합니다.
+				// nav("/owners");
+				// eventSource = connectSse(foodTruckId);
+			}
+		};
+
+		return () => {
+			if (eventSource) {
+				// 페이지 벗어나기 전에 반드시 연결을 닫아야 합니다.
+				eventSource.close();
+			}
+			window.removeEventListener("beforeunload", handleBeforeUnload);
+		};
 	}, []);
 
 	//손님호출
-	const callCustomer = (id: number) => {
-		// 선택한 손님을 waitingLine에서 찾음
-		const customer = waitingLine.find((line) => line.id === id);
-		if (!customer) {
-			return;
-		}
+	const callCustomer = async (id: number) => {
+		try {
+			const { data } = await acceptReservation(id);
+			if (data.isSuccess) {
+				// 선택한 손님을 waitingLine에서 찾음
+				const customer = waitingLine.find((line) => line.waitingId === id);
+				if (!customer) {
+					return;
+				}
 
-		// 선택한 손님을 waitingOrder에 추가하고, waitingLine에서 제거
-		setWaitingOrder((prevOrders) => [...prevOrders, customer]);
-		setWaitingLine((prevLines) => prevLines.filter((line) => line.id !== id));
+				// 선택한 손님을 waitingOrder에 추가하고, waitingLine에서 제거
+				setWaitingOrder((prevOrders) => [...prevOrders, customer]);
+				setWaitingLine((prevLines) => prevLines.filter((line) => line.waitingId !== id));
+			}
+		} catch (error) {
+			alert("손님 호출에 실패하였습니다.");
+		}
 
 		//여기에서 fcm 해야합니다
 	};
 
 	//손님받기
-	const checkCustomer = (id: number) => {
-		setWaitingOrder((prevOrders) => prevOrders.filter((order) => order.id !== id));
+	const checkCustomer = async (id: number) => {
+		await completeReservation(id);
+		setWaitingOrder((prevOrders) => prevOrders.filter((order) => order.waitingId !== id));
 	};
 
 	//손님취소
-	const cancelCustomer = (id: number) => {
-		setWaitingOrder((prevOrders) => prevOrders.filter((order) => order.id !== id));
+	const cancelCustomer = async (id: number) => {
+		await cancelReservation(id);
+		setWaitingOrder((prevOrders) => prevOrders.filter((order) => order.waitingId !== id));
 	};
 
 	//장사종료하기
-	const closeToday = () => {};
+	const closeToday = async () => {
+		const check = confirm("장사를 종료하시겠습니까?");
+		if (check) {
+			try {
+				await closeMarket(foodTruckId);
+			} catch (error) {
+				alert("장사 종료에 실패하였습니다.");
+			}
+		}
+	};
 
 	return (
 		<Container>
@@ -73,12 +143,14 @@ const OwnerWaiting = () => {
 									<>
 										{waitingLine.map((line) => (
 											<OwnerWaitingBlock
-												key={line.id}
-												{...line}
+												key={line.waitingId}
+												waiting={line}
+												isOrder={false}
+												onCancel={cancelCustomer}
 											>
 												<button
 													className="p-4 text-white rounded-full bg-boss"
-													onClick={() => callCustomer(line.id)}
+													onClick={() => callCustomer(line.waitingId)}
 												>
 													<Bell size={18} />
 												</button>
@@ -99,19 +171,21 @@ const OwnerWaiting = () => {
 									<>
 										{waitingOrder.map((order) => (
 											<OwnerWaitingBlock
-												key={order.id}
-												{...order}
+												key={order.waitingId}
+												waiting={order}
+												isOrder={true}
+												onCancel={cancelCustomer}
 											>
 												<div className="flex gap-2">
 													<button
 														className="p-4 text-white rounded-full bg-green"
-														onClick={() => checkCustomer(order.id)}
+														onClick={() => checkCustomer(order.waitingId)}
 													>
 														<Check size={18} />
 													</button>
 													<button
 														className="p-4 text-white rounded-full bg-main"
-														onClick={() => cancelCustomer(order.id)}
+														onClick={() => cancelCustomer(order.waitingId)}
 													>
 														<X size={18} />
 													</button>
@@ -130,57 +204,3 @@ const OwnerWaiting = () => {
 };
 
 export default OwnerWaiting;
-
-const exampleLineList: IWaitingLine[] = [
-	{
-		id: 1,
-		nickname: "도스터",
-		waitingNumber: 286,
-		time: "13:29:01",
-	},
-	{
-		id: 2,
-		nickname: "도스터도스터",
-		waitingNumber: 287,
-		time: "13:29:01",
-	},
-	{
-		id: 3,
-		nickname: "도스터릐",
-		waitingNumber: 288,
-		time: "13:29:01",
-	},
-	{
-		id: 4,
-		nickname: "도스터",
-		waitingNumber: 289,
-		time: "13:29:01",
-	},
-];
-
-const exampleOrderList: IWaitingOrder[] = [
-	{
-		id: 5,
-		nickname: "도스터구리",
-		waitingNumber: 282,
-		time: "13:29:01",
-	},
-	{
-		id: 6,
-		nickname: "도스터",
-		waitingNumber: 284,
-		time: "13:29:01",
-	},
-	{
-		id: 7,
-		nickname: "도스터",
-		waitingNumber: 285,
-		time: "13:29:01",
-	},
-	{
-		id: 8,
-		nickname: "도스터",
-		waitingNumber: 283,
-		time: "13:29:01",
-	},
-];

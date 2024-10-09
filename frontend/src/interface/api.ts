@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { Category } from "@interface/owner";
 import { IMenuInfo, ITruckListInfo } from "@interface/foodTruck";
-import { IWaitingInfo } from "@interface/waiting";
+import { IWaiting, IWaitingInfo } from "@interface/waiting";
 
 export enum ContentType {
 	Json = "application/json",
@@ -46,6 +46,12 @@ export interface IFoodTruckResponseDTO extends IBaseResponseDTO {
 export interface IFoodTruckCreateResponseDTO extends IBaseResponseDTO {
 	data: {
 		foodTruckId: number;
+	};
+}
+
+export interface IWaitingResponseDTO extends IBaseResponseDTO {
+	data: {
+		waitingInfo: IWaiting;
 	};
 }
 

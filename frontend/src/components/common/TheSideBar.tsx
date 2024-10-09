@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import logo from "@assets/fooodding_boss_logo.svg";
+import logo from "/pwa-64x64.png";
 import { HouseLine, MapTrifold, FireTruck, UserCircle } from "@phosphor-icons/react";
 
 const TheSideBar = () => {

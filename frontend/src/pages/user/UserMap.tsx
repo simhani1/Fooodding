@@ -6,7 +6,6 @@ import { ITruckListInfo } from "@interface/foodTruck";
 import TheHeader from "@components/common/TheHeader";
 import TheFooter from "@components/common/TheFooter";
 import UserTruckList from "@components/user/UserTruckList";
-import UserCategory from "@components/user/UserCategory";
 import { getFoodTruckList } from "@api/user-api";
 
 import { GpsFix } from "@phosphor-icons/react";
@@ -152,10 +151,6 @@ const UserMap = () => {
 						}}
 					></MapMarker>
 				</Map>
-
-				<div className="absolute z-10 w-full top-24">
-					<UserCategory />
-				</div>
 			</div>
 
 			<button className="fixed z-10 p-2 bg-white rounded-lg shadow-lg bottom-96 left-4">

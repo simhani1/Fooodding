@@ -4,11 +4,31 @@ import Title from "@components/common/Title";
 import NavButton from "@components/common/NavButton";
 import Container from "@components/owner/Container";
 import Main from "@components/owner/Main";
+import { ownerLogout, ownerWithdraw } from "@api/auth-api";
 
 const basePath = "/owners";
 
 const OwnerPage = () => {
 	const nav = useNavigate();
+
+	//로그아웃
+	const logOutOwner = async () => {
+		try {
+			await ownerLogout();
+			nav("/");
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const withdrawOwner = async () => {
+		try {
+			await ownerWithdraw();
+			nav("/");
+		} catch (err) {
+			console.error(err);
+		}
+	};
 
 	return (
 		<Container>
@@ -30,9 +50,19 @@ const OwnerPage = () => {
 						/>
 					</div>
 					<div className="flex items-center justify-center mt-10">
-						<button className="text-xl text-gray">로그아웃</button>
+						<button
+							className="text-xl text-gray"
+							onClick={logOutOwner}
+						>
+							로그아웃
+						</button>
 						<span className="mx-4 text-xl">|</span>
-						<button className="text-xl border-b-2 border-gray text-gray">회원탈퇴</button>
+						<button
+							className="text-xl border-b-2 border-gray text-gray"
+							onClick={withdrawOwner}
+						>
+							회원탈퇴
+						</button>
 					</div>
 				</>
 			</Main>

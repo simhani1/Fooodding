@@ -55,7 +55,7 @@ class FcmTokenServiceImpl implements FcmTokenService {
 		if (!fcmTokens.isEmpty()) {
 			return fcmTokens.get(0).getStatus();
 		}
-		return TokenStatus.INACTIVE;
+		return TokenStatus.NONE;
 	}
 
 }

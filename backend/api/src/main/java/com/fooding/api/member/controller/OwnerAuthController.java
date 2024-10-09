@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,7 +59,7 @@ public class OwnerAuthController {
 
 	/* 로그아웃 진행 */
 	@RequireJwtToken
-	@GetMapping("/logout")
+	@PostMapping("/logout")
 	public ResponseEntity<BaseResponse<?>> logout(HttpServletRequest request, HttpServletResponse response) {
 		Long ownerId = MemberContext.getMemberId();
 

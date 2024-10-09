@@ -21,20 +21,10 @@ const Loading = lazy(() => import("@components/common/Loading"));
 import UserInputInfo from "@pages/user/UserInputInfo";
 
 import "./App.css";
-import { onMessageListener } from "firebase";
+import { firebaseConfig, onMessageListener, requestForToken } from "firebase";
 import { initializeApp } from "firebase/app";
 import { getMessaging } from "firebase/messaging";
 import { LoadingProvider, useLoading } from "@utils/LoadingContext";
-
-const firebaseConfig = {
-	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-	authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-	projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-	storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-	messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-	appId: import.meta.env.VITE_FIREBASE_APP_ID,
-	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-};
 
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
@@ -45,11 +35,10 @@ function App() {
 	const [notification, setNotification] = useState({ title: "", body: "" });
 
 	const showNotification = useCallback((title: string, body: string) => {
-		console.log("Showing notification:", title, body);
 		if ("Notification" in window && Notification.permission === "granted") {
 			new Notification(title, {
 				body: body,
-				icon: "/firebase-logo.png",
+				icon: "/pwa-512x512.png",
 			});
 		}
 		setNotification({ title, body });
@@ -69,7 +58,24 @@ function App() {
 		};
 
 		messageListener();
-	}, [showNotification]);
+
+		const getFCMToken = async () => {
+			try {
+				const permission = await Notification.requestPermission();
+				if (permission !== "granted") return;
+				const newToken = await requestForToken();
+				console.log(newToken);
+
+				if (newToken) {
+					sessionStorage.setItem("fcmToken", newToken);
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		getFCMToken();
+	}, [notification]);
 
 	return (
 		<LoadingProvider>

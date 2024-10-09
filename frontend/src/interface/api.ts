@@ -143,7 +143,10 @@ export interface IFoodTruckListInfoResponseDTO extends IBaseResponseDTO {
 
 // owner-api
 export interface IOwnerAnnouncementResponseDTO extends IBaseResponseDTO {
-	data: IOwnerAnnouncementDTO[];
+	data: {
+		announcements: IOwnerAnnouncementDTO[];
+		tokenStatus: string;
+	};
 }
 
 export interface IOwnerAnnouncementDTO {

@@ -6,33 +6,44 @@ import Title from "@components/common/Title";
 import BackButton from "@components/owner/BackButton";
 import AnnouncementButton from "@components/common/AnnouncementButton";
 import { IOwnerAnnouncementDTO } from "@interface/api";
-import { useNotificiationToken } from "@hooks/useNotificationToken";
 import { createAnnounementLog, getAunnouncementInfo } from "@api/owner-api";
+import { changeNotificationToken, saveNotificationToken } from "@api/fcm-api";
 
 const OwnerAnnouncement = () => {
 	const [alarm, setAlarm] = useState("whole");
-	const [isToggled, setIsToggled] = useState(false);
+	const [isToggled, setIsToggled] = useState("");
 	const [visibleCount, setVisibleCount] = useState(10);
 	const [announcements, setAnnounements] = useState<IOwnerAnnouncementDTO[]>([]);
-	const { saveToken, deleteToken } = useNotificiationToken();
 
 	// 공고 데이터 가져오기
 	const loadAnnounements = async () => {
 		try {
 			const response = await getAunnouncementInfo();
-			const data = response.data.data;
+			const data = response.data.announcements;
+			const toggleStatus = response.data.tokenStatus;
 			setAnnounements(data);
+			setIsToggled(toggleStatus);
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	// 토글 버튼 클릭 토큰 발급 & 삭제
+	// 토글 버튼 클릭해서 토큰 상태 변경
 	const handleToggle = async () => {
-		setIsToggled(!isToggled);
-
-		if (!isToggled) await saveToken();
-		else await deleteToken();
+		if (isToggled === "NONE") {
+			const token = sessionStorage.getItem("fcmToken");
+			saveNotificationToken(token || "");
+			console.log(isToggled);
+			setIsToggled("ACTIVE");
+		} else {
+			if (isToggled === "ACTIVE") {
+				changeNotificationToken();
+				setIsToggled("INACTVIE");
+			} else if (isToggled === "INACTVIE") {
+				changeNotificationToken();
+				setIsToggled("ACTIVE");
+			}
+		}
 	};
 
 	// 버튼 클릭 시 색 전환
@@ -115,12 +126,12 @@ const OwnerAnnouncement = () => {
 								<div
 									onClick={handleToggle}
 									className={`w-16 h-8 flex items-center bg-${
-										isToggled ? "boss" : "gray"
+										isToggled === "ACTIVE" ? "boss" : "gray"
 									} rounded-full p-1 cursor-pointer transition-colors duration-300`}
 								>
 									<div
 										className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${
-											isToggled ? "translate-x-0" : "translate-x-8"
+											isToggled === "ACTIVE" ? "translate-x-0" : "translate-x-8"
 										}`}
 									></div>
 								</div>

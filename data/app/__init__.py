@@ -3,6 +3,7 @@ from flask import Flask
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 from app.routes import predict
 =======
 <<<<<<< HEAD
@@ -20,6 +21,9 @@ from app.routes import predict,congestion,recommend,target
 =======
 from app.routes import predict,congestion,recommend,target
 >>>>>>> 50bb45e (Feat/689)
+=======
+from app.routes import predict,congestion,recommend,target
+>>>>>>> 87c4b47 (feat: api 주소 추가)
 
 def create_app():
     app = Flask(__name__)
@@ -48,6 +52,7 @@ def create_app():
     app.register_blueprint(recommend.bp, url_prefix='/api/v2')
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 168c6d0 (fix: api 주소 수정)
 =======
     app.register_blueprint(target.bp, url_prefix='/api/v2')
@@ -55,4 +60,7 @@ def create_app():
 =======
     app.register_blueprint(target.bp, url_prefix='/api/v2')
 >>>>>>> 50bb45e (Feat/689)
+=======
+    app.register_blueprint(target.bp, url_prefix='/api/v2')
+>>>>>>> 87c4b47 (feat: api 주소 추가)
     return app

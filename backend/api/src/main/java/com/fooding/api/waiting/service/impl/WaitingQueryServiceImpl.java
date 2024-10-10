@@ -101,7 +101,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 	}
 
 	@Override
-	public void completeUesr(Long ownerId, Long waitingId, boolean isCompleted) {
+	public void completeUser(Long ownerId, Long waitingId, boolean isCompleted) {
 		Member owner = memberRepository.findById(ownerId)
 			.orElseThrow(() -> new NoMemberException("Owner not found with ID: " + ownerId));
 		Waiting waiting = waitingRepository.findById(waitingId)

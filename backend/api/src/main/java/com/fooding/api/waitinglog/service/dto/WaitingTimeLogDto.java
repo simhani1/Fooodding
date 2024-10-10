@@ -3,11 +3,9 @@ package com.fooding.api.waitinglog.service.dto;
 import lombok.Builder;
 
 @Builder
-public record WaitingLogDto(
-	Long waitingLogId,
-	String time,
+public record WaitingTimeLogDto(
 	String dayOfWeek,
-	String gender,
-	String ages
+	String time,
+	long count
 ) {
 }

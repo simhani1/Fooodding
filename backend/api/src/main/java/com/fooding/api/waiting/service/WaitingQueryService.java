@@ -10,6 +10,6 @@ public interface WaitingQueryService {
 
 	WaitingInfoDto changeToOrderLine(Long ownerId, Long waitingId);
 
-	void completeUesr(Long ownerId, Long waitingId, boolean completed);
+	void completeUser(Long ownerId, Long waitingId, boolean completed);
 
 }

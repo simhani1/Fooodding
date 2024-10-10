@@ -28,7 +28,8 @@ import com.fooding.api.waiting.service.WaitingQueryService;
 import com.fooding.api.waiting.service.dto.UserWaitingInfoDto;
 import com.fooding.api.waiting.service.dto.WaitingInfoDto;
 import com.fooding.api.waitinglog.service.WaitingLogCommandService;
-import com.fooding.api.waitinglog.service.dto.WaitingLogDto;
+import com.fooding.api.waitinglog.service.dto.WaitingTimeLogDto;
+import com.fooding.api.waitinglog.service.dto.WaitingUserLogDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,7 +106,7 @@ public class WaitingController {
 		@RequestParam("is-completed") boolean isCompleted
 	) {
 		Long ownerId = MemberContext.getMemberId();
-		waitingQueryService.completeUesr(ownerId, waitingId, isCompleted);
+		waitingQueryService.completeUser(ownerId, waitingId, isCompleted);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
@@ -123,10 +124,18 @@ public class WaitingController {
 	}
 
 	@RequireJwtToken
-	@GetMapping("/log")
-	public ResponseEntity<BaseResponse<List<WaitingLogDto>>> getWaitingLog() {
+	@GetMapping("/log/time")
+	public ResponseEntity<BaseResponse<List<WaitingTimeLogDto>>> getWaitingTimeLog() {
 		Long ownerId = MemberContext.getMemberId();
-		List<WaitingLogDto> res = waitingLogCommandService.getWaitingLog(ownerId);
+		List<WaitingTimeLogDto> res = waitingLogCommandService.getWaitingTimeLog(ownerId);
+		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
+	}
+
+	@RequireJwtToken
+	@GetMapping("/log/users")
+	public ResponseEntity<BaseResponse<List<WaitingUserLogDto>>> getWaitingUserLog() {
+		Long ownerId = MemberContext.getMemberId();
+		List<WaitingUserLogDto> res = waitingLogCommandService.getWaitingUserLog(ownerId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 

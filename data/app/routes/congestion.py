@@ -1,10 +1,12 @@
-from flask import Blueprint, Response
+from flask import Blueprint, Response, Flask
 import pandas as pd
 from datetime import datetime
 import json
-
+from flask_cors import CORS
 # Blueprints를 정의합니다.
 bp = Blueprint('congestion', __name__)
+CORS(bp, supports_credentials=True)
+
 # 모델을 불러옵니다. 경로는 상황에 맞게 수정해야 합니다.
 congestion_data = pd.read_parquet('congestion_levels.parquet')
 

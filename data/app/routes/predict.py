@@ -11,16 +11,21 @@ from app.models.model import preprocess, aggregate_data, train_model
 >>>>>>> 4c59f8d (feat: 혼잡도 api 설계)
 =======
 from app.models.predict_model import preprocess, aggregate_data, train_model
+<<<<<<< HEAD
 
 >>>>>>> a11ace3 (feat: 성별, 연령대 별 행정동 추천 알고리즘 api 설계)
+=======
+>>>>>>> d542351 (fix: 추천 api 수정)
 from app.utils.db import create_connection, save_prediction_to_db
 import datetime
 import json
 import dask.dataframe as dd
 import pandas as pd
 from dask.distributed import Client
+from flask_cors import CORS
 
 bp = Blueprint('predict', __name__)
+CORS(bp, supports_credentials=True)
 def print_progress(message):
     print(f"[{datetime.datetime.now()}] {message}")
 

@@ -211,6 +211,7 @@ const UserMap = () => {
 				trucks={trucks}
 				onScrollEnd={loadMoreTrucks} // 리스트 끝에 도달 시 더 많은 푸드트럭 로드
 			/>
+
 			{!isListExpanded && <TheFooter />}
 		</>
 	);

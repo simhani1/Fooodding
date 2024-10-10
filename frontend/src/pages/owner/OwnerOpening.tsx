@@ -121,10 +121,15 @@ const OwnerOpening = () => {
 				const response = await getMenuList();
 				const data = response.data.data;
 
+				console.log(data);
+
 				setTodayMenuList(data.menuList);
 				setFoodTruckId(data.foodTruckId);
 				setOwnerNickName(data.name);
 				setIsOpen(data.isOpened);
+
+				console.log(ownerNickName);
+				console.log(foodTruckId);
 			} catch (err) {
 				// 400 에러 처리 추가
 				if (isCustomAxiosError(err) && err.response?.status === 400) {
@@ -142,13 +147,16 @@ const OwnerOpening = () => {
 
 		setMyLocation();
 		fetchMenuList();
-	}, [nav, setLoading]);
+	}, []);
 
 	useEffect(() => {
 		// 상태가 변경된 후에 특정 동작을 처리할 수 있습니다.
 		if (isOpen) {
 			if (foodTruckId && ownerNickName) {
 				// 상태가 준비된 후에만 이동
+				console.log(foodTruckId);
+				console.log(ownerNickName);
+
 				setTimeout(() => {
 					nav("/owners/close", { state: { foodTruckId: foodTruckId, ownerNickName: ownerNickName } });
 				}, 500);
@@ -199,7 +207,7 @@ const OwnerOpening = () => {
 
 		try {
 			await openMarket(foodTruckId, request);
-			nav("/owners/close");
+			nav("/owners/close", { state: { foodTruckId: foodTruckId, ownerNickName: ownerNickName } });
 		} catch (err) {
 			console.error("장사 시작 중 오류가 발생했습니다!", err);
 		}

@@ -20,11 +20,12 @@ const OwnerWaiting = () => {
 	const foodTruckId = location.state?.foodTruckId;
 	const ownerNickName = location.state?.ownerNickName;
 
+	console.log(foodTruckId);
+
 	useEffect(() => {
 		let eventSource = connectSse(foodTruckId);
 		// 서버에서 connected 이벤트를 발생시킬 때 동작합니다.
 		eventSource.addEventListener("connected", (event: MessageEvent[keyof MessageEvent]) => {
-			console.log("connected");
 			const data = JSON.parse(event.data);
 			setWaitingLine(data.waitingLine);
 			setWaitingOrder(data.orderLine);
@@ -37,12 +38,28 @@ const OwnerWaiting = () => {
 
 		// 손님이 예약할 때 발생하는 이벤트 (서버에서 userId가 아닌 웨이팅 정보를 넘겨주도록 수정해야 합니다.)
 		eventSource.addEventListener("reserved", (event: MessageEvent[keyof MessageEvent]) => {
-			console.log("reserved", event);
+			const data = JSON.parse(event.data);
+			console.log(data);
+
+			const newReservation = {
+				waitingId: data.waitingId,
+				userName: data.userName,
+				number: data.number,
+				changedAt: data.changedAt,
+			};
+
+			setWaitingLine((prevLines) => [...prevLines, newReservation]);
 		});
 
 		// 손님이 예약 취소할 때 발생하는 이벤트 (서버에서 userId가 아닌 waitingId를 넘겨주도록 수정해야 합니다.)
 		eventSource.addEventListener("canceled", (event: MessageEvent[keyof MessageEvent]) => {
 			console.log("canceled", event);
+
+			const data = JSON.parse(event.data);
+			console.log(data);
+
+			//아이디가 같지 않은 것들만 모아서 set함
+			setWaitingLine((prevLines) => prevLines.filter((line) => line.waitingId !== data.waitingId));
 		});
 
 		const handleBeforeUnload = () => {
@@ -87,8 +104,6 @@ const OwnerWaiting = () => {
 		} catch (error) {
 			alert("손님 호출에 실패하였습니다.");
 		}
-
-		//여기에서 fcm 해야합니다
 	};
 
 	//손님받기

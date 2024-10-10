@@ -97,5 +97,7 @@ def predict():
 
 
     
-    json_response = json.dumps({"message": "오늘의 예측을 반환합니다.", "predictions": results}, ensure_ascii=False)
-    return Response(json_response, content_type="application/json; charset=utf-8", status=200)
+    json_response = json.dumps(results, ensure_ascii=False)
+    
+    response = Response(json_response, content_type="application/json; charset=utf-8", status=200)
+    return response

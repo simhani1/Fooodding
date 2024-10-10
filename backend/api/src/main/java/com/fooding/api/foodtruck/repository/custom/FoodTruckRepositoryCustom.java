@@ -29,7 +29,7 @@ public class FoodTruckRepositoryCustom {
 			.fetchOne());
 	}
 
-	public List<FoodTruck> findOpenedFoodTrucks(Point center, Long lastFoodTruckId, int limit) {
+	public List<FoodTruck> findOpenedFoodTrucks(Point center, Long lastFoodTruckId) {
 		return queryFactory.selectFrom(foodTruck)
 			.where(foodTruck.commerceInfo.openStatus.eq(OpenStatus.OPENED)
 				.and(Expressions.booleanTemplate(
@@ -37,7 +37,7 @@ public class FoodTruckRepositoryCustom {
 					center, 1000, foodTruck.commerceInfo.location))
 				.and(foodTruck.id.lt(lastFoodTruckId)))
 			.orderBy(foodTruck.id.desc())
-			.limit(limit)
+			.limit(20)
 			.fetch();
 	}
 

@@ -10,6 +10,6 @@ public interface FoodTruckCommandService {
 
 	FoodTruckDto getFoodTruckDetailForOwner(Long ownerId);
 
-	List<FoodTruckDto> getOpenedFoodTrucks(Double latitude, Double longitude, Long lastFoodTruckId, int size);
+	List<FoodTruckDto> getOpenedFoodTrucks(Double latitude, Double longitude, Long lastFoodTruckId);
 
 }

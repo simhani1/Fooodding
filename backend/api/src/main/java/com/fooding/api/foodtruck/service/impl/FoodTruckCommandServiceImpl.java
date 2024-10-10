@@ -98,9 +98,9 @@ class FoodTruckCommandServiceImpl implements FoodTruckCommandService {
 	}
 
 	@Override
-	public List<FoodTruckDto> getOpenedFoodTrucks(Double latitude, Double longitude, Long lastFoodTruckId, int size) {
+	public List<FoodTruckDto> getOpenedFoodTrucks(Double latitude, Double longitude, Long lastFoodTruckId) {
 		List<FoodTruck> foodTruckList = foodTruckRepositoryCustom.findOpenedFoodTrucks(
-			PointFactory.create(latitude, longitude), lastFoodTruckId, size);
+			PointFactory.create(latitude, longitude), lastFoodTruckId);
 		return foodTruckList.stream().map(
 				foodTruck -> FoodTruckDto.builder()
 					.foodTruckId(foodTruck.getId())

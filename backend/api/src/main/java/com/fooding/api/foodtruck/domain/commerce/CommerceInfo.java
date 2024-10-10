@@ -40,7 +40,8 @@ public class CommerceInfo {
 	}
 
 	public static CommerceInfo ofNew() {
-		return new CommerceInfo(OpenStatus.CLOSED, LocalDateTime.now(), LocalDateTime.now(), null, null);
+		return new CommerceInfo(OpenStatus.CLOSED, LocalDateTime.now(), LocalDateTime.now(), null,
+			INITIAL_WAITING_NUMBER);
 	}
 
 	public static CommerceInfo getOpened(Point location) {
@@ -51,7 +52,7 @@ public class CommerceInfo {
 	public static CommerceInfo getClosed(CommerceInfo commerceInfo) {
 		return new CommerceInfo(OpenStatus.CLOSED, commerceInfo.getOpenedAt(), LocalDateTime.now(),
 			commerceInfo.getLocation(),
-			null);
+			INITIAL_WAITING_NUMBER);
 	}
 
 	public void plusWaitingNumber() {

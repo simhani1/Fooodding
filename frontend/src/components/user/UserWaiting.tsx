@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { IWaitingProps } from "@interface/waiting";
+import { IUserWaitingProps } from "@interface/waiting";
 import { waitingCancelingModalStyle } from "@utils/modalStyle";
 import UserOrder from "@components/user/UserOrder";
 import Modal from "@components/common/Modal";
@@ -12,7 +12,7 @@ import { isCustomAxiosError } from "@api/error";
 import Cooking from "@assets/cooking.gif";
 import { Ticket } from "@phosphor-icons/react";
 
-const UserWaiting = ({ waitingInfo, foodTruckId }: IWaitingProps) => {
+const UserWaiting = ({ waitingInfo, foodTruckId }: IUserWaitingProps) => {
 	const nav = useNavigate();
 
 	console.log(waitingInfo);
@@ -106,7 +106,7 @@ const UserWaiting = ({ waitingInfo, foodTruckId }: IWaitingProps) => {
 					</>
 				) : (
 					<>
-						<UserOrder callTime={waitingInfo.changedAt} />{" "}
+						<UserOrder />
 					</>
 				)}
 			</div>

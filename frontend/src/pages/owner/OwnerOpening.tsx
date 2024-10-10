@@ -12,9 +12,9 @@ import Modal from "@components/common/Modal";
 import { useLoading } from "@utils/LoadingContext";
 import { waitingCancelingModalStyle } from "@utils/modalStyle";
 import { getMenuList, openMarket } from "@api/food-truck-api";
+import { isCustomAxiosError } from "@api/error";
 
 import { FireTruck } from "@phosphor-icons/react";
-// import { isCustomAxiosError } from "@api/error";
 
 const OwnerOpening = () => {
 	const nav = useNavigate();
@@ -45,6 +45,7 @@ const OwnerOpening = () => {
 	//모달
 	const [errorModal, setErrorModal] = useState(false); //유효성검사
 	const [startModal, setStartModal] = useState(false); //장사 시작 체크
+	const [registrationErrorModal, setRegistrationErrorModal] = useState(false); // 등록되지 않은 푸드트럭 에러 모달
 
 	//토글
 	const [isToggled, setIsToggled] = useState(true);
@@ -125,7 +126,12 @@ const OwnerOpening = () => {
 				setOwnerNickName(data.name);
 				setIsOpen(data.isOpened);
 			} catch (err) {
-				console.error(err);
+				// 400 에러 처리 추가
+				if (isCustomAxiosError(err) && err.response?.status === 400) {
+					setRegistrationErrorModal(true);
+				} else {
+					console.error(err);
+				}
 			} finally {
 				// 최소 0.5초 대기 후 로딩 상태 해제
 				setTimeout(() => {
@@ -334,6 +340,33 @@ const OwnerOpening = () => {
 									onClick={openTruck}
 								>
 									시작하겠습니다
+								</button>
+							</div>
+						</Modal>
+					)}
+
+					{/* 푸드트럭 등록 에러 모달 */}
+					{registrationErrorModal && (
+						<Modal
+							isOpen={registrationErrorModal}
+							close={closeModal}
+							style={waitingCancelingModalStyle}
+						>
+							<div className="flex flex-col items-center">
+								<FireTruck
+									size={96}
+									className="m-10 text-user"
+								/>
+
+								<p className="my-4 text-2xl font-bold text-center">
+									푸드트럭 정보가 등록되지 않았습니다.
+								</p>
+
+								<button
+									className="px-6 py-3 my-5 font-bold text-white rounded text-md bg-gradient-to-r from-main to-user"
+									onClick={() => nav("/owners/foodtruck")}
+								>
+									등록 페이지로 이동
 								</button>
 							</div>
 						</Modal>

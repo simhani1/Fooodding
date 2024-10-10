@@ -49,7 +49,7 @@ export const registerServiceWorker = () => {
 		navigator.serviceWorker
 			.register("/firebase-messaging-sw.js")
 			.then((registration) => {
-				console.log(registration.scope);
+				// console.log(registration.scope);
 
 				if (registration.active) {
 					registration.active.postMessage({

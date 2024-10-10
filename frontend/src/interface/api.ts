@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { Category } from "@interface/owner";
-import { IMenuInfo, ITruckListInfo } from "@interface/foodTruck";
+import { IMenuInfo, ITruckListInfo, ITruckWaitingInfo } from "@interface/foodTruck";
 import { IWaiting, IWaitingInfo } from "@interface/waiting";
 
 export enum ContentType {
@@ -82,6 +82,11 @@ export interface IFoodTruckDetailUserInfoDTO extends IBaseResponseDTO {
 		isReserved: boolean;
 		waitingInfo: IWaitingInfo;
 	};
+}
+
+//사용자의 푸드트럭 예약 리스트 조회
+export interface ITruckWaitingListInfoDTO extends IBaseResponseDTO {
+	data: ITruckWaitingInfo[];
 }
 
 //메뉴

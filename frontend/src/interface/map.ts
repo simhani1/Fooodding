@@ -64,5 +64,6 @@ export interface IFeatureCollection {
 //내 위치 좌표
 export interface IMyPosition {
 	lat: number;
-	long: number;
+	lng: number;
+	"lft-id"?: number;
 }

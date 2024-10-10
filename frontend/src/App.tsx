@@ -42,7 +42,7 @@ function App() {
 			});
 		}
 		setNotification({ title, body });
-		console.log(notification);
+		// console.log(notification);
 	}, []);
 
 	useEffect(() => {
@@ -64,7 +64,7 @@ function App() {
 				const permission = await Notification.requestPermission();
 				if (permission !== "granted") return;
 				const newToken = await requestForToken();
-				console.log(newToken);
+				// console.log(newToken);
 
 				if (newToken) {
 					sessionStorage.setItem("fcmToken", newToken);

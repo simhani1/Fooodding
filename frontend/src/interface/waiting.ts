@@ -8,17 +8,18 @@ export interface IWaitingInfo {
 }
 
 export interface IWaitingProps {
-	waitingInfo: IWaitingInfo;
+	number: number;
 	foodTruckName?: string;
 	foodTruckId?: number;
 }
 
-export interface UserWaitingImgProps {
-	isCancelable: boolean;
+export interface IUserWaitingProps {
+	waitingInfo: IWaitingInfo;
+	foodTruckId: number;
 }
 
-export interface IOrderingProps {
-	callTime: number;
+export interface UserWaitingImgProps {
+	isCancelable: boolean;
 }
 
 //owner
@@ -32,6 +33,4 @@ export interface IWaiting {
 export interface IWaitingOwnerProps {
 	waiting: IWaiting;
 	children: JSX.Element;
-	isOrder: boolean;
-	onCancel: (waitingId: number) => void;
 }

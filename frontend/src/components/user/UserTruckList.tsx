@@ -1,10 +1,33 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import UserTruck from "./UserTruck";
 import { UserTruckListProps } from "@interface/foodTruck";
 
-const UserTruckList: React.FC<UserTruckListProps> = ({ onExpandChange, trucks, selectedTruck }) => {
+const UserTruckList: React.FC<UserTruckListProps> = ({ onExpandChange, trucks, selectedTruck, onScrollEnd }) => {
 	const [expanded, setExpanded] = useState(false);
+	const listRef = useRef<HTMLDivElement | null>(null);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			if (listRef.current) {
+				const { scrollTop, scrollHeight, clientHeight } = listRef.current;
+				if (scrollTop + clientHeight >= scrollHeight) {
+					onScrollEnd(); // 스크롤이 끝에 도달하면 더 많은 푸드트럭 로드
+				}
+			}
+		};
+
+		const ref = listRef.current;
+		if (ref) {
+			ref.addEventListener("scroll", handleScroll);
+		}
+
+		return () => {
+			if (ref) {
+				ref.removeEventListener("scroll", handleScroll);
+			}
+		};
+	}, [onScrollEnd]);
 
 	const handleExpand = () => {
 		const newExpandedState = !expanded;
@@ -24,6 +47,7 @@ const UserTruckList: React.FC<UserTruckListProps> = ({ onExpandChange, trucks, s
 
 	return (
 		<div
+			ref={listRef}
 			className={`fixed bottom-0 left-0 right-0 transition-all duration-300 ${
 				expanded ? "h-5/6 overflow-y-auto" : "h-80"
 			} bg-white z-10 rounded-lg`}

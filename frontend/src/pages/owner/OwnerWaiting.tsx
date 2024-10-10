@@ -150,8 +150,6 @@ const OwnerWaiting = () => {
 											<OwnerWaitingBlock
 												key={line.waitingId}
 												waiting={line}
-												isOrder={false}
-												onCancel={() => callCustomer(line.waitingId)}
 											>
 												<button
 													className="p-4 text-white rounded-full bg-boss"
@@ -178,8 +176,6 @@ const OwnerWaiting = () => {
 											<OwnerWaitingBlock
 												key={order.waitingId}
 												waiting={order}
-												isOrder={true}
-												onCancel={() => cancelCustomer(order.waitingId)}
 											>
 												<div className="flex gap-2">
 													<button

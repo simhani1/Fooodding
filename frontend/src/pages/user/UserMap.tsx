@@ -26,6 +26,10 @@ const UserMap = () => {
 	const [selectedTruck, setSelectedTruck] = useState<ITruckListInfo | null>(null);
 	const [trucks, setTrucks] = useState<ITruckListInfo[]>([]);
 
+	const [lastTruckId, setLastTruckId] = useState<number | null>(null); // 마지막 푸드트럭 ID
+	const [hasMoreTrucks, setHasMoreTrucks] = useState(true); // 더 많은 트럭이 있는지 여부
+	const [isLocationSet, setIsLocationSet] = useState(false); // 사용자의 위치가 설정되었는지 여부
+
 	useEffect(() => {
 		// 사용자 현재 위치 가져오기
 		const setMyLocation = () => {
@@ -39,6 +43,7 @@ const UserMap = () => {
 
 						setCurrentPosition(newPosition);
 						setMapCenter(newPosition);
+						setIsLocationSet(true); // 위치가 설정되었음을 표시
 
 						// Kakao Maps의 panTo 메서드를 사용하여 지도를 이동
 						if (mapRef.current) {
@@ -55,8 +60,14 @@ const UserMap = () => {
 		};
 
 		setMyLocation();
-		getTruckList();
 	}, []);
+
+	// 위치가 설정된 이후 트럭 리스트 불러오기
+	useEffect(() => {
+		if (isLocationSet) {
+			getTruckList();
+		}
+	}, [isLocationSet]);
 
 	// 사용자 현재 위치 가져오기
 	const setMyLocation = () => {
@@ -89,13 +100,45 @@ const UserMap = () => {
 	const getTruckList = async () => {
 		const myPosition = {
 			lat: currentPosition.lat,
-			long: currentPosition.lng,
+			lng: currentPosition.lng,
 		};
+
+		console.log(myPosition);
 
 		try {
 			const response = await getFoodTruckList(myPosition);
-			setTrucks(response.data.data);
-			console.log(response.data.data[0]);
+			const data = response.data.data;
+
+			console.log(data);
+
+			setTrucks(data);
+			setLastTruckId(data[data.length - 1].foodTruckId); // 마지막 트럭의 id 저장
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	// 더 많은 푸드트럭을 불러오기 (lft-id 사용)
+	const loadMoreTrucks = async () => {
+		if (!lastTruckId || !hasMoreTrucks) return;
+
+		try {
+			const response = await getFoodTruckList({
+				lat: currentPosition.lat,
+				lng: currentPosition.lng,
+				"lft-id": lastTruckId,
+			});
+
+			const data = response.data.data;
+
+			if (data.length === 0) {
+				// 더 이상 불러올 트럭이 없는 경우
+				setHasMoreTrucks(false);
+				return;
+			}
+
+			setTrucks((prevTrucks) => [...prevTrucks, ...data]);
+			setLastTruckId(data[data.length - 1]?.foodTruckId); // 새로운 마지막 트럭의 id 저장
 		} catch (err) {
 			console.error(err);
 		}
@@ -104,10 +147,10 @@ const UserMap = () => {
 	// Marker 클릭 시 해당 트럭 선택
 	const handleMarkerClick = (truck: ITruckListInfo) => {
 		setSelectedTruck(truck);
-		setMapCenter({ lat: truck.lat, lng: truck.long }); // 트럭 선택 시 지도 중심 이동
+		setMapCenter({ lat: truck.latitude, lng: truck.longitude }); // 트럭 선택 시 지도 중심 이동
 
 		if (mapRef.current) {
-			mapRef.current.panTo(new kakao.maps.LatLng(truck.lat, truck.long));
+			mapRef.current.panTo(new kakao.maps.LatLng(truck.latitude, truck.longitude));
 		}
 	};
 
@@ -116,41 +159,43 @@ const UserMap = () => {
 			<TheHeader />
 
 			<div className="w-full h-screen">
-				<Map
-					center={mapCenter} // 지도 중심을 mapCenter로 설정
-					className="w-full h-5/6"
-					level={3}
-					ref={mapRef}
-					// minLevel={5}
-				>
-					{trucks.map((truck, index) => (
+				{trucks.length > 0 && (
+					<Map
+						center={mapCenter}
+						className="w-full h-screen"
+						level={5}
+						ref={mapRef}
+						onCreate={(map) => (mapRef.current = map)}
+					>
+						{trucks.map((truck, index) => (
+							<MapMarker
+								key={index}
+								position={{ lat: truck.latitude, lng: truck.longitude }}
+								onClick={() => handleMarkerClick(truck)}
+								image={{
+									src: "/foodtruckmarker.png", // 마커 이미지 경로
+									size: {
+										width: 36,
+										height: 36,
+									},
+								}}
+							>
+								<div className="border-none">{truck.name}</div>
+							</MapMarker>
+						))}
+
 						<MapMarker
-							key={index}
-							position={{ lat: truck.lat, lng: truck.long }}
-							onClick={() => handleMarkerClick(truck)}
+							position={currentPosition}
 							image={{
-								src: "src/assets/foodtruckmarker.png", // 마커 이미지 경로
+								src: "/MapPin.png",
 								size: {
 									width: 36,
 									height: 36,
-								}, // 마커 이미지 크기
+								},
 							}}
-						>
-							<div>{truck.name}</div>
-						</MapMarker>
-					))}
-
-					<MapMarker
-						position={currentPosition}
-						image={{
-							src: "/MapPin.png",
-							size: {
-								width: 36,
-								height: 36,
-							},
-						}}
-					></MapMarker>
-				</Map>
+						/>
+					</Map>
+				)}
 			</div>
 
 			<button className="fixed z-10 p-2 bg-white rounded-lg shadow-lg bottom-96 left-4">
@@ -164,6 +209,7 @@ const UserMap = () => {
 				onExpandChange={setIsListExpanded}
 				selectedTruck={selectedTruck}
 				trucks={trucks}
+				onScrollEnd={loadMoreTrucks} // 리스트 끝에 도달 시 더 많은 푸드트럭 로드
 			/>
 			{!isListExpanded && <TheFooter />}
 		</>

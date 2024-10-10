@@ -5,6 +5,7 @@ export interface UserTruckListProps {
 	onExpandChange: (expanded: boolean) => void;
 	trucks: ITruckListInfo[];
 	selectedTruck: ITruckListInfo | null;
+	onScrollEnd: () => void;
 }
 
 export interface UserTruckProps {
@@ -31,8 +32,8 @@ export interface ITruckInfoProps {
 export interface ITruckListInfo extends ITruckInfoDetail {
 	mainMenuImg: string;
 	menus: string;
-	lat: number;
-	long: number;
+	latitude: number;
+	longitude: number;
 }
 
 export interface IMenuInfo {
@@ -45,4 +46,10 @@ export interface IMenuInfo {
 
 export interface IMenuProps {
 	menuList?: IMenuInfo[];
+}
+
+export interface ITruckWaitingInfo {
+	waitingId: number;
+	number: number;
+	foodTruckName: string;
 }

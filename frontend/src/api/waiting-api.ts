@@ -1,5 +1,5 @@
 import axiosInstance from "@api/axiosInstance";
-import { ApiResponse, INoResponseDTO, IWaitingResponseDTO } from "@interface/api";
+import { ApiResponse, INoResponseDTO, ITruckWaitingListInfoDTO, IWaitingResponseDTO } from "@interface/api";
 import { EventSourcePolyfill } from "event-source-polyfill";
 
 const path = "/waiting";
@@ -16,6 +16,11 @@ export const reserveTruckWaiting = (foodTruckId: number): ApiResponse<INoRespons
 //유저의 예약취소
 export const cancelWaiting = (foodTruckId: number, waitingId: number): ApiResponse<INoResponseDTO> => {
 	return axiosInstance.delete(`${path}/users/${foodTruckId}/${waitingId}`);
+};
+
+//유저의 푸드트럭 예약 리스트 조회
+export const getMyWaitingList = (): ApiResponse<ITruckWaitingListInfoDTO> => {
+	return axiosInstance.get(`${path}/users`);
 };
 
 // SSE 연결

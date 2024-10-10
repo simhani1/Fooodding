@@ -1,4 +1,4 @@
-// import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { ITruckInfoDetail } from "@interface/foodTruck";
@@ -11,9 +11,9 @@ import { getFoodTruckDetailInfo } from "@api/user-api";
 import UserWaiting from "../../components/user/UserWaiting";
 
 const UserFoodTruck = () => {
-	// const location = useLocation();
-	// const truckId = location.state;
-	const truckId = 4;
+	const location = useLocation();
+	const truckId = location.state;
+	// const truckId = 4;
 
 	const [truck, setTruck] = useState<ITruckInfoDetail>({
 		foodTruckId: 0,

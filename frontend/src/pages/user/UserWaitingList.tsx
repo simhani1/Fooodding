@@ -1,34 +1,34 @@
+import { useEffect, useState } from "react";
+
+import { ITruckWaitingInfo } from "@interface/foodTruck";
 import TheFooter from "@components/common/TheFooter";
 import TheHeader from "@components/common/TheHeader";
 import UserWaitingListInfo from "@components/user/UserWaitingListInfo";
-import { ITruckInfoDetail } from "@interface/foodTruck";
+import { getMyWaitingList } from "@api/waiting-api";
+
 import { FireTruck } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
 
 const UserWaitingList = () => {
-	const [waitingList, setWaitingList] = useState<ITruckInfoDetail[]>([
+	const [waitingList, setWaitingList] = useState<ITruckWaitingInfo[]>([
 		{
-			foodTruckId: 0,
-			licenseNumber: "",
-			name: "",
-			introduction: "",
-			category: "",
-			menuList: [],
-			isReserved: false, //예약전인지
-			waitingInfo: {
-				waitingId: 0,
-				isCancelable: true, //취소 가능한지
-				number: 0,
-				rank: 0, //내 앞에 몇 명
-				changedAt: 0,
-			}, //웨이팅정보
+			waitingId: 0,
+			number: 0,
+			foodTruckName: "",
 		},
 	]);
 
+	const getMyList = async () => {
+		try {
+			const response = await getMyWaitingList();
+			setWaitingList(response.data?.data);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	useEffect(() => {
 		//여기에서 axios 연결
-
-		setWaitingList([]);
+		getMyList();
 	}, []);
 
 	return (
@@ -50,9 +50,9 @@ const UserWaitingList = () => {
 				) : (
 					waitingList.map((waiting) => (
 						<UserWaitingListInfo
-							key={waiting.waitingInfo.waitingId}
-							waitingInfo={waiting.waitingInfo}
-							foodTruckName={waiting.name}
+							key={waiting.waitingId}
+							number={waiting.number}
+							foodTruckName={waiting.foodTruckName}
 						/>
 					))
 				)}

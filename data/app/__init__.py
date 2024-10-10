@@ -1,6 +1,7 @@
 from flask import Flask
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 from app.routes import predict
 =======
 <<<<<<< HEAD
@@ -12,6 +13,9 @@ from app.routes import predict
 =======
 from app.routes import predict,congestion,recommend
 >>>>>>> a11ace3 (feat: 성별, 연령대 별 행정동 추천 알고리즘 api 설계)
+=======
+from app.routes import predict,congestion,recommend,target
+>>>>>>> bbda1d4 (feat: api 주소 추가)
 
 def create_app():
     app = Flask(__name__)
@@ -38,5 +42,9 @@ def create_app():
     app.register_blueprint(predict.bp, url_prefix='/api/v2')
     app.register_blueprint(congestion.bp, url_prefix='/api/v2')
     app.register_blueprint(recommend.bp, url_prefix='/api/v2')
+<<<<<<< HEAD
 >>>>>>> 168c6d0 (fix: api 주소 수정)
+=======
+    app.register_blueprint(target.bp, url_prefix='/api/v2')
+>>>>>>> bbda1d4 (feat: api 주소 추가)
     return app

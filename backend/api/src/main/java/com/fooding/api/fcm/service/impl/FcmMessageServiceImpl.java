@@ -30,11 +30,13 @@ class FcmMessageServiceImpl implements FcmMessageService {
 
 	@Override
 	public void sendMessages(Long memberId, FcmMessageDto dto) {
-		List<String> tokenList = fcmTokenRepository.findByMemberIdAndStatus(memberId, TokenStatus.ACTIVE)
-			.stream()
+		List<FcmToken> tokens = fcmTokenRepository.findByMemberIdAndStatus(memberId, TokenStatus.ACTIVE);
+		if(tokens.isEmpty()) {
+			throw new FailedFcmMulticast();
+		}
+		List<String> tokenList = tokens.stream()
 			.map(FcmToken::getToken)
 			.collect(Collectors.toList());
-
 		sendEachForMulticast(dto, tokenList);
 	}
 

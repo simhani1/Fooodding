@@ -30,19 +30,18 @@ class FcmMessageServiceImpl implements FcmMessageService {
 
 	@Override
 	public void sendMessages(Long memberId, FcmMessageDto dto) {
-		List<FcmToken> tokens = fcmTokenRepository.findByMemberId(memberId);
-		List<String> tokenList = tokens.stream()
-			.filter(token -> token.getStatus() == TokenStatus.ACTIVE)
+		List<String> tokenList = fcmTokenRepository.findByMemberIdAndStatus(memberId, TokenStatus.ACTIVE)
+			.stream()
 			.map(FcmToken::getToken)
 			.collect(Collectors.toList());
+
 		sendEachForMulticast(dto, tokenList);
 	}
 
 	@Override
 	public void sendMessagesToOwners(FcmMessageDto dto) {
-		List<FcmToken> ownerTokens = fcmTokenRepository.findByMemberRole(MemberRole.OWNER);
+		List<FcmToken> ownerTokens = fcmTokenRepository.findByMemberRoleAndStatus(MemberRole.OWNER, TokenStatus.ACTIVE);
 		List<String> tokenList = ownerTokens.stream()
-			.filter(token -> token.getStatus().equals(TokenStatus.ACTIVE))
 			.map(FcmToken::getToken)
 			.collect(Collectors.toList());
 		for (int i = 0; i < tokenList.size(); i += TOKEN_BATCH_SIZE) {

@@ -18,8 +18,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import com.fooding.api.core.aop.annotation.RequireJwtToken;
 import com.fooding.api.core.aop.member.MemberContext;
 import com.fooding.api.core.template.response.BaseResponse;
+import com.fooding.api.fcm.domain.TokenStatus;
+import com.fooding.api.fcm.service.FcmTokenService;
 import com.fooding.api.notification.service.NotificationService;
 import com.fooding.api.waiting.controller.response.GetReservationListRes;
+import com.fooding.api.waiting.controller.response.GetUserReservationListRes;
 import com.fooding.api.waiting.service.WaitingCommandService;
 import com.fooding.api.waiting.service.WaitingQueryService;
 import com.fooding.api.waiting.service.dto.UserWaitingInfoDto;
@@ -40,6 +43,7 @@ public class WaitingController {
 	private final WaitingCommandService waitingCommandService;
 	private final NotificationService notificationService;
 	private final WaitingLogCommandService waitingLogCommandService;
+	private final FcmTokenService fcmTokenService;
 
 	@RequireJwtToken
 	@PostMapping("/users")
@@ -107,9 +111,14 @@ public class WaitingController {
 
 	@RequireJwtToken
 	@GetMapping("/users")
-	public ResponseEntity<BaseResponse<List<UserWaitingInfoDto>>> getUserReservationList() {
+	public ResponseEntity<BaseResponse<GetUserReservationListRes>> getUserReservationList() {
 		Long userId = MemberContext.getMemberId();
-		List<UserWaitingInfoDto> res = waitingCommandService.getUserReservationList(userId);
+		List<UserWaitingInfoDto> userWaitingInfo = waitingCommandService.getUserReservationList(userId);
+		TokenStatus tokenStatus = fcmTokenService.getTokenStatus(userId);
+		GetUserReservationListRes res = GetUserReservationListRes.builder()
+			.userWaitingInfo(userWaitingInfo)
+			.tokenStatus(tokenStatus)
+			.build();
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 

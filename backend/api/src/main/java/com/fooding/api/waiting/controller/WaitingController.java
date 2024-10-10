@@ -105,7 +105,7 @@ public class WaitingController {
 		@RequestParam("is-completed") boolean isCompleted
 	) {
 		Long ownerId = MemberContext.getMemberId();
-		waitingQueryService.callUesr(ownerId, waitingId, isCompleted);
+		waitingQueryService.completeUesr(ownerId, waitingId, isCompleted);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 

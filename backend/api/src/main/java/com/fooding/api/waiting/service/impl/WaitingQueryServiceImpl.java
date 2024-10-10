@@ -22,6 +22,8 @@ import com.fooding.api.waiting.repository.EmitterRepository;
 import com.fooding.api.waiting.repository.WaitingRepository;
 import com.fooding.api.waiting.service.WaitingQueryService;
 import com.fooding.api.waiting.service.dto.WaitingInfoDto;
+import com.fooding.api.waitinglog.domain.WaitingLog;
+import com.fooding.api.waitinglog.repository.WaitingLogRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
 	private final WaitingRepository waitingRepository;
 	private final EmitterRepository emitterRepository;
+	private final WaitingLogRepository waitingLogRepository;
 
 	@Override
 	public WaitingInfoDto reserve(Long userId, Long foodTruckId) {
@@ -93,7 +96,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 	}
 
 	@Override
-	public void callUesr(Long ownerId, Long waitingId, boolean isCompleted) {
+	public void completeUesr(Long ownerId, Long waitingId, boolean isCompleted) {
 		Member owner = memberRepository.findById(ownerId)
 			.orElseThrow(() -> new NoMemberException("Owner not found with ID: " + ownerId));
 		Waiting waiting = waitingRepository.findById(waitingId)
@@ -104,7 +107,13 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
 		}
 		if (isCompleted) {
-			// TODO: 로그 기록하기
+			waitingLogRepository.save(
+				WaitingLog.builder()
+					.foodTruck(foodTruck)
+					.gender(waiting.getMember().getGender())
+					.ages(waiting.getMember().getAges())
+					.build()
+			);
 		}
 		waitingRepository.deleteById(waitingId);
 	}

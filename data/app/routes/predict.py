@@ -53,6 +53,7 @@ def predict():
          "/app/data/생활이동_행정동_202210/*.csv",
          "/app/data/생활이동_행정동_202110/*.csv",
     ]
+
     dtypes = {
         '이동인구(합)': 'object',
         '도착 행정동 코드': 'object',
@@ -60,6 +61,7 @@ def predict():
         '도착시간': 'int32',
         '요일': 'object'
     }
+
 
     ddf = dd.read_csv(folder_paths, encoding='cp949', dtype=dtypes, blocksize="32MB")
 

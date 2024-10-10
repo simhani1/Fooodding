@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, Response
 from app.models.predict_model import preprocess, aggregate_data, train_model
-from app.utils.db import create_connection, save_prediction_to_db, get_gender_and_age_by_category, get_foodtruck_category
+from app.utils.db import create_connection, save_target_to_db, get_gender_and_age_by_category, get_foodtruck_category
 import datetime
 import dask.dataframe as dd
 import pandas as pd
@@ -49,7 +49,7 @@ def target():
     
     # DB 조회 및 예측
     with connection.cursor(dictionary=True) as cursor:
-        cursor.execute("SELECT time, predict_people FROM predictions WHERE location_code = %s AND date = %s", (행정동코드, today))
+        cursor.execute("SELECT time, predict_people FROM target WHERE location_code = %s AND date = %s", (행정동코드, today))
         existing_predictions = cursor.fetchall()
         if existing_predictions:
             return jsonify({"message": "DB에서 예측 결과를 반환합니다.", "predictions": existing_predictions}), 200
@@ -104,6 +104,6 @@ def target():
     predictions = model.predict(X_pred_scaled)
 
     results = [{"시간": hour, "예측 유동인구": max(0, int(pred) / 4)} for hour, pred in zip(hours, predictions)]
-    save_prediction_to_db(connection, 행정동코드, today, results)
+    save_target_to_db(connection, 행정동코드, today, results)
 
     return jsonify({"message": "오늘의 예측을 반환합니다.", "predictions": results}), 200

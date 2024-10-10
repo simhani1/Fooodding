@@ -65,3 +65,14 @@ def save_prediction_to_db(connection, location_code, date, predictions):
         cursor.execute(query, values)
     connection.commit()
     cursor.close()
+
+def save_target_to_db(connection, location_code, date, target):
+    cursor = connection.cursor()
+    for pred in target:
+        time = pred['시간']
+        predict_people = pred['예측 유동인구']
+        query = "INSERT INTO target (location_code, date, time, predict_people) VALUES (%s, %s, %s, %s)"
+        values = (location_code, date, time, predict_people)
+        cursor.execute(query, values)
+    connection.commit()
+    cursor.close()

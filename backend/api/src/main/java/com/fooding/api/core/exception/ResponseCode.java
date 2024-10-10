@@ -46,6 +46,10 @@ public enum ResponseCode {
 	// 8000 - WAITING
 	NO_WAITING_INFO_EXCEPTION("8000", "예약 정보가 존재하지 않습니다."),
 	CANNOT_CANCEL_WAITING_EXCEPTION("8001", "예약을 취소할 수 없는 상태입니다."),
+
+	// 9000 - FCM
+	NO_FCM_TOKEN("9000", "FCM 토큰이 존재하지 않습니다."),
+	FAILED_FCM_MULTICAST("9001", "FCM 메시지 전송에 실패했습니다."),
 	;
 
 	private String code;

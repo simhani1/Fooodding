@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 import com.fooding.api.announcement.domain.Announcement;
 import com.fooding.api.announcement.repository.AnnouncementRepository;
 import com.fooding.api.fcm.service.FcmMessageService;
-import com.fooding.api.fcm.service.dto.FcmMessageDto;
-import com.google.firebase.messaging.FirebaseMessagingException;
+import com.fooding.api.fcm.util.FcmMessageFactory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -55,7 +54,9 @@ public class AnnouncementCrawler {
 
 	private void updateAnnouncement(Announcement existingAnnouncement, String postLink) {
 		Document postDoc = fetchDocument(postLink);
-		if (postDoc == null) return;
+		if (postDoc == null) {
+			return;
+		}
 
 		String title = extractTitle(postDoc);
 		if (!existingAnnouncement.getTitle().equals(title)) {
@@ -65,7 +66,9 @@ public class AnnouncementCrawler {
 
 	private void processNewAnnouncement(String postLink, List<Announcement> announcementList) {
 		Document postDoc = fetchDocument(postLink);
-		if (postDoc == null) return;
+		if (postDoc == null) {
+			return;
+		}
 
 		String title = extractTitle(postDoc);
 
@@ -84,16 +87,7 @@ public class AnnouncementCrawler {
 
 		announcementList.add(announcement);
 
-		FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
-			.title("새로운 공고가 등록됐어요!📢")
-			.message(title)
-			.build();
-
-		try {
-			fcmMessageService.sendMessagesToOwners(fcmMessageDto);
-		} catch (FirebaseMessagingException e) {
-			e.printStackTrace();
-		}
+		fcmMessageService.sendMessagesToOwners(FcmMessageFactory.createNewAnnouncementMessage(title));
 	}
 
 	private Document fetchDocument(String postLink) {

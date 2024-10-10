@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fooding.api.fcm.domain.FcmToken;
 import com.fooding.api.fcm.domain.TokenStatus;
+import com.fooding.api.fcm.exception.FailedFcmMulticast;
 import com.fooding.api.fcm.repository.FcmTokenRepository;
 import com.fooding.api.fcm.service.FcmMessageService;
 import com.fooding.api.fcm.service.dto.FcmMessageDto;
 import com.fooding.api.member.domain.MemberRole;
-import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MulticastMessage;
@@ -25,54 +25,44 @@ import lombok.RequiredArgsConstructor;
 @Service
 class FcmMessageServiceImpl implements FcmMessageService {
 
+	private final int TOKEN_BATCH_SIZE = 500;
 	private final FcmTokenRepository fcmTokenRepository;
 
 	@Override
-	public void sendMessages(Long memberId, FcmMessageDto fcmMessageDto) throws FirebaseMessagingException {
+	public void sendMessages(Long memberId, FcmMessageDto dto) {
 		List<FcmToken> tokens = fcmTokenRepository.findByMemberId(memberId);
-
 		List<String> tokenList = tokens.stream()
 			.filter(token -> token.getStatus() == TokenStatus.ACTIVE)
 			.map(FcmToken::getToken)
 			.collect(Collectors.toList());
-
-		MulticastMessage message = MulticastMessage.builder()
-			.addAllTokens(tokenList)
-			.setNotification(Notification.builder()
-				.setTitle(fcmMessageDto.title())
-				.setBody(fcmMessageDto.message())
-				.build())
-			.build();
-
-		BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
+		sendEachForMulticast(dto, tokenList);
 	}
 
 	@Override
-	public void sendMessagesToOwners(FcmMessageDto fcmMessageDto) {
+	public void sendMessagesToOwners(FcmMessageDto dto) {
 		List<FcmToken> ownerTokens = fcmTokenRepository.findByMemberRole(MemberRole.OWNER);
-
 		List<String> tokenList = ownerTokens.stream()
-			.filter(token -> token.getStatus() == TokenStatus.ACTIVE)
+			.filter(token -> token.getStatus().equals(TokenStatus.ACTIVE))
 			.map(FcmToken::getToken)
 			.collect(Collectors.toList());
+		for (int i = 0; i < tokenList.size(); i += TOKEN_BATCH_SIZE) {
+			List<String> subTokenList = tokenList.subList(i, Math.min(i + TOKEN_BATCH_SIZE, tokenList.size()));
+			sendEachForMulticast(dto, tokenList);
+		}
+	}
 
-		int tokenSize = 500;
-		for (int i = 0; i < tokenList.size(); i += tokenSize) {
-			List<String> batchTokens = tokenList.subList(i, Math.min(i + tokenSize, tokenList.size()));
-
-			MulticastMessage message = MulticastMessage.builder()
-				.addAllTokens(batchTokens)
-				.setNotification(Notification.builder()
-					.setTitle(fcmMessageDto.title())
-					.setBody(fcmMessageDto.message())
-					.build())
-				.build();
-
-			try {
-				BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
-			} catch (FirebaseMessagingException e) {
-				e.printStackTrace();
-			}
+	private void sendEachForMulticast(FcmMessageDto dto, List<String> tokenList) {
+		MulticastMessage message = MulticastMessage.builder()
+			.addAllTokens(tokenList)
+			.setNotification(Notification.builder()
+				.setTitle(dto.title())
+				.setBody(dto.message())
+				.build())
+			.build();
+		try {
+			FirebaseMessaging.getInstance().sendEachForMulticast(message);
+		} catch (FirebaseMessagingException e) {
+			throw new FailedFcmMulticast();
 		}
 	}
 

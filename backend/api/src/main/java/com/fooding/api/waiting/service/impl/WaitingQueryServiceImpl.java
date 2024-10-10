@@ -5,6 +5,8 @@ import java.time.ZoneId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fooding.api.fcm.service.FcmMessageService;
+import com.fooding.api.fcm.util.FcmMessageFactory;
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.exception.FoodTruckAlreadyClosedException;
 import com.fooding.api.foodtruck.exception.NoFoodTruckException;
@@ -30,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 class WaitingQueryServiceImpl implements WaitingQueryService {
 
+	private final FcmMessageService fcmMessageService;
 	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
 	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
@@ -80,6 +83,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 		Waiting waiting = waitingRepository.findById(waitingId)
 			.orElseThrow(() -> new NoWaitingInfoException("Waiting not found with ID: " + waitingId));
 		waiting.changeToOrderLine();
+		fcmMessageService.sendMessages(waiting.getMember().getId(), FcmMessageFactory.createCustomerTurnMessage());
 		return WaitingInfoDto.builder()
 			.waitingId(waiting.getId())
 			.changedAt(waiting.getChangedAt().atZone(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli())

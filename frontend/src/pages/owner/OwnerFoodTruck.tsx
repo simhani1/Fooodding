@@ -47,6 +47,7 @@ const OwnerFoodTruck = () => {
 	}
 
 	console.log(foodTruckInfo);
+	if (foodTruckInfo) sessionStorage.setItem("foodTruckId", foodTruckInfo.foodTruckId.toString());
 
 	if (!foodTruckInfo) {
 		return (

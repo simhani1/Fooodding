@@ -26,6 +26,8 @@ const OwnerPage = () => {
 		try {
 			await ownerWithdraw();
 			localStorage.removeItem("token");
+			sessionStorage.removeItem("fcmToken");
+			sessionStorage.removeItem("foodTruckId");
 			nav("/");
 		} catch (err) {
 			console.error(err);

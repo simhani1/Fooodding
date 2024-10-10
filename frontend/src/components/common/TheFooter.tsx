@@ -47,6 +47,7 @@ const TheFooter = () => {
 	const handleLogOut = async () => {
 		try {
 			await userLogout();
+			localStorage.removeItem("token");
 			nav("/");
 		} catch (err) {
 			console.error(err);
@@ -57,6 +58,7 @@ const TheFooter = () => {
 	const handleWithDraw = async () => {
 		try {
 			await userWithdraw();
+			localStorage.removeItem("token");
 			nav("/");
 		} catch (err) {
 			console.error(err);

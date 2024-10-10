@@ -15,6 +15,7 @@ const OwnerPage = () => {
 	const logOutOwner = async () => {
 		try {
 			await ownerLogout();
+			localStorage.removeItem("token");
 			nav("/");
 		} catch (err) {
 			console.error(err);
@@ -24,6 +25,7 @@ const OwnerPage = () => {
 	const withdrawOwner = async () => {
 		try {
 			await ownerWithdraw();
+			localStorage.removeItem("token");
 			nav("/");
 		} catch (err) {
 			console.error(err);

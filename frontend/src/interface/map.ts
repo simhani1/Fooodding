@@ -27,8 +27,14 @@ export interface ILatLng {
 	lng: number;
 }
 
-export interface IPolygonPath {
+export interface IGooPolygonPath {
 	name: string;
+	path: ILatLng[];
+}
+
+export interface IDongPolygonPath {
+	name: string;
+	code: string;
 	path: ILatLng[];
 }
 

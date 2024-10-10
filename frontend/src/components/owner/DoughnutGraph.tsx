@@ -53,7 +53,7 @@ const DoughnutGraph = () => {
 	};
 
 	return (
-		<div className="my-8 w-72">
+		<div className="w-5/12 my-8">
 			<Doughnut
 				options={options}
 				data={data}

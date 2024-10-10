@@ -19,8 +19,18 @@ const OwnerAnnouncement = () => {
 	const loadAnnounements = async () => {
 		try {
 			const response = await getAunnouncementInfo();
-			const data = response.data.announcements;
+			let data = response.data.announcements;
 			const toggleStatus = response.data.tokenStatus;
+
+			data = data.sort((a, b) => {
+				const aIncludesMamag = a.title.includes("마감");
+				const bIncludesMamag = b.title.includes("마감");
+
+				if (aIncludesMamag && !bIncludesMamag) return 1;
+				if (!aIncludesMamag && bIncludesMamag) return -1;
+				return 0;
+			});
+
 			setAnnounements(data);
 			setIsToggled(toggleStatus);
 		} catch (error) {
@@ -140,7 +150,7 @@ const OwnerAnnouncement = () => {
 					</div>
 					<div
 						id="infinite-scroll"
-						className="overflow-y-auto h-[calc(100vh-300px)]"
+						className="overflow-y-auto h-[calc(100vh-270px)]"
 					>
 						{filteredAnnounements()
 							.slice(0, visibleCount)

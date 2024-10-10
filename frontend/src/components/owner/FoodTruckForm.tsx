@@ -89,7 +89,7 @@ const FoodTruckForm = ({ formData, buttonText, setFormData, onSubmit }: IFoodTru
 					}
 					message={validateMessage.introduction}
 				/>
-				<div className={"h-40 flex flex-col justify-between"}>
+				<div className={"h-64 flex flex-col justify-between"}>
 					<div className="flex flex-col">
 						<label className="mb-3 text-3xl font-bold">카테고리</label>
 						<div className="flex flex-wrap justify-start gap-5">

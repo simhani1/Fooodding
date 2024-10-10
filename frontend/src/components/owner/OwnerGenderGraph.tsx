@@ -1,11 +1,35 @@
+import { getWaitingByGenderAge } from "@api/data-api";
 import { Chart as ChartJS, BarElement, CategoryScale, Legend, LinearScale, Title, Tooltip } from "chart.js";
+import { useState } from "react";
 import { Bar } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const OwnerGenderGraph = () => {
+	const [femaleData, setFemaleData] = useState<number[]>(Array(7).fill(0));
+	const [maleData, setMaleData] = useState<number[]>(Array(7).fill(0));
+
+	useState(() => {
+		const fetchGenderGraph = async () => {
+			const response = await getWaitingByGenderAge();
+			const femaleArray = Array(7).fill(0);
+			const maleArray = Array(7).fill(0);
+
+			response.data.data.forEach(({ gender, ages, count }: { gender: string; ages: string; count: number }) => {
+				const index = labels.indexOf(ages);
+				if (gender === "F") femaleArray[index] += count;
+				else if (gender === "M") maleArray[index] += count;
+			});
+
+			setFemaleData(femaleArray);
+			setMaleData(maleArray);
+		};
+
+		fetchGenderGraph();
+	});
+
 	// 그래프 Lables
-	const labels = ["0 - 9세", "10 - 19세", "20 - 29세", "30 - 39세", "40 - 49세", "50 - 59세", "60 - 69세", "70 -"];
+	const labels = ["10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79"];
 
 	// 그래프 DataSet
 	const data = {
@@ -13,7 +37,7 @@ const OwnerGenderGraph = () => {
 		datasets: [
 			{
 				label: "여성",
-				data: [2, 12, 24, 30, 10, 5, 2, 0],
+				data: femaleData,
 				backgroundColor: "rgba(238, 73, 76, 0.7)",
 				borderWidth: 2,
 				borderRadius: 4,
@@ -21,7 +45,7 @@ const OwnerGenderGraph = () => {
 			},
 			{
 				label: "남성",
-				data: [3, 9, 22, 21, 10, 2, 3, 0],
+				data: maleData,
 				backgroundColor: "rgba(103, 199, 255, 0.7)",
 				borderWidth: 2,
 				borderRadius: 4,

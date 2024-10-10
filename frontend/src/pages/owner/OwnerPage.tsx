@@ -37,7 +37,7 @@ const OwnerPage = () => {
 			<Main>
 				<>
 					<Title title="내 정보" />
-					<div className="flex flex-col gap-10">
+					<div className="flex flex-col gap-8">
 						<NavButton
 							buttonText="푸드트럭 정보 관리"
 							onClick={() => nav(`${basePath}/foodtruck`)}
@@ -58,9 +58,9 @@ const OwnerPage = () => {
 						>
 							로그아웃
 						</button>
-						<span className="mx-4 text-xl">|</span>
+						<span className="mx-4 text-xl text-gray">|</span>
 						<button
-							className="text-xl border-b-2 border-gray text-gray"
+							className="text-xl text-gray"
 							onClick={withdrawOwner}
 						>
 							회원탈퇴

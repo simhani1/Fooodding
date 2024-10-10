@@ -10,7 +10,7 @@ import OwnerRecommend from "@components/owner/OwnerRecommend";
 
 const OwnerMain = () => {
 	const [weekday, setWeekday] = useState(getWeekday()[0]);
-	const days = ["월", "화", "수", "목", "금", "토", "일"];
+	const days = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"];
 
 	return (
 		<Container>
@@ -29,7 +29,7 @@ const OwnerMain = () => {
 												<button
 													key={day}
 													onClick={() => setWeekday(day)}
-													className={`gap-5 px-2 py-1 w-14 text-xl rounded-2xl ${
+													className={`gap-5 px-2 py-1 text-xl rounded-md ${
 														day === weekday ? "bg-boss text-white" : ""
 													}`}
 												>

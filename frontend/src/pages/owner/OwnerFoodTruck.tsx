@@ -9,6 +9,7 @@ import OwnerException from "@components/owner/OwnerException";
 import { getOwnerFoodTruck } from "@api/food-truck-api";
 import { categories } from "@utils/foodTruckData";
 import useFoodTruckApi from "@hooks/useFoodTruckApi";
+import BackButton from "@components/owner/BackButton";
 
 const OwnerFoodTruck = () => {
 	const nav = useNavigate();
@@ -70,7 +71,10 @@ const OwnerFoodTruck = () => {
 			<Main>
 				<>
 					<div className="flex justify-between">
-						<Title title={title} />
+						<div className="flex items-center gap-4">
+							<BackButton />
+							<Title title={title} />
+						</div>
 						<button
 							className="text-3xl"
 							onClick={() =>

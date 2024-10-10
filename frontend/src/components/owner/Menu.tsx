@@ -58,7 +58,7 @@ const Menu = ({ foodTruckId, menuId, img, name, price }: IMenuProps) => {
 	};
 
 	return (
-		<div className="flex flex-col justify-around w-56 rounded-md shadow-md h-72">
+		<div className="flex flex-col justify-around w-56 border border-solid rounded-md shadow-md border-gray-light h-72">
 			<img
 				src={img || defaultImage}
 				alt="no image"

@@ -16,8 +16,9 @@ const NaverLoginHandler = () => {
 		try {
 			const { data } = await loginFn(params);
 			if (data.isSuccess) {
-				const { accessToken, isNewMember } = data.data;
+				const { accessToken, isNewMember, foodTruckId } = data.data;
 				localStorage.setItem("token", accessToken);
+				sessionStorage.setItem("foodTruckId", foodTruckId.toString());
 
 				if (role === "users" && isNewMember) {
 					nav(`/${role}/info`);

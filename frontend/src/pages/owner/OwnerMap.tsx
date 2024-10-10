@@ -11,7 +11,9 @@ import gooPath from "@utils/seoul-goo-path.json";
 import dongPath from "@utils/seoul-dong-path.json";
 import transform from "@utils/transform-wgs84";
 import permissionSection from "@utils/food-truck-permission.json";
-import { IFeatureCollection, ILatLng, IPolygonPath } from "@interface/map";
+import { IFeatureCollection, ILatLng, IGooPolygonPath, IDongPolygonPath } from "@interface/map";
+import { ICongestion } from "@interface/api";
+import { getCongestion, getRecommend } from "@api/data-api";
 
 import { CustomOverlayMap, Map, MapMarker, Polygon } from "react-kakao-maps-sdk";
 
@@ -26,6 +28,7 @@ const OwnerMap = () => {
 	const [isButton, setIsButton] = useState<boolean>(false);
 	const [showDetail, setShowDetail] = useState<boolean>(state?.dong ? true : false);
 	const [activeSection, setActiveSection] = useState<string>("recommend");
+	const [congestionData, setCongestionData] = useState<ICongestion[]>([]);
 
 	// 초기 지도 설정 (서울시)
 	useEffect(() => {
@@ -48,6 +51,31 @@ const OwnerMap = () => {
 			];
 
 			setOuter(outerPolygon);
+
+			// 추천구역 설정
+			// 푸드트럭 아이디 줘야함
+			const fetchRecommendData = async () => {
+				try {
+					const response = await getRecommend(Number(sessionStorage.getItem("foodTruckId")));
+					console.log(response);
+				} catch (error) {
+					console.error(error);
+				}
+			};
+
+			fetchRecommendData();
+
+			// 혼잡도 설정
+			const fetchCongestionData = async () => {
+				try {
+					const response = await getCongestion();
+					setCongestionData(response.data);
+				} catch (error) {
+					console.error(error);
+				}
+			};
+
+			fetchCongestionData();
 		}
 	}, [map]);
 
@@ -73,11 +101,21 @@ const OwnerMap = () => {
 		path: [section.lat, section.lng],
 	}));
 
-	////////// 임시
-	const colorMap = ["#EE494C", "#F5CE0C", "#56E87B", "#67C7FF"];
-	const length = 454;
-	const congestionColor = Array.from({ length }, (_, index) => (index % 4) + 1);
-	//////////
+	// 동 혼잡도별 색칠하기
+	const colorMap = ["#EE494C", "#67C7FF", "#56E87B", "#F5CE0C"];
+
+	const congestionColor = (dongCode: string) => {
+		const findCongestion = congestionData.find((item) => {
+			return item["행정동코드"] === dongCode;
+		});
+
+		if (findCongestion) {
+			const congestionLevel = findCongestion["혼잡도"];
+			return colorMap[congestionLevel % 4];
+		}
+
+		return "#D3D3D3";
+	};
 
 	// 서울 전체 보기 버튼
 	const handleButtonClick = () => {
@@ -89,7 +127,7 @@ const OwnerMap = () => {
 	};
 
 	// 구별 폴리곤 설정
-	const gooPolygons: IPolygonPath[] = gooPath.geometries.map((goo) => ({
+	const gooPolygons: IGooPolygonPath[] = gooPath.geometries.map((goo) => ({
 		name: goo.name,
 		path: transform({
 			geometries: [{ coordinates: [goo.coordinates[0]] }],
@@ -97,8 +135,9 @@ const OwnerMap = () => {
 	}));
 
 	// 동별 폴리곤 설정
-	const dongPolygons: IPolygonPath[] = (dongPath as IFeatureCollection).features.map((dong) => ({
+	const dongPolygons: IDongPolygonPath[] = (dongPath as IFeatureCollection).features.map((dong) => ({
 		name: dong.properties.ADM_DR_NM,
+		code: dong.properties.ADM_DR_CD,
 		path: dong.geometry.coordinates.flatMap((polygon) =>
 			polygon.flatMap((ring) =>
 				ring.map((coord) => {
@@ -193,7 +232,7 @@ const OwnerMap = () => {
 				center={{ lat: 37.5665, lng: 126.978 }}
 				level={level}
 				onCreate={(map) => setMap(map)}
-				className="z-0 h-screen absolute right-0 w-[calc(100%-11rem)]"
+				className="z-0 h-screen absolute right-0 w-[calc(100%-10rem)]"
 			>
 				{/* 대한민국 전체 폴리곤에서 서울만 비워두기 */}
 				{outer.length > 0 && (
@@ -246,8 +285,8 @@ const OwnerMap = () => {
 							</div>
 					  ))
 					: dongPolygons.map((dongPolygon, index) => {
-							const colorKey = congestionColor[index % congestionColor.length]; // 색상 키 가져오기
-							const fillColor = colorMap[colorKey];
+							const dongCode = dongPolygon.code;
+							const fillColor = congestionColor(dongCode);
 
 							return (
 								<Polygon

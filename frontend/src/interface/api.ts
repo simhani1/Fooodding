@@ -166,3 +166,23 @@ export interface IOwnerAnnouncementDTO {
 	place: string;
 	isOpened: boolean;
 }
+
+// data-api
+export interface IWaitingLogByGenderAgeResponseDTO extends IBaseResponseDTO {
+	data: IWaitingLogByGenderAge[];
+}
+
+export interface IWaitingLogByGenderAge {
+	gender: string;
+	ages: string;
+	count: number;
+}
+
+export interface ICongestionResponseDTO extends IBaseResponseDTO {
+	data: ICongestion[];
+}
+
+export interface ICongestion {
+	행정동코드: string;
+	혼잡도: number;
+}

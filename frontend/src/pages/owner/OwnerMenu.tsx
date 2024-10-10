@@ -96,7 +96,7 @@ const OwnerMenu = () => {
 						</button>
 					</div>
 					<div>
-						<div className="flex flex-wrap gap-6">
+						<div className="flex flex-wrap gap-6 mb-8">
 							{menuList &&
 								foodTruckId &&
 								menuList.map((item) => (

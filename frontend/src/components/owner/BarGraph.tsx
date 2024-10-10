@@ -42,7 +42,7 @@ const BarGraph = ({ data, labels }: IBarGraph) => {
 			options={options}
 			data={data}
 			height={120}
-			className="my-8"
+			className="mt-3 mb-4"
 		/>
 	);
 };

@@ -19,7 +19,13 @@ const NaverLoginHandler = () => {
 				const { accessToken, isNewMember, foodTruckId } = data.data;
 				localStorage.setItem("token", accessToken);
 
-				if (role === "owners") sessionStorage.setItem("foodTruckId", foodTruckId.toString());
+				if (role === "owners" && foodTruckId) {
+					sessionStorage.setItem("foodTruckId", foodTruckId.toString());
+				} else if (role === "owners") {
+					alert("운영하실 푸드트럭 정보를 등록해주셔아 서비스 이용이 가능합니다.");
+					nav("/owners/foodtruck/create");
+					return;
+				}
 
 				if (role === "users" && isNewMember) {
 					nav(`/${role}/info`);

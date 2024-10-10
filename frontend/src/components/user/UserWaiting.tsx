@@ -33,6 +33,11 @@ const UserWaiting = ({ waitingInfo, foodTruckId }: IWaitingProps) => {
 
 	const confirmCancellation = async () => {
 		try {
+			if (typeof foodTruckId === "undefined") {
+				alert("Food truck ID가 없습니다.");
+				return; // foodTruckId가 없으면 함수 종료
+			}
+
 			await cancelWaiting(foodTruckId, waitingId);
 
 			nav("/users"); //다시 처음화면으로

@@ -9,7 +9,8 @@ export interface IWaitingInfo {
 
 export interface IWaitingProps {
 	waitingInfo: IWaitingInfo;
-	foodTruckId: number;
+	foodTruckName?: string;
+	foodTruckId?: number;
 }
 
 export interface UserWaitingImgProps {

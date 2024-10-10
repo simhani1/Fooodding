@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { IOrderingProps } from "@interface/waiting";
 import { HourglassLow } from "@phosphor-icons/react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const UserOrder = ({ callTime }: IOrderingProps) => {
-	const nav = useNavigate();
+	// const nav = useNavigate();
 	console.log(callTime);
 
 	const [remainingTime, setRemainingTime] = useState(600); // 10분 = 600초
 	const [isTimeExceeded, setIsTimeExceeded] = useState(false); // 10분 초과 여부
 	const [timeDifference, setTimeDifference] = useState(0); // 서버와 클라이언트 시간 차이
+
+	console.log(timeDifference);
 
 	useEffect(() => {
 		// 서버 시간과 클라이언트 시간의 차이를 계산

@@ -17,6 +17,7 @@ def create_app():
     app = Flask(__name__)
 
     # API 블루프린트 등록
+<<<<<<< HEAD
     app.register_blueprint(predict.bp, url_prefix='/api/v1')
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -33,4 +34,9 @@ def create_app():
     app.register_blueprint(congestion.bp, url_prefix='/api/v1')
     app.register_blueprint(recommend.bp, url_prefix='/api/v1')
 >>>>>>> a11ace3 (feat: 성별, 연령대 별 행정동 추천 알고리즘 api 설계)
+=======
+    app.register_blueprint(predict.bp, url_prefix='/api/v2')
+    app.register_blueprint(congestion.bp, url_prefix='/api/v2')
+    app.register_blueprint(recommend.bp, url_prefix='/api/v2')
+>>>>>>> 168c6d0 (fix: api 주소 수정)
     return app

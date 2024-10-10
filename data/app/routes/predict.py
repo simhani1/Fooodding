@@ -33,7 +33,10 @@ def predict():
     행정동코드 = request_data.get('행정동코드')
 
     if not 행정동코드:
-        return jsonify({"error": "행정동 코드를 제공해주세요."}, ensure_ascii=False), 400
+        response = jsonify({"error": "행정동 코드를 제공해주세요."}, ensure_ascii=False)
+        response.status_code = 400
+        return response
+
 
     today = datetime.datetime.now().date()
     connection = create_connection()

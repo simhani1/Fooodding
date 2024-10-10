@@ -13,6 +13,7 @@ import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.service.CommerceQueryService;
 import com.fooding.api.foodtruck.service.dto.CommerceDto;
 import com.fooding.api.foodtruck.util.PointFactory;
+import com.fooding.api.waiting.repository.custom.WaitingRepositoryCustom;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 class CommerceQueryServiceImpl implements CommerceQueryService {
 
 	private final FoodTruckRepository foodTruckRepository;
+	private final WaitingRepositoryCustom waitingRepositoryCustom;
 
 	@Override
 	public void openFoodTruck(Long foodTruckId, CommerceDto dto, List<Long> unsoldMenuId) {
@@ -43,6 +45,7 @@ class CommerceQueryServiceImpl implements CommerceQueryService {
 			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
 		}
 		foodTruck.close();
+		waitingRepositoryCustom.deleteAllByFoodTruck(foodTruck);
 	}
 
 }

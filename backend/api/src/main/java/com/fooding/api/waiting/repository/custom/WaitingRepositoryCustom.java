@@ -43,4 +43,9 @@ public class WaitingRepositoryCustom {
 			.fetchOne();
 	}
 
+	public void deleteAllByFoodTruck(FoodTruck foodTruck) {
+		queryFactory.delete(waiting)
+			.where(waiting.foodTruck.eq(foodTruck));
+	}
+
 }

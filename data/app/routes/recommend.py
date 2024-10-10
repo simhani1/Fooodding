@@ -9,6 +9,7 @@ from app.utils.db import create_connection, get_foodtruck_category, get_gender_a
 
 bp = Blueprint('recommend', __name__)
 CORS(bp, supports_credentials=True)
+
 def print_progress(message):
     print(f"[{datetime.datetime.now()}] {message}")
 
@@ -26,7 +27,7 @@ def recommend():
     foodtruck_id = request_data.get('foodtruck_id')
 
     if foodtruck_id is None:
-        return Response(json.dumps({"error": "푸드트럭 ID를 제공해주세요."}), content_type="application/json; charset=utf-8", status=400)
+        return Response(json.dumps({"error": "푸드트럭 ID를 제공해주세요."}, ensure_ascii=False), content_type="application/json; charset=utf-8", status=400)
 
     # DB 연결
     connection = create_connection()
@@ -34,12 +35,12 @@ def recommend():
     # 푸드트럭 카테고리 조회
     category = get_foodtruck_category(connection, foodtruck_id)
     if category is None:
-        return Response(json.dumps({"error": "해당 ID에 맞는 푸드트럭이 없습니다."}), content_type="application/json; charset=utf-8", status=404)
+        return Response(json.dumps({"error": "해당 ID에 맞는 푸드트럭이 없습니다."}, ensure_ascii=False), content_type="application/json; charset=utf-8", status=404)
 
     # 카테고리에 따른 성별 및 연령대 매핑
     gender, age = get_gender_and_age_by_category(category)
     if gender is None or age is None:
-        return Response(json.dumps({"error": "해당 카테고리에 맞는 성별과 연령대 정보가 없습니다."}), content_type="application/json; charset=utf-8", status=404)
+        return Response(json.dumps({"error": "해당 카테고리에 맞는 성별과 연령대 정보가 없습니다."}, ensure_ascii=False), content_type="application/json; charset=utf-8", status=404)
 
     print_progress(f"푸드트럭 카테고리: {category}, 성별: {gender}, 연령대: {age}")
 
@@ -78,7 +79,7 @@ def recommend():
     aggregated_data = filtered_ddf.groupby('도착 행정동 코드')['이동인구(합)'].sum().compute()
 
     if aggregated_data.empty:
-        return Response(json.dumps({"error": "해당 조건에 맞는 데이터가 없습니다."}), content_type="application/json; charset=utf-8", status=404)
+        return Response(json.dumps({"error": "해당 조건에 맞는 데이터가 없습니다."}, ensure_ascii=False), content_type="application/json; charset=utf-8", status=404)
 
     # 62로 나누기
     results = (aggregated_data / 62).nlargest(10)
@@ -87,6 +88,8 @@ def recommend():
 
     print_progress("추천 완료.")
    
-    json_response = json.dumps({"message": "추천된 행정동코드와 유동인구", "recommendations": recommendations}, ensure_ascii=False)
+    json_response = json.dumps({"message": "오늘의 예측을 반환합니다.", "predictions": results}, ensure_ascii=False)
+
+    # 명시적으로 UTF-8 인코딩을 지정한 응답 생성
     response = Response(json_response, content_type="application/json; charset=utf-8", status=200)
     return response

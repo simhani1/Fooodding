@@ -48,7 +48,19 @@ def predict():
     client = Client(n_workers=4, threads_per_worker=2, memory_limit='2GB')
 
     # 데이터 읽기
-    folder_paths = ["/app/data/생활이동_행정동_202310/*.csv"]
+    folder_paths = [
+         "/app/data/생활이동_행정동_202310/*.csv",
+         "/app/data/생활이동_행정동_202210/*.csv",
+         "/app/data/생활이동_행정동_202110/*.csv",
+    ]
+    dtypes = {
+        '이동인구(합)': 'object',
+        '도착 행정동 코드': 'object',
+        '대상연월': 'object',
+        '도착시간': 'int32',
+        '요일': 'object'
+    }
+
     ddf = dd.read_csv(folder_paths, encoding='cp949', dtype=dtypes, blocksize="32MB")
 
     # 전처리
@@ -81,7 +93,7 @@ def predict():
     results = [{"시간": hour, "예측 유동인구": max(0, int(pred)/4)} for hour, pred in zip(hours, predictions)]
     save_prediction_to_db(connection, 행정동코드, today, results)
 
-    print_progress("예측 완료.")
+
     
     json_response = json.dumps({"message": "오늘의 예측을 반환합니다.", "predictions": results}, ensure_ascii=False)
     return Response(json_response, content_type="application/json; charset=utf-8", status=200)

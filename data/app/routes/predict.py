@@ -63,9 +63,9 @@ def predict():
 
     print_progress("데이터 로드 중...")
     folder_paths = [
-        r"C:\Users\SSAFY\Downloads\생활이동\생활이동_행정동_202310\*.csv",
-        r"C:\Users\SSAFY\Downloads\생활이동\생활이동_행정동_202210\*.csv",
-        r"C:\Users\SSAFY\Downloads\생활이동\생활이동_행정동_202110\*.csv",
+    "/app/data/생활이동_행정동_202310/*.csv",
+    "/app/data/생활이동_행정동_202210/*.csv",
+    "/app/data/생활이동_행정동_202110/*.csv",
     ]
 
     dtypes = {

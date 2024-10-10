@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from flask import Blueprint, request, jsonify, Response
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -8,6 +9,9 @@ from app.models.model import preprocess, aggregate_data, train_model
 =======
 from flask import Blueprint, request, jsonify
 >>>>>>> 00c9967 (fix: response 변경)
+=======
+from flask import Blueprint, request, jsonify
+>>>>>>> 6534577 (feat: gitignore추가)
 from app.models.predict_model import preprocess, aggregate_data, train_model
 =======
 from app.models.model import preprocess, aggregate_data, train_model

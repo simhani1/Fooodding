@@ -24,6 +24,8 @@ import com.fooding.api.waiting.service.WaitingCommandService;
 import com.fooding.api.waiting.service.WaitingQueryService;
 import com.fooding.api.waiting.service.dto.UserWaitingInfoDto;
 import com.fooding.api.waiting.service.dto.WaitingInfoDto;
+import com.fooding.api.waitinglog.service.WaitingLogCommandService;
+import com.fooding.api.waitinglog.service.dto.WaitingLogDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,7 @@ public class WaitingController {
 	private final WaitingQueryService waitingQueryService;
 	private final WaitingCommandService waitingCommandService;
 	private final NotificationService notificationService;
+	private final WaitingLogCommandService waitingLogCommandService;
 
 	@RequireJwtToken
 	@PostMapping("/users")
@@ -106,6 +109,14 @@ public class WaitingController {
 	public ResponseEntity<BaseResponse<List<UserWaitingInfoDto>>> getUserReservationList() {
 		Long userId = MemberContext.getMemberId();
 		List<UserWaitingInfoDto> res = waitingCommandService.getUserReservationList(userId);
+		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
+	}
+
+	@RequireJwtToken
+	@GetMapping("/log")
+	public ResponseEntity<BaseResponse<List<WaitingLogDto>>> getWaitingLog() {
+		Long ownerId = MemberContext.getMemberId();
+		List<WaitingLogDto> res = waitingLogCommandService.getWaitingLog(ownerId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 

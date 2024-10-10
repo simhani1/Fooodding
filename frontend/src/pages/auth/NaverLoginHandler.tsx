@@ -15,9 +15,11 @@ const NaverLoginHandler = () => {
 	) => {
 		try {
 			const { data } = await loginFn(params);
+
 			if (data.isSuccess) {
 				const { accessToken, isNewMember, foodTruckId } = data.data;
 				localStorage.setItem("token", accessToken);
+				// sessionStorage.setItem("foodTruckId", foodTruckId.toString());
 
 				if (role === "owners" && foodTruckId) {
 					sessionStorage.setItem("foodTruckId", foodTruckId.toString());
@@ -35,6 +37,7 @@ const NaverLoginHandler = () => {
 				nav(`/${role}`);
 				return;
 			}
+
 			nav("/");
 		} catch (error) {
 			nav("/");

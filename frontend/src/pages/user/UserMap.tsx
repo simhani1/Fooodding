@@ -103,8 +103,6 @@ const UserMap = () => {
 			lng: currentPosition.lng,
 		};
 
-		console.log(myPosition);
-
 		try {
 			const response = await getFoodTruckList(myPosition);
 			const data = response.data.data;
@@ -112,6 +110,9 @@ const UserMap = () => {
 			console.log(data);
 
 			setTrucks(data);
+
+			if (data.length === 0) return;
+
 			setLastTruckId(data[data.length - 1].foodTruckId); // 마지막 트럭의 id 저장
 		} catch (err) {
 			console.error(err);

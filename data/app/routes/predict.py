@@ -119,8 +119,6 @@ def predict():
     save_prediction_to_db(connection, 행정동코드, today, results)
 
     print_progress("예측 완료.")
+    
     json_response = json.dumps({"message": "오늘의 예측을 반환합니다.", "predictions": results}, ensure_ascii=False)
-
-    # 명시적으로 UTF-8 인코딩을 지정한 응답 생성
-    response = Response(json_response, content_type="application/json; charset=utf-8", status=200)
-    return response
+    return Response(json_response, content_type="application/json; charset=utf-8", status=200)

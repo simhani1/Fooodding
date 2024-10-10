@@ -14,9 +14,12 @@ import com.fooding.api.announcement.domain.Announcement;
 import com.fooding.api.announcement.repository.AnnouncementRepository;
 import com.fooding.api.fcm.service.FcmMessageService;
 import com.fooding.api.fcm.util.FcmMessageFactory;
+import com.google.firebase.messaging.FirebaseMessagingException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AnnouncementCrawler {
@@ -87,7 +90,11 @@ public class AnnouncementCrawler {
 
 		announcementList.add(announcement);
 
-		fcmMessageService.sendMessagesToOwners(FcmMessageFactory.createNewAnnouncementMessage(title));
+		try {
+			fcmMessageService.sendMessagesToOwners(FcmMessageFactory.createNewAnnouncementMessage(title));
+		} catch (FirebaseMessagingException e) {
+			log.error("Error while sending announcement", e);
+		}
 	}
 
 	private Document fetchDocument(String postLink) {

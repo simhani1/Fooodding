@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fooding.api.fcm.domain.FcmToken;
 import com.fooding.api.fcm.domain.TokenStatus;
-import com.fooding.api.fcm.exception.FailedFcmMulticast;
 import com.fooding.api.fcm.repository.FcmTokenRepository;
 import com.fooding.api.fcm.service.FcmMessageService;
 import com.fooding.api.fcm.service.dto.FcmMessageDto;
@@ -29,19 +28,18 @@ class FcmMessageServiceImpl implements FcmMessageService {
 	private final FcmTokenRepository fcmTokenRepository;
 
 	@Override
-	public void sendMessages(Long memberId, FcmMessageDto dto) {
+	public void sendMessages(Long memberId, FcmMessageDto dto) throws FirebaseMessagingException {
 		List<FcmToken> tokens = fcmTokenRepository.findByMemberIdAndStatus(memberId, TokenStatus.ACTIVE);
-		if(tokens.isEmpty()) {
-			throw new FailedFcmMulticast();
+		if (!tokens.isEmpty()) {
+			List<String> tokenList = tokens.stream()
+				.map(FcmToken::getToken)
+				.collect(Collectors.toList());
+			sendEachForMulticast(dto, tokenList);
 		}
-		List<String> tokenList = tokens.stream()
-			.map(FcmToken::getToken)
-			.collect(Collectors.toList());
-		sendEachForMulticast(dto, tokenList);
 	}
 
 	@Override
-	public void sendMessagesToOwners(FcmMessageDto dto) {
+	public void sendMessagesToOwners(FcmMessageDto dto) throws FirebaseMessagingException {
 		List<FcmToken> ownerTokens = fcmTokenRepository.findByMemberRoleAndStatus(MemberRole.OWNER, TokenStatus.ACTIVE);
 		List<String> tokenList = ownerTokens.stream()
 			.map(FcmToken::getToken)
@@ -52,7 +50,7 @@ class FcmMessageServiceImpl implements FcmMessageService {
 		}
 	}
 
-	private void sendEachForMulticast(FcmMessageDto dto, List<String> tokenList) {
+	private void sendEachForMulticast(FcmMessageDto dto, List<String> tokenList) throws FirebaseMessagingException {
 		MulticastMessage message = MulticastMessage.builder()
 			.addAllTokens(tokenList)
 			.setNotification(Notification.builder()
@@ -60,11 +58,7 @@ class FcmMessageServiceImpl implements FcmMessageService {
 				.setBody(dto.message())
 				.build())
 			.build();
-		try {
-			FirebaseMessaging.getInstance().sendEachForMulticast(message);
-		} catch (FirebaseMessagingException e) {
-			throw new FailedFcmMulticast();
-		}
+		FirebaseMessaging.getInstance().sendEachForMulticast(message);
 	}
 
 }

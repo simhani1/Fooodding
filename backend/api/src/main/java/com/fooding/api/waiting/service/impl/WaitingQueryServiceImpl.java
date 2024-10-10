@@ -5,7 +5,6 @@ import java.time.ZoneId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fooding.api.fcm.exception.FailedFcmMulticast;
 import com.fooding.api.fcm.service.FcmMessageService;
 import com.fooding.api.fcm.util.FcmMessageFactory;
 import com.fooding.api.foodtruck.domain.FoodTruck;
@@ -25,6 +24,7 @@ import com.fooding.api.waiting.service.WaitingQueryService;
 import com.fooding.api.waiting.service.dto.WaitingInfoDto;
 import com.fooding.api.waitinglog.domain.WaitingLog;
 import com.fooding.api.waitinglog.repository.WaitingLogRepository;
+import com.google.firebase.messaging.FirebaseMessagingException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,8 +89,8 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 		waiting.changeToOrderLine();
 		try {
 			fcmMessageService.sendMessages(waiting.getMember().getId(), FcmMessageFactory.createCustomerTurnMessage());
-		} catch (FailedFcmMulticast e) {
-			log.error("Filed FCM Multicast");
+		} catch (FirebaseMessagingException e) {
+			log.error("Error while sending FCM message", e);
 		}
 		return WaitingInfoDto.builder()
 			.waitingId(waiting.getId())

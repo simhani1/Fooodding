@@ -17,4 +17,7 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
 	@Query("select w from Waiting w where w.foodTruck = :foodTruck order by w.id asc")
 	List<Waiting> findByFoodTruck(FoodTruck foodTruck);
 
+	@Query("SELECT w FROM Waiting w WHERE w.member = :member ORDER BY w.id ASC")
+	List<Waiting> findByMember(Member member);
+
 }

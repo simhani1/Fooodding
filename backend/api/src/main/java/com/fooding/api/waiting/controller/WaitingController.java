@@ -22,6 +22,7 @@ import com.fooding.api.notification.service.NotificationService;
 import com.fooding.api.waiting.controller.response.GetReservationListRes;
 import com.fooding.api.waiting.service.WaitingCommandService;
 import com.fooding.api.waiting.service.WaitingQueryService;
+import com.fooding.api.waiting.service.dto.UserWaitingInfoDto;
 import com.fooding.api.waiting.service.dto.WaitingInfoDto;
 
 import lombok.RequiredArgsConstructor;
@@ -90,7 +91,7 @@ public class WaitingController {
 	}
 
 	@RequireJwtToken
-	@DeleteMapping("owners/{waiting-id}")
+	@DeleteMapping("/owners/{waiting-id}")
 	public ResponseEntity<BaseResponse<?>> callUser(
 		@PathVariable("waiting-id") Long waitingId,
 		@RequestParam("is-completed") boolean isCompleted
@@ -98,6 +99,14 @@ public class WaitingController {
 		Long ownerId = MemberContext.getMemberId();
 		waitingQueryService.callUesr(ownerId, waitingId, isCompleted);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
+	}
+
+	@RequireJwtToken
+	@GetMapping("/users")
+	public ResponseEntity<BaseResponse<List<UserWaitingInfoDto>>> getUserReservationList() {
+		Long userId = MemberContext.getMemberId();
+		List<UserWaitingInfoDto> res = waitingCommandService.getUserReservationList(userId);
+		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 
 }

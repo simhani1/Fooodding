@@ -18,6 +18,7 @@ import com.fooding.api.notification.service.NotificationService;
 import com.fooding.api.waiting.domain.Waiting;
 import com.fooding.api.waiting.repository.WaitingRepository;
 import com.fooding.api.waiting.service.WaitingCommandService;
+import com.fooding.api.waiting.service.dto.UserWaitingInfoDto;
 import com.fooding.api.waiting.service.dto.WaitingInfoDto;
 
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,20 @@ class WaitingCommandServiceImpl implements WaitingCommandService {
 				.cancelable(waiting.isCancellable())
 				.number(waiting.getNumber())
 				.userName(waiting.getMember().getNickname())
+				.build())
+			.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<UserWaitingInfoDto> getUserReservationList(Long userId) {
+		Member user  =memberRepository.findById(userId)
+			.orElseThrow(() -> new NoMemberException("User not found with ID: " + userId));
+		List<Waiting> waitingList = waitingRepository.findByMember(user);
+		return waitingList.stream()
+			.map(waiting -> UserWaitingInfoDto.builder()
+				.waitingId(waiting.getId())
+				.number(waiting.getNumber())
+				.foodTruckName(waiting.getFoodTruck().getInfo().getName())
 				.build())
 			.collect(Collectors.toList());
 	}

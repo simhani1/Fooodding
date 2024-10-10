@@ -86,7 +86,10 @@ export interface IFoodTruckDetailUserInfoDTO extends IBaseResponseDTO {
 
 //사용자의 푸드트럭 예약 리스트 조회
 export interface ITruckWaitingListInfoDTO extends IBaseResponseDTO {
-	data: ITruckWaitingInfo[];
+	data: {
+		userWaitingInfo: ITruckWaitingInfo[]; // 푸드트럭 대기 리스트
+		tokenStatus: string; // "ACTIVE", "INACTIVE", "NONE" 상태 값
+	};
 }
 
 //메뉴

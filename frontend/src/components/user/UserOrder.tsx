@@ -1,12 +1,8 @@
-// import { useNavigate } from "react-router-dom";
-
 const UserOrder = () => {
-	// const nav = useNavigate();
-
 	return (
 		<>
 			<div className="flex flex-row m-4">
-				<p className="text-2xl font-extrabold text-user">10분 이내</p>
+				<p className="text-2xl font-extrabold text-user">빠른 시간 내</p>
 				<p className="text-2xl font-extrabold text-black">에 와주세요!</p>
 			</div>
 

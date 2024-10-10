@@ -52,4 +52,5 @@ export interface ITruckWaitingInfo {
 	waitingId: number;
 	number: number;
 	foodTruckName: string;
+	foodTruckId: number;
 }

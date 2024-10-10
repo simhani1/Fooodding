@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.fooding.api.foodtruck.domain.FoodTruck;
 import com.fooding.api.foodtruck.domain.commerce.OpenStatus;
 import com.fooding.api.member.domain.Member;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -32,13 +33,17 @@ public class FoodTruckRepositoryCustom {
 	public List<FoodTruck> findOpenedFoodTrucks(Point center, Long lastFoodTruckId) {
 		return queryFactory.selectFrom(foodTruck)
 			.where(foodTruck.commerceInfo.openStatus.eq(OpenStatus.OPENED)
-				.and(Expressions.booleanTemplate(
-					"ST_Contains(ST_Buffer({0}, {1}), {2})",
-					center, 1000, foodTruck.commerceInfo.location))
-				.and(foodTruck.id.lt(lastFoodTruckId)))
+					.and(Expressions.booleanTemplate(
+						"ST_Contains(ST_Buffer({0}, {1}), {2})",
+						center, 1000, foodTruck.commerceInfo.location)),
+				ltLastFoodTruckId(lastFoodTruckId))
 			.orderBy(foodTruck.id.desc())
 			.limit(20)
 			.fetch();
+	}
+
+	private BooleanExpression ltLastFoodTruckId(Long lastFoodTruckId) {
+		return lastFoodTruckId != null ? foodTruck.id.lt(lastFoodTruckId) : null;
 	}
 
 }

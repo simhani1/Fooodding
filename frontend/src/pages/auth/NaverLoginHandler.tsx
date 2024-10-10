@@ -19,7 +19,6 @@ const NaverLoginHandler = () => {
 			if (data.isSuccess) {
 				const { accessToken, isNewMember, foodTruckId } = data.data;
 				localStorage.setItem("token", accessToken);
-				// sessionStorage.setItem("foodTruckId", foodTruckId.toString());
 
 				if (role === "owners" && foodTruckId) {
 					sessionStorage.setItem("foodTruckId", foodTruckId.toString());

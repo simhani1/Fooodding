@@ -107,12 +107,9 @@ const UserMap = () => {
 			const response = await getFoodTruckList(myPosition);
 			const data = response.data.data;
 
-			console.log(data);
-
-			setTrucks(data);
-
 			if (data.length === 0) return;
 
+			setTrucks(data);
 			setLastTruckId(data[data.length - 1].foodTruckId); // 마지막 트럭의 id 저장
 		} catch (err) {
 			console.error(err);
@@ -160,43 +157,41 @@ const UserMap = () => {
 			<TheHeader />
 
 			<div className="w-full h-screen">
-				{trucks.length > 0 && (
-					<Map
-						center={mapCenter}
-						className="w-full h-screen"
-						level={5}
-						ref={mapRef}
-						onCreate={(map) => (mapRef.current = map)}
-					>
-						{trucks.map((truck, index) => (
-							<MapMarker
-								key={index}
-								position={{ lat: truck.latitude, lng: truck.longitude }}
-								onClick={() => handleMarkerClick(truck)}
-								image={{
-									src: "/foodtruckmarker.png", // 마커 이미지 경로
-									size: {
-										width: 36,
-										height: 36,
-									},
-								}}
-							>
-								<div className="border-none">{truck.name}</div>
-							</MapMarker>
-						))}
-
+				<Map
+					center={mapCenter}
+					className="w-full h-screen"
+					level={5}
+					ref={mapRef}
+					onCreate={(map) => (mapRef.current = map)}
+				>
+					{trucks.map((truck, index) => (
 						<MapMarker
-							position={currentPosition}
+							key={index}
+							position={{ lat: truck.latitude, lng: truck.longitude }}
+							onClick={() => handleMarkerClick(truck)}
 							image={{
-								src: "/MapPin.png",
+								src: "/foodtruckmarker.png", // 마커 이미지 경로
 								size: {
 									width: 36,
 									height: 36,
 								},
 							}}
-						/>
-					</Map>
-				)}
+						>
+							<div className="border-none">{truck.name}</div>
+						</MapMarker>
+					))}
+
+					<MapMarker
+						position={currentPosition}
+						image={{
+							src: "/MapPin.png",
+							size: {
+								width: 36,
+								height: 36,
+							},
+						}}
+					/>
+				</Map>
 			</div>
 
 			<button className="fixed z-10 p-2 bg-white rounded-lg shadow-lg bottom-96 left-4">

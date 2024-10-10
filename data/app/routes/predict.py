@@ -18,7 +18,6 @@ from app.models.predict_model import preprocess, aggregate_data, train_model
 >>>>>>> d542351 (fix: 추천 api 수정)
 from app.utils.db import create_connection, save_prediction_to_db
 import datetime
-import json
 import dask.dataframe as dd
 import pandas as pd
 from dask.distributed import Client
@@ -32,11 +31,11 @@ def predict():
     request_data = request.get_json()
     행정동코드 = request_data.get('행정동코드')
 
+    # 행정동코드가 제공되지 않았을 때
     if not 행정동코드:
-        response = jsonify({"error": "행정동 코드를 제공해주세요."}, ensure_ascii=False)
+        response = jsonify({"error": "행정동 코드를 제공해주세요."})
         response.status_code = 400
         return response
-
 
     today = datetime.datetime.now().date()
     connection = create_connection()
@@ -46,7 +45,7 @@ def predict():
         cursor.execute("SELECT time, predict_people FROM predictions WHERE location_code = %s AND date = %s", (행정동코드, today))
         existing_predictions = cursor.fetchall()
         if existing_predictions:
-            return jsonify({"message": "DB에서 예측 결과를 반환합니다.", "predictions": existing_predictions}, ensure_ascii=False), 200
+            return jsonify({"message": "DB에서 예측 결과를 반환합니다.", "predictions": existing_predictions}), 200
 
     client = Client(n_workers=4, threads_per_worker=2, memory_limit='2GB')
 
@@ -64,7 +63,6 @@ def predict():
         '도착시간': 'int32',
         '요일': 'object'
     }
-
 
     ddf = dd.read_csv(folder_paths, encoding='cp949', dtype=dtypes, blocksize="32MB")
 
@@ -95,12 +93,7 @@ def predict():
     X_pred_scaled = scaler.transform(X_pred)
     predictions = model.predict(X_pred_scaled)
 
-    results = [{"시간": hour, "예측 유동인구": max(0, int(pred)/4)} for hour, pred in zip(hours, predictions)]
+    results = [{"시간": hour, "예측 유동인구": max(0, int(pred) / 4)} for hour, pred in zip(hours, predictions)]
     save_prediction_to_db(connection, 행정동코드, today, results)
 
-
-    
-    json_response = json.dumps(results, ensure_ascii=False)
-    
-    response = Response(json_response, content_type="application/json; charset=utf-8", status=200)
-    return response
+    return jsonify(results), 200

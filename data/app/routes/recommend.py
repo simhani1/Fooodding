@@ -84,11 +84,12 @@ def recommend():
     # 62로 나누기
     results = (aggregated_data / 62).nlargest(10)
 
+    # JSON 직렬화 시 리스트로 변환
     recommendations = [{"행정동코드": code, "유동인구": int(pop)} for code, pop in results.items()]
 
     print_progress("추천 완료.")
    
-    json_response = json.dumps({"message": "오늘의 예측을 반환합니다.", "predictions": results}, ensure_ascii=False)
+    json_response = json.dumps({"message": "오늘의 예측을 반환합니다.", "predictions": recommendations}, ensure_ascii=False)
 
     # 명시적으로 UTF-8 인코딩을 지정한 응답 생성
     response = Response(json_response, content_type="application/json; charset=utf-8", status=200)

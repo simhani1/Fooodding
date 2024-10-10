@@ -1,9 +1,13 @@
+<<<<<<< HEAD
 from flask import Blueprint, request, jsonify, Response
 <<<<<<< HEAD
 <<<<<<< HEAD
 from app.models.model import preprocess, aggregate_data, train_model
 =======
 <<<<<<< HEAD
+=======
+from flask import Blueprint, request, jsonify
+>>>>>>> 00c9967 (fix: response 변경)
 from app.models.predict_model import preprocess, aggregate_data, train_model
 =======
 from app.models.model import preprocess, aggregate_data, train_model
@@ -33,9 +37,7 @@ def predict():
 
     # 행정동코드가 제공되지 않았을 때
     if not 행정동코드:
-        response = jsonify({"error": "행정동 코드를 제공해주세요."})
-        response.status_code = 400
-        return response
+        return jsonify({"error": "행정동 코드를 제공해주세요."}), 400
 
     today = datetime.datetime.now().date()
     connection = create_connection()
@@ -55,7 +57,6 @@ def predict():
          "/app/data/생활이동_행정동_202210/*.csv",
          "/app/data/생활이동_행정동_202110/*.csv",
     ]
-
     dtypes = {
         '이동인구(합)': 'object',
         '도착 행정동 코드': 'object',
@@ -96,4 +97,4 @@ def predict():
     results = [{"시간": hour, "예측 유동인구": max(0, int(pred) / 4)} for hour, pred in zip(hours, predictions)]
     save_prediction_to_db(connection, 행정동코드, today, results)
 
-    return jsonify(results), 200
+    return jsonify({"message": "오늘의 예측을 반환합니다.", "predictions": results}), 200

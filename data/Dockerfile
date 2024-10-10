@@ -32,4 +32,4 @@ RUN pip install --upgrade pip && \
 COPY . .
 
 # Flask 앱 실행
-CMD ["python", "app.py"]
+CMD ["python", "run.py"]

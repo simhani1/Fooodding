@@ -57,7 +57,8 @@ public class WaitingController {
 		@PathVariable("waiting-id") Long waitingId) {
 		Long userId = MemberContext.getMemberId();
 		waitingQueryService.cancel(userId, waitingId);
-		notificationService.send(foodTruckId, "canceled", waitingId);
+		notificationService.send(foodTruckId, "canceled", WaitingInfoDto.builder()
+			.waitingId(waitingId).build());
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 

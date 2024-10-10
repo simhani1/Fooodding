@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fooding.api.fcm.exception.FailedFcmMulticast;
 import com.fooding.api.fcm.service.FcmMessageService;
 import com.fooding.api.fcm.util.FcmMessageFactory;
 import com.fooding.api.foodtruck.domain.FoodTruck;
@@ -86,7 +87,11 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 		Waiting waiting = waitingRepository.findById(waitingId)
 			.orElseThrow(() -> new NoWaitingInfoException("Waiting not found with ID: " + waitingId));
 		waiting.changeToOrderLine();
-		fcmMessageService.sendMessages(waiting.getMember().getId(), FcmMessageFactory.createCustomerTurnMessage());
+		try {
+			fcmMessageService.sendMessages(waiting.getMember().getId(), FcmMessageFactory.createCustomerTurnMessage());
+		} catch (FailedFcmMulticast e) {
+			log.error("Filed FCM Multicast");
+		}
 		return WaitingInfoDto.builder()
 			.waitingId(waiting.getId())
 			.changedAt(waiting.getChangedAt().atZone(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli())

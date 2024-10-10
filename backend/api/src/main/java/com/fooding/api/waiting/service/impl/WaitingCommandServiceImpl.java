@@ -65,6 +65,7 @@ class WaitingCommandServiceImpl implements WaitingCommandService {
 			.map(waiting -> UserWaitingInfoDto.builder()
 				.waitingId(waiting.getId())
 				.number(waiting.getNumber())
+				.foodTruckId(waiting.getFoodTruck().getId())
 				.foodTruckName(waiting.getFoodTruck().getInfo().getName())
 				.build())
 			.collect(Collectors.toList());

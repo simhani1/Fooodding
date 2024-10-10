@@ -6,6 +6,7 @@ import lombok.Builder;
 public record UserWaitingInfoDto(
 	Long waitingId,
 	Integer number,
+	Long foodTruckId,
 	String foodTruckName
 ) {
 }

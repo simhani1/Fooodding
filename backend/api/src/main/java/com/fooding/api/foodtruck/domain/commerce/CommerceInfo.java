@@ -39,8 +39,8 @@ public class CommerceInfo {
 		this.waitingNumber = waitingNumber;
 	}
 
-	public static CommerceInfo ofNew() {
-		return new CommerceInfo(OpenStatus.CLOSED, LocalDateTime.now(), LocalDateTime.now(), null,
+	public static CommerceInfo ofNew(Point location) {
+		return new CommerceInfo(OpenStatus.CLOSED, LocalDateTime.now(), LocalDateTime.now(), location,
 			INITIAL_WAITING_NUMBER);
 	}
 

@@ -11,6 +11,7 @@ import com.fooding.api.foodtruck.exception.NoFoodTruckException;
 import com.fooding.api.foodtruck.repository.FoodTruckRepository;
 import com.fooding.api.foodtruck.service.FoodTruckQueryService;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
+import com.fooding.api.foodtruck.util.PointFactory;
 import com.fooding.api.member.domain.Member;
 import com.fooding.api.member.exception.NoMemberException;
 import com.fooding.api.member.repository.MemberRepository;
@@ -39,7 +40,7 @@ class FoodTruckQueryServiceImpl implements FoodTruckQueryService {
 				.introduction(dto.introduction())
 				.licenseNumber(dto.licenseNumber())
 				.build())
-			.commerceInfo(CommerceInfo.ofNew())
+			.commerceInfo(CommerceInfo.ofNew(PointFactory.create(0, 0)))
 			.build());
 		return FoodTruckDto.builder()
 			.foodTruckId(foodTruck.getId())

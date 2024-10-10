@@ -58,7 +58,7 @@ public class FoodTruck {
 	@AttributeOverride(name = "openStatus", column = @Column(name = "open_status", nullable = false))
 	@AttributeOverride(name = "openedAt", column = @Column(name = "opened_at", nullable = false))
 	@AttributeOverride(name = "closedAt", column = @Column(name = "closed_at", nullable = false))
-	@AttributeOverride(name = "location", column = @Column(name = "location", columnDefinition = "POINT SRID 4326"))
+	@AttributeOverride(name = "location", column = @Column(name = "location", columnDefinition = "POINT SRID 4326", nullable = false))
 	@AttributeOverride(name = "waitingNumber", column = @Column(name = "waiting_number"))
 	private CommerceInfo commerceInfo;
 

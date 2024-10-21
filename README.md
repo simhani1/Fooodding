@@ -115,7 +115,7 @@
 ### 3️⃣ ERD
 
 <div align='center'>
-  <img src='./docs/erd.png' width='600px'>
+  <img src='https://github.com/user-attachments/assets/f6bdc1cc-64a4-4729-b8c6-5a0414b42316' width='600px'>
 </div>
 
 ## 👥 참여 인원 및 역할

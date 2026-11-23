@@ -1,6 +1,6 @@
 # Local SSE cluster
 
-nginx(:8080) → api-1(:8081) / api-2(:8082), shared MySQL + Redis, Prometheus(:9090) + Grafana(:3000, dashboard "Fooding SSE cluster").
+nginx(:8080) → api-1(:8081) / api-2(:8082), shared MySQL + Redis, Prometheus(:9090) + Grafana(:3000, dashboard "푸딩 SSE 클러스터").
 
 ```bash
 (cd ../../backend/api && sh gradlew bootJar -x test) && cp ../../backend/api/build/libs/api-0.0.1-SNAPSHOT.jar ./api.jar

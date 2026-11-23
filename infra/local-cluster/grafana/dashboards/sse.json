@@ -1,6 +1,6 @@
 {
  "uid": "fooding-sse",
- "title": "Fooding SSE cluster",
+ "title": "푸딩 SSE 클러스터",
  "schemaVersion": 39,
  "refresh": "5s",
  "time": {
@@ -11,317 +11,286 @@
   {
    "id": 1,
    "type": "stat",
-   "title": "Instances up",
+   "title": "살아있는 서버 수",
+   "description": "Prometheus가 수집 중인 api 인스턴스 수. 2 미만이면 빨강",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
    "gridPos": {
     "x": 0,
     "y": 0,
     "w": 6,
     "h": 4
    },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
    "fieldConfig": {
     "defaults": {
-     "unit": "short"
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "value": null,
+        "color": "red"
+       },
+       {
+        "value": 2,
+        "color": "green"
+       }
+      ]
+     },
+     "color": {
+      "mode": "thresholds"
+     }
     },
     "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
    },
    "targets": [
     {
      "refId": "A",
-     "expr": "sum(up{job=\"fooding-api\"})"
+     "expr": "sum(up{job=\"fooding-api\"})",
+     "legendFormat": "",
+     "instant": true
     }
    ]
   },
   {
    "id": 2,
    "type": "stat",
-   "title": "SSE connections (sum of instances)",
+   "title": "현재 접속 중인 점주 화면",
+   "description": "모든 서버가 들고 있는 SSE 연결 합계",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
    "gridPos": {
     "x": 6,
     "y": 0,
     "w": 6,
     "h": 4
    },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
    "fieldConfig": {
     "defaults": {
-     "unit": "short"
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "value": null,
+        "color": "blue"
+       }
+      ]
+     },
+     "color": {
+      "mode": "thresholds"
+     }
     },
     "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
    },
    "targets": [
     {
      "refId": "A",
-     "expr": "sum(sse_connections_local)"
+     "expr": "sum(sse_connections_local)",
+     "legendFormat": "",
+     "instant": true
     }
    ]
   },
   {
    "id": 3,
    "type": "stat",
-   "title": "SSE connections in Redis registry",
+   "title": "Redis에 기록된 연결",
+   "description": "sse:conn:* 키 수. 위 값과 다르면 정리 안 된 연결(최대 30초 후 TTL 만료)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
    "gridPos": {
     "x": 12,
     "y": 0,
     "w": 6,
     "h": 4
    },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
    "fieldConfig": {
     "defaults": {
-     "unit": "short"
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "value": null,
+        "color": "purple"
+       }
+      ]
+     },
+     "color": {
+      "mode": "thresholds"
+     }
     },
     "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
    },
    "targets": [
     {
      "refId": "A",
-     "expr": "max(sse_connections_registry)"
+     "expr": "max(sse_connections_registry)",
+     "legendFormat": "",
+     "instant": true
     }
    ]
   },
   {
    "id": 4,
    "type": "stat",
-   "title": "Publish failures (5m)",
+   "title": "알림 발행 실패 (선택 기간)",
+   "description": "Redis 발행 실패 건수. 예약은 성공했지만 알림이 못 나간 횟수",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
    "gridPos": {
     "x": 18,
     "y": 0,
     "w": 6,
     "h": 4
    },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
    "fieldConfig": {
     "defaults": {
-     "unit": "short"
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "value": null,
+        "color": "green"
+       },
+       {
+        "value": 1,
+        "color": "red"
+       }
+      ]
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
     },
     "overrides": []
+   },
+   "options": {
+    "colorMode": "background",
+    "graphMode": "none",
+    "textMode": "value",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
    },
    "targets": [
     {
      "refId": "A",
-     "expr": "sum(increase(sse_events_publish_failed_total[5m]))"
+     "expr": "sum(increase(sse_events_publish_failed_total[$__range])) or vector(0)",
+     "legendFormat": "",
+     "instant": true
     }
    ]
   },
   {
    "id": 5,
-   "type": "timeseries",
-   "title": "SSE connections per instance",
-   "gridPos": {
-    "x": 0,
-    "y": 4,
-    "w": 12,
-    "h": 8
-   },
+   "type": "bargauge",
+   "title": "서버별 점주 연결 수",
+   "description": "각 인스턴스가 들고 있는 SSE 연결. 한쪽 쏠림 확인용",
    "datasource": {
     "type": "prometheus",
     "uid": "prom"
    },
+   "gridPos": {
+    "x": 0,
+    "y": 4,
+    "w": 8,
+    "h": 7
+   },
    "fieldConfig": {
     "defaults": {
-     "unit": "short"
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "value": null,
+        "color": "blue"
+       }
+      ]
+     },
+     "color": {
+      "mode": "thresholds"
+     }
     },
     "overrides": []
+   },
+   "options": {
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
    },
    "targets": [
     {
      "refId": "A",
      "expr": "sse_connections_local",
-     "legendFormat": "{{instance}} local"
-    },
-    {
-     "refId": "B",
-     "expr": "max(sse_connections_registry)",
-     "legendFormat": "Redis registry"
+     "legendFormat": "{{instance}}",
+     "instant": true
     }
    ]
   },
   {
    "id": 6,
-   "type": "timeseries",
-   "title": "Events delivered / s by route",
+   "type": "piechart",
+   "title": "알림 전달 경로 (같은 서버 vs 다른 서버)",
+   "description": "cross_instance = 요청 받은 서버와 점주가 붙은 서버가 달라 Redis Pub/Sub이 넘겨준 전달",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
    "gridPos": {
-    "x": 12,
+    "x": 8,
     "y": 4,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "ops"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "sum by (instance, route) (rate(sse_events_delivered_total[1m]))",
-     "legendFormat": "{{instance}} {{route}}"
-    }
-   ]
-  },
-  {
-   "id": 7,
-   "type": "timeseries",
-   "title": "Events published / s by origin instance",
-   "gridPos": {
-    "x": 0,
-    "y": 12,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "ops"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "sum by (instance, event) (rate(sse_events_published_total[1m]))",
-     "legendFormat": "{{instance}} {{event}}"
-    }
-   ]
-  },
-  {
-   "id": 8,
-   "type": "timeseries",
-   "title": "Pub/Sub latency (publish -> delivered)",
-   "gridPos": {
-    "x": 12,
-    "y": 12,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "s"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "histogram_quantile(0.5, sum by (le) (rate(sse_pubsub_latency_seconds_bucket[1m])))",
-     "legendFormat": "p50"
-    },
-    {
-     "refId": "B",
-     "expr": "histogram_quantile(0.99, sum by (le) (rate(sse_pubsub_latency_seconds_bucket[1m])))",
-     "legendFormat": "p99"
-    },
-    {
-     "refId": "C",
-     "expr": "max(sse_pubsub_latency_seconds_max)",
-     "legendFormat": "max"
-    }
-   ]
-  },
-  {
-   "id": 9,
-   "type": "timeseries",
-   "title": "SSE frame size by event (sizes proxy_buffer_size)",
-   "gridPos": {
-    "x": 0,
-    "y": 20,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "bytes"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "max by (event) (sse_event_frame_bytes_max)",
-     "legendFormat": "{{event}} max"
-    },
-    {
-     "refId": "B",
-     "expr": "max by (event) (sse_event_frame_bytes{quantile=\"0.99\"})",
-     "legendFormat": "{{event}} p99"
-    }
-   ]
-  },
-  {
-   "id": 10,
-   "type": "timeseries",
-   "title": "Reserve API latency (guest request)",
-   "gridPos": {
-    "x": 12,
-    "y": 20,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "s"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "histogram_quantile(0.99, sum by (le, instance) (rate(http_server_requests_seconds_bucket{uri=\"/api/v1/waiting/users\",method=\"POST\"}[1m])))",
-     "legendFormat": "{{instance}} p99"
-    },
-    {
-     "refId": "B",
-     "expr": "histogram_quantile(0.5, sum by (le) (rate(http_server_requests_seconds_bucket{uri=\"/api/v1/waiting/users\",method=\"POST\"}[1m])))",
-     "legendFormat": "p50"
-    }
-   ]
-  },
-  {
-   "id": 11,
-   "type": "timeseries",
-   "title": "Delivery failures (dead connections dropped)",
-   "gridPos": {
-    "x": 0,
-    "y": 28,
-    "w": 12,
-    "h": 8
-   },
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
+    "w": 8,
+    "h": 7
    },
    "fieldConfig": {
     "defaults": {
@@ -329,44 +298,366 @@
     },
     "overrides": []
    },
+   "options": {
+    "pieType": "donut",
+    "legend": {
+     "displayMode": "table",
+     "placement": "right",
+     "values": [
+      "value",
+      "percent"
+     ]
+    },
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
+   },
    "targets": [
     {
      "refId": "A",
-     "expr": "sum by (instance) (increase(sse_events_delivery_failed_total[1m]))",
-     "legendFormat": "{{instance}}"
+     "expr": "sum by (route) (increase(sse_events_delivered_total[$__range]))",
+     "legendFormat": "{{route}}",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "type": "piechart",
+   "title": "서버별 요청 분배 (nginx 라운드로빈)",
+   "description": "인스턴스별 API 요청 비율. 반반에 가까워야 정상",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 4,
+    "w": 8,
+    "h": 7
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
     },
+    "overrides": []
+   },
+   "options": {
+    "pieType": "donut",
+    "legend": {
+     "displayMode": "table",
+     "placement": "right",
+     "values": [
+      "value",
+      "percent"
+     ]
+    },
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
+   },
+   "targets": [
     {
-     "refId": "B",
-     "expr": "sum(increase(sse_events_publish_failed_total[1m]))",
-     "legendFormat": "publish failed"
+     "refId": "A",
+     "expr": "sum by (instance) (increase(http_server_requests_seconds_count{uri!~\"/actuator.*\"}[$__range]))",
+     "legendFormat": "{{instance}}",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "type": "gauge",
+   "title": "알림 지연 p99 (예약 → 점주 서버 도착)",
+   "description": "Pub/Sub 발행부터 점주 연결 서버가 받기까지. 100ms 넘으면 주황, 500ms 넘으면 빨강",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 11,
+    "w": 8,
+    "h": 7
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "value": null,
+        "color": "green"
+       },
+       {
+        "value": 0.1,
+        "color": "orange"
+       },
+       {
+        "value": 0.5,
+        "color": "red"
+       }
+      ]
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "min": 0,
+     "max": 0.5
+    },
+    "overrides": []
+   },
+   "options": {
+    "showThresholdMarkers": true,
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "histogram_quantile(0.99, sum by (le) (increase(sse_pubsub_latency_seconds_bucket[$__range])))",
+     "legendFormat": "p99",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "type": "gauge",
+   "title": "손님 예약 응답 시간 p99",
+   "description": "POST /api/v1/waiting/users. 점주 네트워크나 Redis 장애가 손님에게 번지지 않는지 확인",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 8,
+    "y": 11,
+    "w": 8,
+    "h": 7
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "value": null,
+        "color": "green"
+       },
+       {
+        "value": 0.3,
+        "color": "orange"
+       },
+       {
+        "value": 1,
+        "color": "red"
+       }
+      ]
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "min": 0,
+     "max": 1
+    },
+    "overrides": []
+   },
+   "options": {
+    "showThresholdMarkers": true,
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "histogram_quantile(0.99, sum by (le) (increase(http_server_requests_seconds_bucket{uri=\"/api/v1/waiting/users\",method=\"POST\"}[$__range])))",
+     "legendFormat": "p99",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "type": "stat",
+   "title": "끊긴 연결 정리 (선택 기간)",
+   "description": "전송 실패로 제거된 죽은 연결 수",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 16,
+    "y": 11,
+    "w": 8,
+    "h": 7
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "value": null,
+        "color": "green"
+       },
+       {
+        "value": 1,
+        "color": "orange"
+       }
+      ]
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "colorMode": "value",
+    "graphMode": "none",
+    "textMode": "value_and_name",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (instance) (increase(sse_events_delivery_failed_total[$__range]))",
+     "legendFormat": "{{instance}}",
+     "instant": true
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "type": "bargauge",
+   "title": "이벤트 종류별 최대 크기 vs Nginx 버퍼(8KB)",
+   "description": "SSE 한 프레임의 최대 바이트. 8KB 선을 넘으면 Nginx가 여러 번 나눠 읽음",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 18,
+    "w": 12,
+    "h": 7
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bytes",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "value": null,
+        "color": "green"
+       },
+       {
+        "value": 4096,
+        "color": "orange"
+       },
+       {
+        "value": 8192,
+        "color": "red"
+       }
+      ]
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "min": 0,
+     "max": 8192
+    },
+    "overrides": []
+   },
+   "options": {
+    "orientation": "horizontal",
+    "displayMode": "lcd",
+    "showUnfilled": true,
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "max by (event) (sse_event_frame_bytes_max)",
+     "legendFormat": "{{event}}",
+     "instant": true
     }
    ]
   },
   {
    "id": 12,
-   "type": "timeseries",
-   "title": "Request rate per instance (nginx round-robin)",
-   "gridPos": {
-    "x": 12,
-    "y": 28,
-    "w": 12,
-    "h": 8
-   },
+   "type": "bargauge",
+   "title": "서버별 알림 발행 수 (선택 기간)",
+   "description": "어느 서버가 손님 요청을 받아 알림을 발행했는지",
    "datasource": {
     "type": "prometheus",
     "uid": "prom"
    },
+   "gridPos": {
+    "x": 12,
+    "y": 18,
+    "w": 12,
+    "h": 7
+   },
    "fieldConfig": {
     "defaults": {
-     "unit": "reqps"
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "value": null,
+        "color": "green"
+       }
+      ]
+     },
+     "color": {
+      "mode": "thresholds"
+     },
+     "decimals": 0
     },
     "overrides": []
+   },
+   "options": {
+    "orientation": "horizontal",
+    "displayMode": "gradient",
+    "showUnfilled": true,
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    }
    },
    "targets": [
     {
      "refId": "A",
-     "expr": "sum by (instance) (rate(http_server_requests_seconds_count{uri!~\"/actuator.*\"}[1m]))",
-     "legendFormat": "{{instance}}"
+     "expr": "sum by (instance) (increase(sse_events_published_total[$__range]))",
+     "legendFormat": "{{instance}}",
+     "instant": true
     }
    ]
   }

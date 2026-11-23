@@ -51,7 +51,7 @@ public class WaitingController {
 	public ResponseEntity<BaseResponse<?>> reserve(@RequestParam("ft-id") Long foodTruckId) {
 		Long userId = MemberContext.getMemberId();
 		WaitingInfoDto res = waitingQueryService.reserve(userId, foodTruckId);
-		notificationService.send(foodTruckId, "reserved", res);
+		notificationService.publish(foodTruckId, "reserved", res);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
@@ -62,7 +62,7 @@ public class WaitingController {
 		@PathVariable("waiting-id") Long waitingId) {
 		Long userId = MemberContext.getMemberId();
 		waitingQueryService.cancel(userId, waitingId);
-		notificationService.send(foodTruckId, "canceled", WaitingInfoDto.builder()
+		notificationService.publish(foodTruckId, "canceled", WaitingInfoDto.builder()
 			.waitingId(waitingId).build());
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
@@ -87,8 +87,11 @@ public class WaitingController {
 					)
 			)
 			.build();
-		SseEmitter emitter = notificationService.send(foodTruckId, "connected", res);
-		return ResponseEntity.ok(emitter);
+		SseEmitter emitter = notificationService.subscribe(foodTruckId, res);
+		return ResponseEntity.ok()
+			.header("X-Accel-Buffering", "no")
+			.header("Cache-Control", "no-cache")
+			.body(emitter);
 	}
 
 	@RequireJwtToken

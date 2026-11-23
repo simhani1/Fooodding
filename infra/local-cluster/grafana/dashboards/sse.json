@@ -1,0 +1,374 @@
+{
+ "uid": "fooding-sse",
+ "title": "Fooding SSE cluster",
+ "schemaVersion": 39,
+ "refresh": "5s",
+ "time": {
+  "from": "now-15m",
+  "to": "now"
+ },
+ "panels": [
+  {
+   "id": 1,
+   "type": "stat",
+   "title": "Instances up",
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 6,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(up{job=\"fooding-api\"})"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "type": "stat",
+   "title": "SSE connections (sum of instances)",
+   "gridPos": {
+    "x": 6,
+    "y": 0,
+    "w": 6,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(sse_connections_local)"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "type": "stat",
+   "title": "SSE connections in Redis registry",
+   "gridPos": {
+    "x": 12,
+    "y": 0,
+    "w": 6,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "max(sse_connections_registry)"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "type": "stat",
+   "title": "Publish failures (5m)",
+   "gridPos": {
+    "x": 18,
+    "y": 0,
+    "w": 6,
+    "h": 4
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(increase(sse_events_publish_failed_total[5m]))"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "type": "timeseries",
+   "title": "SSE connections per instance",
+   "gridPos": {
+    "x": 0,
+    "y": 4,
+    "w": 12,
+    "h": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sse_connections_local",
+     "legendFormat": "{{instance}} local"
+    },
+    {
+     "refId": "B",
+     "expr": "max(sse_connections_registry)",
+     "legendFormat": "Redis registry"
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "type": "timeseries",
+   "title": "Events delivered / s by route",
+   "gridPos": {
+    "x": 12,
+    "y": 4,
+    "w": 12,
+    "h": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (instance, route) (rate(sse_events_delivered_total[1m]))",
+     "legendFormat": "{{instance}} {{route}}"
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "type": "timeseries",
+   "title": "Events published / s by origin instance",
+   "gridPos": {
+    "x": 0,
+    "y": 12,
+    "w": 12,
+    "h": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (instance, event) (rate(sse_events_published_total[1m]))",
+     "legendFormat": "{{instance}} {{event}}"
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "type": "timeseries",
+   "title": "Pub/Sub latency (publish -> delivered)",
+   "gridPos": {
+    "x": 12,
+    "y": 12,
+    "w": 12,
+    "h": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "histogram_quantile(0.5, sum by (le) (rate(sse_pubsub_latency_seconds_bucket[1m])))",
+     "legendFormat": "p50"
+    },
+    {
+     "refId": "B",
+     "expr": "histogram_quantile(0.99, sum by (le) (rate(sse_pubsub_latency_seconds_bucket[1m])))",
+     "legendFormat": "p99"
+    },
+    {
+     "refId": "C",
+     "expr": "max(sse_pubsub_latency_seconds_max)",
+     "legendFormat": "max"
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "type": "timeseries",
+   "title": "SSE frame size by event (sizes proxy_buffer_size)",
+   "gridPos": {
+    "x": 0,
+    "y": 20,
+    "w": 12,
+    "h": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bytes"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "max by (event) (sse_event_frame_bytes_max)",
+     "legendFormat": "{{event}} max"
+    },
+    {
+     "refId": "B",
+     "expr": "max by (event) (sse_event_frame_bytes{quantile=\"0.99\"})",
+     "legendFormat": "{{event}} p99"
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "type": "timeseries",
+   "title": "Reserve API latency (guest request)",
+   "gridPos": {
+    "x": 12,
+    "y": 20,
+    "w": 12,
+    "h": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "histogram_quantile(0.99, sum by (le, instance) (rate(http_server_requests_seconds_bucket{uri=\"/api/v1/waiting/users\",method=\"POST\"}[1m])))",
+     "legendFormat": "{{instance}} p99"
+    },
+    {
+     "refId": "B",
+     "expr": "histogram_quantile(0.5, sum by (le) (rate(http_server_requests_seconds_bucket{uri=\"/api/v1/waiting/users\",method=\"POST\"}[1m])))",
+     "legendFormat": "p50"
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "type": "timeseries",
+   "title": "Delivery failures (dead connections dropped)",
+   "gridPos": {
+    "x": 0,
+    "y": 28,
+    "w": 12,
+    "h": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (instance) (increase(sse_events_delivery_failed_total[1m]))",
+     "legendFormat": "{{instance}}"
+    },
+    {
+     "refId": "B",
+     "expr": "sum(increase(sse_events_publish_failed_total[1m]))",
+     "legendFormat": "publish failed"
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "type": "timeseries",
+   "title": "Request rate per instance (nginx round-robin)",
+   "gridPos": {
+    "x": 12,
+    "y": 28,
+    "w": 12,
+    "h": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "reqps"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (instance) (rate(http_server_requests_seconds_count{uri!~\"/actuator.*\"}[1m]))",
+     "legendFormat": "{{instance}}"
+    }
+   ]
+  }
+ ]
+}

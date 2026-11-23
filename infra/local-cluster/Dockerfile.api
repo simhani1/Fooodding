@@ -1,0 +1,3 @@
+FROM eclipse-temurin:17-jre
+COPY api.jar /app/api.jar
+ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-Dspring.profiles.active=cluster", "-jar", "/app/api.jar"]

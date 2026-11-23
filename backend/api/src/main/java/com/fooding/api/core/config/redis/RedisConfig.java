@@ -4,7 +4,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import java.time.Duration;
+
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+
+import io.lettuce.core.ClientOptions;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -26,7 +32,15 @@ public class RedisConfig {
 
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
-		return new LettuceConnectionFactory(host, port);
+		// Fail fast when Redis is down: Lettuce otherwise queues commands for 60s, and SSE publish runs on the
+		// guest's request thread — a Redis outage would hang every reservation instead of only dropping a notification.
+		LettuceClientConfiguration client = LettuceClientConfiguration.builder()
+			.commandTimeout(Duration.ofMillis(500))
+			.clientOptions(ClientOptions.builder()
+				.disconnectedBehavior(ClientOptions.DisconnectedBehavior.REJECT_COMMANDS)
+				.build())
+			.build();
+		return new LettuceConnectionFactory(new RedisStandaloneConfiguration(host, port), client);
 	}
 
 	@Bean

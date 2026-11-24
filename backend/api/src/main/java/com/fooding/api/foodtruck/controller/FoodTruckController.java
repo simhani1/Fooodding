@@ -17,9 +17,8 @@ import com.fooding.api.core.aop.member.MemberContext;
 import com.fooding.api.core.template.response.BaseResponse;
 import com.fooding.api.foodtruck.controller.request.CommerceReq;
 import com.fooding.api.foodtruck.controller.request.FoodTruckReq;
-import com.fooding.api.foodtruck.service.CommerceQueryService;
-import com.fooding.api.foodtruck.service.FoodTruckCommandService;
-import com.fooding.api.foodtruck.service.FoodTruckQueryService;
+import com.fooding.api.foodtruck.service.CommerceService;
+import com.fooding.api.foodtruck.service.FoodTruckService;
 import com.fooding.api.foodtruck.service.dto.CommerceDto;
 import com.fooding.api.foodtruck.service.dto.FoodTruckDto;
 
@@ -32,15 +31,14 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class FoodTruckController {
 
-	private final FoodTruckQueryService foodTruckQueryService;
-	private final FoodTruckCommandService foodTruckCommandService;
-	private final CommerceQueryService commerceQueryService;
+	private final FoodTruckService foodTruckService;
+	private final CommerceService commerceService;
 
 	@RequireJwtToken
 	@PostMapping("")
 	public ResponseEntity<BaseResponse<FoodTruckDto>> registerFoodTruck(@RequestBody FoodTruckReq req) {
 		Long ownerId = MemberContext.getMemberId();
-		FoodTruckDto res = foodTruckQueryService.registerFoodTruck(ownerId, FoodTruckDto.builder()
+		FoodTruckDto res = foodTruckService.registerFoodTruck(ownerId, FoodTruckDto.builder()
 			.licenseNumber(req.licenseNumber())
 			.name(req.name())
 			.introduction(req.introduction())
@@ -53,7 +51,7 @@ public class FoodTruckController {
 	public ResponseEntity<BaseResponse<?>> updateFoodTruck(
 		@PathVariable("ft-id") Long foodTruckId,
 		@RequestBody FoodTruckReq req) {
-		foodTruckQueryService.updateFoodTruck(foodTruckId, FoodTruckDto.builder()
+		foodTruckService.updateFoodTruck(foodTruckId, FoodTruckDto.builder()
 			.licenseNumber(req.licenseNumber())
 			.name(req.name())
 			.introduction(req.introduction())
@@ -68,7 +66,7 @@ public class FoodTruckController {
 		@PathVariable("ft-id") Long foodTruckId) {
 		Long userId = MemberContext.getMemberId();
 		return ResponseEntity.ok(
-			BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetailForUser(userId, foodTruckId)));
+			BaseResponse.ofSuccess(foodTruckService.getFoodTruckDetailForUser(userId, foodTruckId)));
 	}
 
 	@RequireJwtToken
@@ -76,14 +74,14 @@ public class FoodTruckController {
 	public ResponseEntity<BaseResponse<FoodTruckDto>> getFoodTruckDetailForOwner() {
 		Long ownerId = MemberContext.getMemberId();
 		return ResponseEntity.ok(
-			BaseResponse.ofSuccess(foodTruckCommandService.getFoodTruckDetailForOwner(ownerId)));
+			BaseResponse.ofSuccess(foodTruckService.getFoodTruckDetailForOwner(ownerId)));
 	}
 
 	@PatchMapping("/{ft-id}/open")
 	public ResponseEntity<BaseResponse<?>> openFoodTruck(
 		@PathVariable("ft-id") Long foodTruckId,
 		@RequestBody CommerceReq req) {
-		commerceQueryService.openFoodTruck(foodTruckId, CommerceDto.builder()
+		commerceService.openFoodTruck(foodTruckId, CommerceDto.builder()
 				.latitude(req.latitude())
 				.longitude(req.longitude())
 				.build(),
@@ -94,7 +92,7 @@ public class FoodTruckController {
 	@PatchMapping("/{ft-id}/close")
 	public ResponseEntity<BaseResponse<?>> closeFoodTruck(
 		@PathVariable("ft-id") Long foodTruckId) {
-		commerceQueryService.closeFoodTruck(foodTruckId);
+		commerceService.closeFoodTruck(foodTruckId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
@@ -104,7 +102,7 @@ public class FoodTruckController {
 		@RequestParam("lng") Double longitude,
 		@RequestParam(value = "lft-id", required = false) Long lastFoodTruckId
 	) {
-		List<FoodTruckDto> res = foodTruckCommandService.getOpenedFoodTrucks(latitude, longitude, lastFoodTruckId);
+		List<FoodTruckDto> res = foodTruckService.getOpenedFoodTrucks(latitude, longitude, lastFoodTruckId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 

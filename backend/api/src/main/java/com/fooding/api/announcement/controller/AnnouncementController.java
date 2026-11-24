@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fooding.api.announcement.controller.response.GetAnnouncementRes;
-import com.fooding.api.announcement.service.AnnouncementCommandService;
-import com.fooding.api.announcement.service.AnnouncementQueryService;
+import com.fooding.api.announcement.service.AnnouncementService;
 import com.fooding.api.announcement.service.dto.AnnouncementDto;
 import com.fooding.api.announcement.service.dto.AnnouncementLogDto;
 import com.fooding.api.core.aop.annotation.RequireJwtToken;
@@ -29,15 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class AnnouncementController {
 
-	private final AnnouncementQueryService announcementQueryService;
-	private final AnnouncementCommandService announcementCommandService;
+	private final AnnouncementService announcementService;
 	private final FcmTokenService fcmTokenService;
 
 	@RequireJwtToken
 	@PostMapping("/{announcement_id}/open")
 	public ResponseEntity<BaseResponse<?>> openAnnouncement(
 		@PathVariable("announcement_id") Long announcementId) {
-		announcementQueryService.saveAnnouncementLog(
+		announcementService.saveAnnouncementLog(
 			AnnouncementLogDto.builder()
 				.memberId(MemberContext.getMemberId())
 				.announcementId(announcementId)
@@ -50,7 +48,7 @@ public class AnnouncementController {
 	@GetMapping("")
 	public ResponseEntity<BaseResponse<GetAnnouncementRes>> getAnnouncements() {
 		Long ownerId = MemberContext.getMemberId();
-		List<AnnouncementDto> announcements = announcementCommandService.getAnnouncementByOwner(ownerId);
+		List<AnnouncementDto> announcements = announcementService.getAnnouncementByOwner(ownerId);
 		TokenStatus tokenStatus = fcmTokenService.getTokenStatus(ownerId);
 		GetAnnouncementRes response = GetAnnouncementRes.builder()
 			.announcements(announcements)

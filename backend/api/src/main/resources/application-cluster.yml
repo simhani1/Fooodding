@@ -1,0 +1,36 @@
+# Local multi-instance cluster (infra/local-cluster). Two app containers share one MySQL and one Redis.
+spring:
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update   # create-drop would let one instance drop tables under the other
+    show-sql: false
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: 6379
+
+logging:
+  level:
+    org.springframework.web: INFO
+
+app:
+  instance-id: ${INSTANCE_ID}
+
+fcm:
+  enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    tags:
+      instance: ${INSTANCE_ID}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true

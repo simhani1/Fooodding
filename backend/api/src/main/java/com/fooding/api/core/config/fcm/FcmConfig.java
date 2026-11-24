@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -13,6 +14,8 @@ import com.google.firebase.FirebaseOptions;
 
 import jakarta.annotation.PostConstruct;
 
+// ponytail: fcm.enabled=false lets the local cluster boot without real Firebase credentials
+@ConditionalOnProperty(name = "fcm.enabled", havingValue = "true", matchIfMissing = true)
 @Service
 public class FcmConfig {
 

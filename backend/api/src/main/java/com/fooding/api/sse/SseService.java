@@ -1,4 +1,4 @@
-package com.fooding.api.notification.service.impl;
+package com.fooding.api.sse;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fooding.api.notification.service.NotificationService;
 import com.fooding.api.waiting.event.WaitingChangedEvent;
 import com.fooding.api.waiting.repository.EmitterRepository;
 
@@ -41,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
-public class NotificationServiceImpl implements NotificationService, MessageListener {
+public class SseService implements MessageListener {
 
 	public static final String CHANNEL = "sse:events";
 	static final String CONN_KEY_PREFIX = "sse:conn:";
@@ -58,7 +57,7 @@ public class NotificationServiceImpl implements NotificationService, MessageList
 	private final Counter publishFailed;
 	private final Timer pubsubLatency;
 
-	public NotificationServiceImpl(EmitterRepository emitterRepository, StringRedisTemplate redisTemplate,
+	public SseService(EmitterRepository emitterRepository, StringRedisTemplate redisTemplate,
 		ObjectMapper objectMapper, MeterRegistry meterRegistry,
 		@Value("${app.instance-id:${HOSTNAME:local}}") String instanceId) {
 		this.emitterRepository = emitterRepository;
@@ -79,7 +78,7 @@ public class NotificationServiceImpl implements NotificationService, MessageList
 	record SseMessage(Long foodTruckId, String name, String data, String origin, long publishedAt) {
 	}
 
-	@Override
+	/** Opens a new SSE connection on this instance and sends the initial snapshot as "connected". */
 	public SseEmitter subscribe(Long foodTruckId, Object snapshot) {
 		String emitterId = UUID.randomUUID().toString();
 		SseEmitter emitter = new SseEmitter(EMITTER_TIMEOUT_MS);
@@ -101,7 +100,7 @@ public class NotificationServiceImpl implements NotificationService, MessageList
 		return emitter;
 	}
 
-	@Override
+	/** Broadcasts to every instance via Redis Pub/Sub. Never throws: a lost notification must not fail the caller. */
 	public void publish(Long foodTruckId, String name, Object data) {
 		try {
 			SseMessage message = new SseMessage(foodTruckId, name, toJson(data), instanceId, System.currentTimeMillis());

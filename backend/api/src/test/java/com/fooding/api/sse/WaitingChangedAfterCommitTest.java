@@ -1,4 +1,4 @@
-package com.fooding.api.notification.service.impl;
+package com.fooding.api.sse;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -36,8 +36,8 @@ class WaitingChangedAfterCommitTest {
 		}
 
 		@Bean
-		NotificationServiceImpl notificationService(StringRedisTemplate redis) {
-			return new NotificationServiceImpl(new EmitterRepositoryImpl(), redis, new ObjectMapper(),
+		SseService sseService(StringRedisTemplate redis) {
+			return new SseService(new EmitterRepositoryImpl(), redis, new ObjectMapper(),
 				new SimpleMeterRegistry(), "api-1");
 		}
 
@@ -83,7 +83,7 @@ class WaitingChangedAfterCommitTest {
 			events.publishEvent(new WaitingChangedEvent(7L, "reserved", "{}"));
 			verify(redis, never()).convertAndSend(anyString(), anyString());   // still inside the transaction
 		});
-		verify(redis).convertAndSend(eq(NotificationServiceImpl.CHANNEL), contains("\"name\":\"reserved\""));
+		verify(redis).convertAndSend(eq(SseService.CHANNEL), contains("\"name\":\"reserved\""));
 	}
 
 	@Test

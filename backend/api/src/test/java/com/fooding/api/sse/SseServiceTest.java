@@ -1,4 +1,4 @@
-package com.fooding.api.notification.service.impl;
+package com.fooding.api.sse;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -22,7 +22,7 @@ import com.fooding.api.waiting.repository.impl.EmitterRepositoryImpl;
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-class NotificationServiceImplTest {
+class SseServiceTest {
 
 	StringRedisTemplate redis = mock(StringRedisTemplate.class);
 	@SuppressWarnings("unchecked")
@@ -30,12 +30,12 @@ class NotificationServiceImplTest {
 	EmitterRepositoryImpl repo = new EmitterRepositoryImpl();
 	ObjectMapper mapper = new ObjectMapper();
 	SimpleMeterRegistry meters = new SimpleMeterRegistry();
-	NotificationServiceImpl service;
+	SseService service;
 
 	@BeforeEach
 	void setUp() {
 		when(redis.opsForValue()).thenReturn(values);
-		service = new NotificationServiceImpl(repo, redis, mapper, meters, "api-1");
+		service = new SseService(repo, redis, mapper, meters, "api-1");
 	}
 
 	/** Captures sent event names; optionally fails like a broken socket. */
@@ -60,8 +60,8 @@ class NotificationServiceImplTest {
 
 	private DefaultMessage message(long ftId, String name, String origin) throws Exception {
 		String json = mapper.writeValueAsString(
-			new NotificationServiceImpl.SseMessage(ftId, name, "{\"waitingId\":1}", origin, System.currentTimeMillis()));
-		return new DefaultMessage(NotificationServiceImpl.CHANNEL.getBytes(), json.getBytes(StandardCharsets.UTF_8));
+			new SseService.SseMessage(ftId, name, "{\"waitingId\":1}", origin, System.currentTimeMillis()));
+		return new DefaultMessage(SseService.CHANNEL.getBytes(), json.getBytes(StandardCharsets.UTF_8));
 	}
 
 	@Test
@@ -80,7 +80,7 @@ class NotificationServiceImplTest {
 
 		service.publish(7L, "reserved", new Object[] {});
 
-		verify(redis).convertAndSend(eq(NotificationServiceImpl.CHANNEL), contains("\"origin\":\"api-1\""));
+		verify(redis).convertAndSend(eq(SseService.CHANNEL), contains("\"origin\":\"api-1\""));
 		assertThat(local.sent).isEmpty();
 	}
 

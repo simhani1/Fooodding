@@ -17,7 +17,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.fooding.api.notification.service.impl.NotificationServiceImpl;
+import com.fooding.api.sse.SseService;
 
 @Configuration
 @EnableRedisRepositories
@@ -51,10 +51,10 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisMessageListenerContainer redisMessageListenerContainer(NotificationServiceImpl sseListener) {
+	public RedisMessageListenerContainer redisMessageListenerContainer(SseService sseListener) {
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 		container.setConnectionFactory(redisConnectionFactory());
-		container.addMessageListener(sseListener, new ChannelTopic(NotificationServiceImpl.CHANNEL));
+		container.addMessageListener(sseListener, new ChannelTopic(SseService.CHANNEL));
 		return container;
 	}
 }

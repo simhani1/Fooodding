@@ -20,7 +20,7 @@ import com.fooding.api.core.aop.member.MemberContext;
 import com.fooding.api.core.template.response.BaseResponse;
 import com.fooding.api.fcm.domain.TokenStatus;
 import com.fooding.api.fcm.service.FcmTokenService;
-import com.fooding.api.notification.service.NotificationService;
+import com.fooding.api.sse.SseService;
 import com.fooding.api.waiting.controller.response.GetReservationListRes;
 import com.fooding.api.waiting.controller.response.GetUserReservationListRes;
 import com.fooding.api.waiting.service.WaitingService;
@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WaitingController {
 
 	private final WaitingService waitingService;
-	private final NotificationService notificationService;
+	private final SseService sseService;
 	private final WaitingLogService waitingLogService;
 	private final FcmTokenService fcmTokenService;
 
@@ -82,7 +82,7 @@ public class WaitingController {
 					)
 			)
 			.build();
-		SseEmitter emitter = notificationService.subscribe(foodTruckId, res);
+		SseEmitter emitter = sseService.subscribe(foodTruckId, res);
 		return ResponseEntity.ok()
 			.header("X-Accel-Buffering", "no")
 			.header("Cache-Control", "no-cache")

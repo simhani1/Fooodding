@@ -10,7 +10,6 @@ import com.fooding.api.foodtruck.repository.custom.FoodTruckRepositoryCustom;
 import com.fooding.api.member.domain.Member;
 import com.fooding.api.member.exception.NoMemberException;
 import com.fooding.api.member.repository.MemberRepository;
-import com.fooding.api.notification.service.NotificationService;
 import com.fooding.api.waiting.domain.Waiting;
 import com.fooding.api.waiting.event.WaitingChangedEvent;
 import com.fooding.api.waiting.exception.CannotCancelWaitingException;
@@ -37,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class WaitingService {
 
-	private final NotificationService notificationService;
 	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
 	private final WaitingRepository waitingRepository;

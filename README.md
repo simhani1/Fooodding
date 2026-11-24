@@ -4,12 +4,6 @@
 
 푸드트럭 모바일 예약 서비스
 
-## 아키텍처
-
-<div align='center'>
-  <img src='./docs/architecture.png' width='600px'>
-</div>
-
 ## SSE 다중 인스턴스 개선
 
 <div align='center'>

@@ -1,16 +1,8 @@
 # 푸딩 (Fooodding)
 
-<div align='center'>
-    <img src="./docs/fooodding.png" alt="title" width='600px' />
-</div>
-
 ## 주제
 
--   푸드트럭 사장님들을 위한 상권 추천 서비스
-
-## 기간
-
--   2024.08.19 ~ 2024.10.11
+푸드트럭 모바일 예약 서비스
 
 ## 아키텍처
 

@@ -16,11 +16,13 @@ import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooding.api.notification.service.NotificationService;
+import com.fooding.api.waiting.event.WaitingChangedEvent;
 import com.fooding.api.waiting.repository.EmitterRepository;
 
 import io.micrometer.core.instrument.Counter;
@@ -110,6 +112,16 @@ public class NotificationServiceImpl implements NotificationService, MessageList
 			publishFailed.increment();
 			log.error("SSE publish failed ft={} event={}", foodTruckId, name, e);
 		}
+	}
+
+	/**
+	 * Default phase is AFTER_COMMIT: owners are only told about rows that exist, and a rollback publishes nothing.
+	 * ponytail: runs on the request thread before the DB connection is released; the 500ms Redis timeout bounds it.
+	 * Add @Async if that hold time ever shows up in the reserve latency panel.
+	 */
+	@TransactionalEventListener
+	public void onWaitingChanged(WaitingChangedEvent event) {
+		publish(event.foodTruckId(), event.name(), event.data());
 	}
 
 	/**

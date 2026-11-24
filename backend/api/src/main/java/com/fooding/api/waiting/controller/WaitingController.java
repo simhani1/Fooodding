@@ -50,8 +50,7 @@ public class WaitingController {
 	@PostMapping("/users")
 	public ResponseEntity<BaseResponse<?>> reserve(@RequestParam("ft-id") Long foodTruckId) {
 		Long userId = MemberContext.getMemberId();
-		WaitingInfoDto res = waitingQueryService.reserve(userId, foodTruckId);
-		notificationService.publish(foodTruckId, "reserved", res);
+		waitingQueryService.reserve(userId, foodTruckId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
@@ -62,8 +61,6 @@ public class WaitingController {
 		@PathVariable("waiting-id") Long waitingId) {
 		Long userId = MemberContext.getMemberId();
 		waitingQueryService.cancel(userId, waitingId);
-		notificationService.publish(foodTruckId, "canceled", WaitingInfoDto.builder()
-			.waitingId(waitingId).build());
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 

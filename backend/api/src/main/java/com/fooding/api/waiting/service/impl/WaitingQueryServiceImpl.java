@@ -2,6 +2,7 @@ package com.fooding.api.waiting.service.impl;
 
 import java.time.ZoneId;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +17,9 @@ import com.fooding.api.member.domain.Member;
 import com.fooding.api.member.exception.NoMemberException;
 import com.fooding.api.member.repository.MemberRepository;
 import com.fooding.api.waiting.domain.Waiting;
+import com.fooding.api.waiting.event.WaitingChangedEvent;
 import com.fooding.api.waiting.exception.CannotCancelWaitingException;
 import com.fooding.api.waiting.exception.NoWaitingInfoException;
-import com.fooding.api.waiting.repository.EmitterRepository;
 import com.fooding.api.waiting.repository.WaitingRepository;
 import com.fooding.api.waiting.service.WaitingQueryService;
 import com.fooding.api.waiting.service.dto.WaitingInfoDto;
@@ -40,7 +41,7 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 	private final FoodTruckRepository foodTruckRepository;
 	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
 	private final WaitingRepository waitingRepository;
-	private final EmitterRepository emitterRepository;
+	private final ApplicationEventPublisher eventPublisher;
 	private final WaitingLogRepository waitingLogRepository;
 
 	@Override
@@ -59,13 +60,15 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			.number(waitingNumber)
 			.build();
 		waitingRepository.save(waiting);
-		return WaitingInfoDto.builder()
+		WaitingInfoDto info = WaitingInfoDto.builder()
 			.waitingId(waiting.getId())
 			.changedAt(waiting.getChangedAt().atZone(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli())
 			.cancelable(waiting.isCancellable())
 			.userName(user.getNickname())
 			.number(waiting.getNumber())
 			.build();
+		eventPublisher.publishEvent(new WaitingChangedEvent(foodTruckId, "reserved", info));
+		return info;
 	}
 
 	@Override
@@ -78,6 +81,8 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			throw new CannotCancelWaitingException("Cannot cancel waiting");
 		}
 		waitingRepository.deleteById(waitingId);
+		eventPublisher.publishEvent(new WaitingChangedEvent(waiting.getFoodTruck().getId(), "canceled",
+			WaitingInfoDto.builder().waitingId(waitingId).build()));
 	}
 
 	@Override

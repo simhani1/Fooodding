@@ -118,6 +118,29 @@
   <img src='https://github.com/user-attachments/assets/f6bdc1cc-64a4-4729-b8c6-5a0414b42316' width='600px'>
 </div>
 
+## 🔁 SSE 다중 인스턴스 개선
+
+<div align='center'>
+  <img src='./infra/local-cluster/docs/architecture.png' alt='SSE 다중 인스턴스 구성도' width='700px'>
+</div>
+
+### Redis Pub/Sub 기반 다중 인스턴스 SSE 실시간 알림
+
+- SSE 연결은 각 JVM의 메모리에 있어, Nginx가 손님의 예약 요청을 다른 인스턴스로 보내면 사장님이 알림을 받지 못했다.
+- 이제 요청을 처리한 인스턴스가 `sse:events`에 발행하면 모든 인스턴스가 이벤트를 받고, 해당 사장님의 연결이 있는 곳에서만 열린 탭마다 알림을 보낸다. 로컬 Docker Compose의 인스턴스 2대 사이에서 측정한 전달 시간은 12ms였다.
+
+### 트랜잭션 커밋 이후 이벤트 발행
+
+- `WaitingService`에서 발생한 `WaitingChangedEvent`는 `@TransactionalEventListener(AFTER_COMMIT)`에서 Redis로 발행한다. 롤백한 예약은 알림도 보내지 않는다.
+- 알림 발행에 실패해도 예약은 유지된다. 사장님 화면은 재연결할 때 스냅샷으로 최신 대기 목록을 받는다.
+
+### Nginx 리버스 프록시 환경의 SSE 전달 문제 해결
+
+- Nginx 기본 설정(`proxy_buffering on`, 업스트림 HTTP/1.0)에서는 SSE 이벤트가 버퍼에 묶여 점주에게 전달되지 않아, SSE 경로에 `proxy_buffering off`, `proxy_http_version 1.1`, `Connection ""`, `gzip off`를 적용해 이벤트가 즉시 전달되도록 해결했다.
+- nginx-debug로 실제 이벤트 크기(헤더 252B, 대기 100건 스냅샷 약 11KB)를 측정한 뒤 `proxy_buffer_size`를 8k로 조절해, 스냅샷 한 건의 업스트림 읽기를 512B 기준 22회, 기본값 4k 기준 3회에서 2회로 줄였다.
+
+[로컬 클러스터 실행 방법과 실험 결과](./infra/local-cluster/README.md)
+
 ## 👥 참여 인원 및 역할
 
 ### 💗TEAM 팔조핑💗

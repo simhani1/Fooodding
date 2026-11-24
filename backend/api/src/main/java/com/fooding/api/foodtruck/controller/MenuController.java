@@ -17,8 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fooding.api.core.template.response.BaseResponse;
 import com.fooding.api.foodtruck.controller.request.MenuReq;
 import com.fooding.api.foodtruck.facade.MenuFacade;
-import com.fooding.api.foodtruck.service.MenuCommandService;
-import com.fooding.api.foodtruck.service.MenuQueryService;
+import com.fooding.api.foodtruck.service.MenuService;
 import com.fooding.api.foodtruck.service.dto.MenuDto;
 
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MenuController {
 
 	private final MenuFacade menuFacade;
-	private final MenuQueryService menuQueryService;
-	private final MenuCommandService menuCommandService;
+	private final MenuService menuService;
 
 	@PostMapping(value = "/{ft-id}/menu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<BaseResponse<?>> registerMenu(
@@ -55,13 +53,13 @@ public class MenuController {
 
 	@DeleteMapping("/menu/{menu-id}")
 	public ResponseEntity<BaseResponse<?>> deleteMenu(@PathVariable("menu-id") Long menuId) {
-		menuQueryService.deleteMenu(menuId);
+		menuService.deleteMenu(menuId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
 	@GetMapping("/{ft-id}/menu")
 	public ResponseEntity<BaseResponse<List<MenuDto>>> getMenuListForOwner(@PathVariable("ft-id") Long foodTruckId) {
-		return ResponseEntity.ok(BaseResponse.ofSuccess(menuCommandService.getMenuListForOwner(foodTruckId)));
+		return ResponseEntity.ok(BaseResponse.ofSuccess(menuService.getMenuListForOwner(foodTruckId)));
 	}
 
 }

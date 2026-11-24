@@ -1,4 +1,4 @@
-package com.fooding.api.foodtruck.service.impl;
+package com.fooding.api.foodtruck.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -21,10 +21,10 @@ import com.fooding.api.member.domain.Provider;
 import com.fooding.api.member.repository.MemberRepository;
 
 @ExtendWith(MockitoExtension.class)
-class RegisterFoodTruckServiceImplTest {
+class RegisterFoodTruckServiceTest {
 
 	@InjectMocks
-	private FoodTruckQueryServiceImpl foodTruckQueryServiceImpl;
+	private FoodTruckService foodTruckService;
 
 	@Mock
 	private FoodTruckRepository foodTruckRepository;
@@ -55,7 +55,7 @@ class RegisterFoodTruckServiceImplTest {
 		when(foodTruckRepository.save(any(FoodTruck.class))).thenReturn(any(FoodTruck.class));
 
 		// then
-		assertDoesNotThrow(() -> foodTruckQueryServiceImpl.registerFoodTruck(memberId, dto));
+		assertDoesNotThrow(() -> foodTruckService.registerFoodTruck(memberId, dto));
 		verify(foodTruckRepository, times(1)).save(any(FoodTruck.class));
 	}
 

@@ -23,11 +23,10 @@ import com.fooding.api.fcm.service.FcmTokenService;
 import com.fooding.api.notification.service.NotificationService;
 import com.fooding.api.waiting.controller.response.GetReservationListRes;
 import com.fooding.api.waiting.controller.response.GetUserReservationListRes;
-import com.fooding.api.waiting.service.WaitingCommandService;
-import com.fooding.api.waiting.service.WaitingQueryService;
+import com.fooding.api.waiting.service.WaitingService;
 import com.fooding.api.waiting.service.dto.UserWaitingInfoDto;
 import com.fooding.api.waiting.service.dto.WaitingInfoDto;
-import com.fooding.api.waitinglog.service.WaitingLogCommandService;
+import com.fooding.api.waitinglog.service.WaitingLogService;
 import com.fooding.api.waitinglog.service.dto.WaitingTimeLogDto;
 import com.fooding.api.waitinglog.service.dto.WaitingUserLogDto;
 
@@ -40,17 +39,16 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class WaitingController {
 
-	private final WaitingQueryService waitingQueryService;
-	private final WaitingCommandService waitingCommandService;
+	private final WaitingService waitingService;
 	private final NotificationService notificationService;
-	private final WaitingLogCommandService waitingLogCommandService;
+	private final WaitingLogService waitingLogService;
 	private final FcmTokenService fcmTokenService;
 
 	@RequireJwtToken
 	@PostMapping("/users")
 	public ResponseEntity<BaseResponse<?>> reserve(@RequestParam("ft-id") Long foodTruckId) {
 		Long userId = MemberContext.getMemberId();
-		waitingQueryService.reserve(userId, foodTruckId);
+		waitingService.reserve(userId, foodTruckId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
@@ -60,7 +58,7 @@ public class WaitingController {
 		@PathVariable("ft-id") Long foodTruckId,
 		@PathVariable("waiting-id") Long waitingId) {
 		Long userId = MemberContext.getMemberId();
-		waitingQueryService.cancel(userId, waitingId);
+		waitingService.cancel(userId, waitingId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
@@ -69,7 +67,7 @@ public class WaitingController {
 	public ResponseEntity<SseEmitter> getReservationList(
 		@PathVariable("ft-id") Long foodTruckId) {
 		Long ownerId = MemberContext.getMemberId();
-		List<WaitingInfoDto> dtoList = waitingCommandService.getReservationList(ownerId, foodTruckId);
+		List<WaitingInfoDto> dtoList = waitingService.getReservationList(ownerId, foodTruckId);
 		GetReservationListRes res = GetReservationListRes.builder()
 			.waitingLine(
 				dtoList.stream()
@@ -95,7 +93,7 @@ public class WaitingController {
 	@PatchMapping("/{waiting-id}")
 	public ResponseEntity<BaseResponse<WaitingInfoDto>> changeToOrderLine(@PathVariable("waiting-id") Long waitingId) {
 		Long ownerId = MemberContext.getMemberId();
-		WaitingInfoDto res = waitingQueryService.changeToOrderLine(ownerId, waitingId);
+		WaitingInfoDto res = waitingService.changeToOrderLine(ownerId, waitingId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 
@@ -106,7 +104,7 @@ public class WaitingController {
 		@RequestParam("is-completed") boolean isCompleted
 	) {
 		Long ownerId = MemberContext.getMemberId();
-		waitingQueryService.completeUser(ownerId, waitingId, isCompleted);
+		waitingService.completeUser(ownerId, waitingId, isCompleted);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
@@ -114,7 +112,7 @@ public class WaitingController {
 	@GetMapping("/users")
 	public ResponseEntity<BaseResponse<GetUserReservationListRes>> getUserReservationList() {
 		Long userId = MemberContext.getMemberId();
-		List<UserWaitingInfoDto> userWaitingInfo = waitingCommandService.getUserReservationList(userId);
+		List<UserWaitingInfoDto> userWaitingInfo = waitingService.getUserReservationList(userId);
 		TokenStatus tokenStatus = fcmTokenService.getTokenStatus(userId);
 		GetUserReservationListRes res = GetUserReservationListRes.builder()
 			.userWaitingInfo(userWaitingInfo)
@@ -127,7 +125,7 @@ public class WaitingController {
 	@GetMapping("/log/time")
 	public ResponseEntity<BaseResponse<List<WaitingTimeLogDto>>> getWaitingTimeLog() {
 		Long ownerId = MemberContext.getMemberId();
-		List<WaitingTimeLogDto> res = waitingLogCommandService.getWaitingTimeLog(ownerId);
+		List<WaitingTimeLogDto> res = waitingLogService.getWaitingTimeLog(ownerId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 
@@ -135,7 +133,7 @@ public class WaitingController {
 	@GetMapping("/log/users")
 	public ResponseEntity<BaseResponse<List<WaitingUserLogDto>>> getWaitingUserLog() {
 		Long ownerId = MemberContext.getMemberId();
-		List<WaitingUserLogDto> res = waitingLogCommandService.getWaitingUserLog(ownerId);
+		List<WaitingUserLogDto> res = waitingLogService.getWaitingUserLog(ownerId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 

@@ -1,10 +1,4 @@
-package com.fooding.api.waiting.service.impl;
-
-import java.time.ZoneId;
-
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+package com.fooding.api.waiting.service;
 
 import com.fooding.api.fcm.service.FcmMessageService;
 import com.fooding.api.fcm.util.FcmMessageFactory;
@@ -16,35 +10,76 @@ import com.fooding.api.foodtruck.repository.custom.FoodTruckRepositoryCustom;
 import com.fooding.api.member.domain.Member;
 import com.fooding.api.member.exception.NoMemberException;
 import com.fooding.api.member.repository.MemberRepository;
+import com.fooding.api.notification.service.NotificationService;
 import com.fooding.api.waiting.domain.Waiting;
 import com.fooding.api.waiting.event.WaitingChangedEvent;
 import com.fooding.api.waiting.exception.CannotCancelWaitingException;
 import com.fooding.api.waiting.exception.NoWaitingInfoException;
 import com.fooding.api.waiting.repository.WaitingRepository;
-import com.fooding.api.waiting.service.WaitingQueryService;
+import com.fooding.api.waiting.service.dto.UserWaitingInfoDto;
 import com.fooding.api.waiting.service.dto.WaitingInfoDto;
 import com.fooding.api.waitinglog.domain.WaitingLog;
 import com.fooding.api.waitinglog.repository.WaitingLogRepository;
 import com.google.firebase.messaging.FirebaseMessagingException;
-
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 @Service
-class WaitingQueryServiceImpl implements WaitingQueryService {
+public class WaitingService {
 
-	private final FcmMessageService fcmMessageService;
+	private final NotificationService notificationService;
 	private final MemberRepository memberRepository;
 	private final FoodTruckRepository foodTruckRepository;
-	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
 	private final WaitingRepository waitingRepository;
+	private final FcmMessageService fcmMessageService;
+	private final FoodTruckRepositoryCustom foodTruckRepositoryCustom;
 	private final ApplicationEventPublisher eventPublisher;
 	private final WaitingLogRepository waitingLogRepository;
 
-	@Override
+	public List<WaitingInfoDto> getReservationList(Long ownerId, Long foodTruckId) {
+		Member owner = memberRepository.findById(ownerId)
+			.orElseThrow(() -> new NoMemberException("Owner not found with ID: " + ownerId));
+		FoodTruck foodTruck = foodTruckRepository.findById(foodTruckId)
+			.orElseThrow(() -> new NoFoodTruckException("FoodTruck not found with ID: " + foodTruckId));
+		if (foodTruck.isClosed()) {
+			throw new FoodTruckAlreadyClosedException("FoodTruck is already closed");
+		}
+		List<Waiting> waitingList = waitingRepository.findByFoodTruck(foodTruck);
+		return waitingList.stream()
+			.map(waiting -> WaitingInfoDto.builder()
+				.waitingId(waiting.getId())
+				.changedAt(waiting.getChangedAt().toInstant(ZoneOffset.UTC).toEpochMilli())
+				.cancelable(waiting.isCancellable())
+				.number(waiting.getNumber())
+				.userName(waiting.getMember().getNickname())
+				.build())
+			.collect(Collectors.toList());
+	}
+
+	public List<UserWaitingInfoDto> getUserReservationList(Long userId) {
+		Member user  =memberRepository.findById(userId)
+			.orElseThrow(() -> new NoMemberException("User not found with ID: " + userId));
+		List<Waiting> waitingList = waitingRepository.findByMember(user);
+		return waitingList.stream()
+			.map(waiting -> UserWaitingInfoDto.builder()
+				.waitingId(waiting.getId())
+				.number(waiting.getNumber())
+				.foodTruckId(waiting.getFoodTruck().getId())
+				.foodTruckName(waiting.getFoodTruck().getInfo().getName())
+				.build())
+			.collect(Collectors.toList());
+	}
+
 	public WaitingInfoDto reserve(Long userId, Long foodTruckId) {
 		Member user = memberRepository.findById(userId)
 			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + userId));
@@ -71,7 +106,6 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 		return info;
 	}
 
-	@Override
 	public void cancel(Long userId, Long waitingId) {
 		Member user = memberRepository.findById(userId)
 			.orElseThrow(() -> new NoMemberException("Member not found with ID: " + userId));
@@ -85,7 +119,6 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			WaitingInfoDto.builder().waitingId(waitingId).build()));
 	}
 
-	@Override
 	public WaitingInfoDto changeToOrderLine(Long ownerId, Long waitingId) {
 		Member owner = memberRepository.findById(ownerId)
 			.orElseThrow(() -> new NoMemberException("Owner not found with ID: " + ownerId));
@@ -105,7 +138,6 @@ class WaitingQueryServiceImpl implements WaitingQueryService {
 			.build();
 	}
 
-	@Override
 	public void completeUser(Long ownerId, Long waitingId, boolean isCompleted) {
 		Member owner = memberRepository.findById(ownerId)
 			.orElseThrow(() -> new NoMemberException("Owner not found with ID: " + ownerId));

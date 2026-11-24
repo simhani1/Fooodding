@@ -35,3 +35,7 @@ Spring response header block: 252 B. Frames: heartbeat 38 B, reserved 129 B, con
 | any | 16k | `nginx -t` fails: proxy_busy_buffers_size (2×) must be < proxy_buffers total − 1 | – | – | – |
 
 8k: a 100-waiting snapshot in 2 reads and every other event in 1, at 8 KB per connection. Counts vary by ±1 between runs with TCP arrival timing.
+
+![architecture](docs/architecture.png)
+
+`docs/architecture.drawio` — draw.io로 편집
